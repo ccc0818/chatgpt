@@ -1,13 +1,11 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { ref } from 'vue';
+import { ref,getCurrentInstance } from 'vue';
 import { useUserStore } from '../stores/user'
-import { wxPayVip } from '../api/wxApi';
-import { activeCdkey } from '../api/service'
+import { wxPayVip, activeCdkey } from '../api/api';
 import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
+const ins = getCurrentInstance()
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
 
@@ -24,8 +22,10 @@ const onClickItem = async (index) => {
       wxPayVip({ id: user.value.id, openid: user.value.openid, money: 0.01 });
       break;
     case 1:
+      window.location.href = ins.proxy.$config.joinUsUrl;
+      break;
     case 3:
-      window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
+      window.location.href = ins.proxy.$config.makeItUrl;
       break;
     case 2: //兑换卡密
       ElMessageBox.prompt('', '', {

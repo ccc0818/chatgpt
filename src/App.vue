@@ -1,26 +1,15 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
 import { ElLoading, ElMessage } from 'element-plus';
-import { wxAuthorize } from './api/wxApi';
+import { wxAuthorize } from './api/api';
 import { useUserStore } from './stores/user';
-import { useConfigStore } from './stores/config';
 import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
 const route = useRoute();
-const configStore = useConfigStore();
-const { init } = configStore;
-const { config } = storeToRefs(configStore);
-const showView = ref(false);
 
 onBeforeMount(() => {
-  // var ua = navigator.userAgent.toLowerCase(); // 将用户代理头的值转为小写
-  // if (ua.match(/micromessenger/i) == 'micromessenger')
-  //   console.log('weixin')
-  // else
-  //   console.log('pc')
-
   // 获取wx授权
   wxAuthorize((res) => {
     const { user } = storeToRefs(useUserStore());
@@ -28,26 +17,8 @@ onBeforeMount(() => {
       const { name, img, state, id, openid } = res;
       user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, openid };
     } 
-    initConfig();
   });
-
-  // 初始化配置 
-  function initConfig() {
-    const loading = ElLoading.service({
-      lock: true,
-      text: 'Loading...',
-      background: 'rgba(0, 0, 0, 0.7)',
-    });
-
-    init().then(res => {
-      config.value = res.data
-      showView.value = true;
-    }).catch(() => {
-      ElMessage.error('加载资源失败!');
-    }).finally(() => loading.close());
-  }
 });
-
 
 const tabChange = (path) => {
   if (route.path !== path) {
@@ -57,7 +28,7 @@ const tabChange = (path) => {
 </script>
 
 <template>
-  <div v-if="showView" class="viewport">
+  <div class="viewport">
     <RouterView v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />

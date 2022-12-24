@@ -1,3 +1,5 @@
 import axios from "axios";
 
-export default axios;
+const request = axios.create( );
+
+export default request;

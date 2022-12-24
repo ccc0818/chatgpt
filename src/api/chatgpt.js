@@ -1,10 +1,12 @@
 import { ElMessage } from 'element-plus'
-import { useConfigStore } from '../stores/config';
-import { storeToRefs } from 'pinia';
-const { config } = storeToRefs(useConfigStore());
+let API = '';
+
+export const setAPI = (api) => {
+  API = api
+}
 
 let reader;
-const request = async (query, contentUpdate) => {
+export const request = async (query, contentUpdate) => {
   // 如果上一次的reader stream 还在 那么就cancel掉
   if (reader)
     await reader.cancel();
@@ -16,7 +18,7 @@ const request = async (query, contentUpdate) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.value.API}`
+      'Authorization': `Bearer ${API}`
     },
     body: JSON.stringify({
       model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
@@ -84,4 +86,3 @@ const request = async (query, contentUpdate) => {
   });
 }
 
-export default request;

@@ -1,15 +1,12 @@
 <script setup>
 import { ref, nextTick, onUpdated } from 'vue';
 import Bubble from '../components/Bubble.vue';
-import request from '../api/chatgpt';
+import { request } from '../api/chatgpt';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus';
-import { wxPayVip } from '../api/wxApi';
-import { getReqAviaible } from '../api/service';
+import { wxPayVip, getReqAviaible } from '../api/api';
 
-const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 const inputData = ref('');
 const mainEl = ref('null');
@@ -74,7 +71,7 @@ const onSubmit = async () => {
   let queryStr = '';
   msgList.value.forEach(e => {
     if (e.isUser) {
-      queryStr += `You: ${e.message}\n`; 
+      queryStr += `You: ${e.message}\n`;
     } else {
       queryStr += `AI: ${e.message}\n`;
     }
@@ -118,10 +115,8 @@ const compositionEvent = (state) => {
     <!-- input -->
     <div class="input-block">
       <div class="panel">
-        <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?" 
-        @compositionstart="compositionEvent(1)" 
-        @compositionend="compositionEvent(0)"
-        >
+        <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
+          @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
         <button class="btn" :class="!inputData.length ? 'disable' : ''"
           @click="inputData.length && onSubmit()"></button>
       </div>

@@ -1,5 +1,9 @@
-import appConfig from '../config';
-const { serverUrl } = appConfig;
+import request from "../plugins/axios";
+let serverUrl = '';
+
+export const setServerUrl = (url) => {
+  serverUrl = url;
+}
 
 // 跳转到登陆授权界面 进行登陆 
 export const wxAuthorize = (cb) => {
@@ -36,3 +40,12 @@ export const wxPayVip = ({ id, openid, money }) => {
   window.location.href = `${serverUrl}/pay/api.php?id=${id}&openid=${openid}&money=${money}`
 }
 
+// 兑换卡密
+export const activeCdkey = ({ id, code }) => {
+  return request.get(`${serverUrl}/code.php`, { params: { id, code } });
+}
+
+// 普通用户获取能否免费体验
+export const getReqAviaible = (id) => {
+  return request.get(`${serverUrl}/Interface.php`, { params: { id } });
+}
