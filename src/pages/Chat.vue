@@ -14,7 +14,7 @@ const pageEl = ref('null');
 const input = ref('');
 let id = 0;
 const msgList = ref([
-  { id: id++, isUser: false, message: '你好, 我是chatGPT.' }
+  { id: id++, isUser: false, message: '你好，我是最强人工智能ChatGPT，我能回答你所有问题，快来和我聊天吧！' }
 ]);
 
 onUpdated(() => {
