@@ -1,4 +1,4 @@
 export default {
-  serverUrl: 'https://xx.cdyb5.com',
+  serverUrl: 'https://xx.cdyb2.com',
 };
 

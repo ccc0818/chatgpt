@@ -25,7 +25,7 @@ const onClickItem = async (index) => {
       break;
     case 1:
     case 3:
-      window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
+      window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
       break;
     case 2: //兑换卡密
       ElMessageBox.prompt('', '', {
