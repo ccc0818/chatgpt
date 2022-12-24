@@ -1,0 +1,23 @@
+{
+  "id": "3828459",
+  "name": "chatgpt",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4867080",
+      "name": "前进",
+      "font_class": "qianjin",
+      "unicode": "e651",
+      "unicode_decimal": 58961
+    },
+    {
+      "icon_id": "4942643",
+      "name": "后退",
+      "font_class": "houtui",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    }
+  ]
+}
