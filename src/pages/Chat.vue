@@ -77,10 +77,11 @@ const onSubmit = async () => {
     }
   });
 
-  queryStr.replace('AI: ', '');
+  queryStr = queryStr.replace('AI: ', '');
+  // console.log(queryStr);
   // 获取到收到的数据
   const newId = id++;
-  request(queryStr, (content) => {
+  request(queryStr, user.value.key, (content) => {
     const item = msgList.value.find(i => i.id === newId);
     if (item)
       item.message = content.replace('AI:', '').trimStart();
@@ -117,18 +118,14 @@ const compositionEvent = (state) => {
       <div class="panel">
         <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
           @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
-        <button class="btn" :class="!inputData.length ? 'disable' : ''"
-          @click="inputData.length && onSubmit()"></button>
+        <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style>
-.el-overlay-message-box {
-  margin-top: 50%;
-}
-
 .el-overlay-message-box::after {
   content: '';
   width: 0 !important;
@@ -137,7 +134,7 @@ const compositionEvent = (state) => {
 
 .chat-page {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -155,29 +152,11 @@ const compositionEvent = (state) => {
   scroll-behavior: smooth;
 }
 
-.input-block {
-  width: 100%;
-  padding: 10px 10px;
-  box-sizing: border-box;
-  background-color: var(--theme-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media screen and (max-width: 750px) {
-  .input-block {
-    border-radius: 25px;
-  }
-}
 
 .panel {
-  flex: 1;
   height: 45px;
-  width: 90%;
-  border-radius: 25px;
-  background-color: #fff;
-  box-shadow: inset 0 0 3px 0 var(--theme-color);
+  width: 100%;
+  border: 1px solid #eee;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
@@ -191,25 +170,26 @@ const compositionEvent = (state) => {
   flex: 1;
   outline: none;
   border: none;
-  height: 100%;
+  border-radius: 8px;
+  height: 80%;
   text-align: center;
   color: #828284;
-  background-color: transparent;
+  background-color: #eee;
   font-size: 16px;
-  margin: 0 10px;
+  margin: 0 10px 0 0;
+}
+
+.panel .ipt::placeholder {
+  font-size: 14px;
+  color: #aaa;
 }
 
 .panel .btn {
-  min-width: 40px;
-  min-height: 40px;
+  margin: 0 10px;
+  height: 60%;
+  aspect-ratio: 1/1;
   cursor: pointer;
-  border-radius: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 80px;
-  background-color: transparent;
-  border-width: 0;
-  background-image: url('../assets/images/send.png');
+  background: url('../assets/images/send.svg') no-repeat center/contain;
 }
 
 .panel .disable {

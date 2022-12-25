@@ -63,7 +63,7 @@ const props = defineProps({
   -webkit-user-drag: none;
 }
 .blob {
-  font-size: 15px;
+  font-size: 14px;
   background-color: #d7d8db;
   color: #161d2f;
   max-width: 70%;

@@ -1,7 +1,6 @@
 <script setup>
 import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { ElLoading, ElMessage } from 'element-plus';
 import { wxAuthorize } from './api/api';
 import { useUserStore } from './stores/user';
 import { useRouter, useRoute } from 'vue-router';
@@ -14,17 +13,11 @@ onBeforeMount(() => {
   wxAuthorize((res) => {
     const { user } = storeToRefs(useUserStore());
     if (res.openid) {
-      const { name, img, state, id, openid } = res;
-      user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, openid };
+      const { name, img, state, id, openid, key } = res;
+      user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, openid, key};
     } 
   });
 });
-
-const tabChange = (path) => {
-  if (route.path !== path) {
-    router.push(path);
-  }
-}
 </script>
 
 <template>
@@ -35,8 +28,8 @@ const tabChange = (path) => {
       </KeepAlive>
     </RouterView>
     <div class="tabbar">
-      <div :class="route.path === '/chat' ? 'active' : ''" @click="tabChange('/chat')">chatgpt</div>
-      <div :class="route.path === '/user' ? 'active' : ''" @click="tabChange('/user')">个人中心</div>
+      <RouterLink class="link" active-class="active" to="/chat">聊天</RouterLink>
+      <RouterLink class="link" active-class="active" to="/user">个人中心</RouterLink>
     </div>
   </div>
 </template>
@@ -69,77 +62,41 @@ const tabChange = (path) => {
     left: 50%;
     bottom: 10%;
     transform: translateX(-50%);
-    border: 8px solid var(--theme-color);
     border-radius: 10px;
-    box-shadow: 0 0 30px 3px var(--theme-color);
+    border: 3px solid #9370d8;
+    box-shadow: 0 20px 30px -20px var(--theme-color);
   }
 }
 
 .tabbar {
   width: 100%;
-  height: 60px;
+  height: 50px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   box-sizing: border-box;
   user-select: none;
-  cursor: pointer;
 }
 
-.tabbar div {
+.tabbar .link {
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 0.45;
+  text-decoration: none;
 }
 
-@media screen and (max-width:750px) {
-  .tabbar .active {
-    color: mediumpurple;
-  }
-
-  .tabbar {
-    box-shadow: 0 -5px 5px -3px grey;
-    border-top: 1px solid grey;
-  }
-
-  .tabbar div {
-    font-size: 16px;
-    width: 80px;
-    height: 100%;
-    outline: none;
-    border: none;
-    color: var(--theme-color);
-    cursor: pointer;
-  }
-
-  .tabbar div:active {
-    background-color: transparent;
-  }
+.tabbar .active {
+  color: #9370d8 !important;
 }
 
-@media screen and (min-width:751px) {
-  .tabbar .active {
-    background-color: #515151;
-  }
+.tabbar {
+  border-top: 1px solid #eee;
+}
 
-  .tabbar {
-    background-color: var(--theme-color);
-  }
-
-  .tabbar div {
-    /* flex: 0.3; */
-    height: 80%;
-    border-radius: 3px;
-    outline: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    background-color: transparent;
-  }
-
-  .tabbar div:hover {
-    background-color: #515151;
-  }
+.tabbar .link {
+  font-size: 12px;
+  height: 100%;
+  color: #666666;
 }
 </style>

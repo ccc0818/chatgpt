@@ -1,11 +1,10 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { ref,getCurrentInstance } from 'vue';
+import { ref } from 'vue';
 import { useUserStore } from '../stores/user'
 import { wxPayVip, activeCdkey } from '../api/api';
 import { storeToRefs } from 'pinia';
 
-const ins = getCurrentInstance()
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
 
@@ -22,10 +21,10 @@ const onClickItem = async (index) => {
       wxPayVip({ id: user.value.id, openid: user.value.openid, money: 0.01 });
       break;
     case 1:
-      window.location.href = ins.proxy.$config.joinUsUrl;
+      window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
       break;
     case 3:
-      window.location.href = ins.proxy.$config.makeItUrl;
+      window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
       break;
     case 2: //兑换卡密
       ElMessageBox.prompt('', '', {
@@ -92,21 +91,16 @@ const onClickItem = async (index) => {
 </template>
 
 <style>
-@import '../assets/icon-font/iconfont.css';
-.el-overlay-message-box {
-  /* margin-top: 50% !important; */
-  transform: translateY(30%) !important;
-}
-
 .el-overlay-message-box::after {
   content: '';
   width: 0 !important;
   height: 0 !important;
   overflow: hidden;
 }
+
 .user-page {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -143,7 +137,7 @@ const onClickItem = async (index) => {
   width: 30%;
   aspect-ratio: 1/1;
   margin-bottom: 30px;
-  box-shadow: 0 0 16px 0;
+  box-shadow: 0 0 16px 0 #9370d8;
   border-radius: 50%;
   -webkit-user-drag: none;
   cursor: pointer;
@@ -155,9 +149,11 @@ const onClickItem = async (index) => {
   align-items: center;
   width: 100%;
   height: 40px;
-  font-size: 40px;
+  font-size: 30px;
   color: var(--theme-color);
   cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-info .name .vip {
