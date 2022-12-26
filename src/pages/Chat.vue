@@ -189,7 +189,7 @@ const compositionEvent = (state) => {
   height: 60%;
   aspect-ratio: 1/1;
   cursor: pointer;
-  background: url('../assets/images/send.svg') no-repeat center/contain;
+  background: url('../assets/images/send.png') no-repeat center/contain;
 }
 
 .panel .disable {
