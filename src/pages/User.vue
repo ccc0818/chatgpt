@@ -83,7 +83,6 @@ const onClickItem = async (index) => {
             </div>
             <span class="title">{{ item.title }}</span>
           </div>
-          <span class="go iconfont icon-qianjin"></span>
         </li>
       </ul>
     </div>
@@ -228,14 +227,5 @@ const onClickItem = async (index) => {
 
 .menu .menu-item:nth-of-type(1) .left .icon .img {
   transform: scale(2) translateY(6%);
-}
-
-.menu .menu-item .go {
-  padding: 10px;
-  border-radius: 15px;
-  font-weight: 800;
-  font-size: 24px;
-  /* aspect-ratio: 1/1; */
-  background-color: #fff;
 }
 </style>
