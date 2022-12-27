@@ -31,8 +31,8 @@ export const wxUserInfo = (cb) => {
 }
 
 // 跳转支付页面 
-export const wxPayVip = ({ id, openid, money }) => {
-  window.location.href = `${serverUrl}/pay/api.php?id=${id}&openid=${openid}&money=${money}`
+export const wxPayVip = ({ id, money }) => {
+  window.location.href = `${serverUrl}/pay/api.php?id=${id}&money=${money}`
 }
 
 // 兑换卡密

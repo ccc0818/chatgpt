@@ -8,7 +8,6 @@ export const useUserStore = defineStore('userStore', () => {
     avatar: '/assets/images/user/user-head.svg',
     vip: false,
     id: -1,
-    openid: ''
   });
   return { user };
 });

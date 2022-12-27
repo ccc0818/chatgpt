@@ -18,7 +18,7 @@ const menuList = ref([
 const onClickItem = async (index) => {
   switch (index) {
     case 0: //开通会员
-      wxPayVip({ id: user.value.id, openid: user.value.openid, money: 0.01 });
+      wxPayVip({ id: user.value.id, money: 0.01 });
       break;
     case 1:
       window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
