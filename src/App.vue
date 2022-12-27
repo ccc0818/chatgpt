@@ -1,16 +1,12 @@
 <script setup>
 import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { wxAuthorize } from './api/api';
+import { wxUserInfo } from './api/api';
 import { useUserStore } from './stores/user';
-import { useRouter, useRoute } from 'vue-router';
-
-const router = useRouter();
-const route = useRoute();
 
 onBeforeMount(() => {
-  // 获取wx授权
-  wxAuthorize((res) => {
+  // 获取wx用户信息
+  wxUserInfo((res) => {
     const { user } = storeToRefs(useUserStore());
     if (res.openid) {
       const { name, img, state, id, openid, key } = res;

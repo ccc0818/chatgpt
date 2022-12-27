@@ -114,12 +114,10 @@ const compositionEvent = (state) => {
       </Bubble>
     </div>
     <!-- input -->
-    <div class="input-block">
-      <div class="panel">
-        <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
-          @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
-        <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
-        </div>
+    <div class="panel">
+      <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
+        @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
+      <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
       </div>
     </div>
   </div>
@@ -151,7 +149,6 @@ const compositionEvent = (state) => {
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
-
 
 .panel {
   height: 45px;
@@ -186,8 +183,8 @@ const compositionEvent = (state) => {
 
 .panel .btn {
   margin: 0 10px;
-  height: 60%;
-  aspect-ratio: 1/1;
+  height: 27px;
+  width: 27px;
   cursor: pointer;
   background: url('../assets/images/send.png') no-repeat center/contain;
 }
