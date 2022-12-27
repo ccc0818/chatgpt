@@ -9,8 +9,13 @@ export function setServerUrl(url) {
 
 // 跳转到登陆授权界面 进行登陆 
 export const wxAuthorize = () => {
-  if (window.location.search === "")
+  const isLogin = sessionStorage.getItem("isLogin");
+  if (isLogin === null) {
     window.location.href = serverUrl + '/loginapi.php';
+    sessionStorage.setItem("isLogin", "1");
+  } else {
+    sessionStorage.removeItem('isLogin');
+  }
 };
 
 // 解析用户信息
