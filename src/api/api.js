@@ -26,7 +26,7 @@ export const wxUserInfo = (cb) => {
   let obj = {};
   arr.forEach(i => {
     const [key, val] = i.split('=');
-    if (key === 'name')
+    if (key === 'name' || key === 'endtime')
       obj[key] = decodeURI(val);
     else
       obj[key] = val;

@@ -125,7 +125,7 @@ const compositionEvent = (state) => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .el-overlay-message-box::after {
   content: '';
   width: 0 !important;

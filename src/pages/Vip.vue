@@ -8,8 +8,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 const vipTypeList = ref([
-  { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: '立省20元', hot: true },
-  { id: 1, title: '季度会员', price: 109, oldPrice: 207, save: '立省78元' },
+  { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: '立省20元'},
+  { id: 1, title: '季度会员', price: 109, oldPrice: 207, save: '立省78元', hot: true },
   { id: 2, title: '年度会员', price: 298, oldPrice: 828, save: '立省530元' },
 ])
 const selectedIndex = ref(0);
@@ -27,7 +27,7 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  wxPayVip(user.value.id, selectedIndex.value + 1);
+  wxPayVip({id: user.value.id, type: selectedIndex.value + 1});
 } 
 </script>
 
@@ -44,7 +44,7 @@ const payVip = () => {
         <img class="avatar" :src="user.avatar">
         <div class="col">
           <span class="name">{{ user.name }}</span>
-          <span class="date">{{ user.vip ? `畅聊会员将于: ${user.endTime}到期` : '开通会员享畅聊'}}</span>
+          <span class="date">{{ user.vip ? `畅聊会员将于: ${user.endTime.split(' ')[0]}到期` : '开通会员享畅聊'}}</span>
         </div>
       </div>
       <img class="logo" src="../assets/images/vip/ChatVIP.png">
@@ -100,7 +100,7 @@ const payVip = () => {
     <p class="tips">会员服务为虚拟商品，支付成功后不支持退款</p>
 
     <!-- 开通 -->
-    <div class="btn" @click="payVip">立即开通</div>
+    <div class="btn" @click="payVip">{{user.vip ? '立即续费' : '立即开通'}}</div>
   </div>
 </template>
 
@@ -204,8 +204,10 @@ $header-color: #434045;
       margin-top: 10px;
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
       align-content: space-around;
       height: 120px;
+      border: none;
 
       .item {
         display: flex;
@@ -327,7 +329,7 @@ $header-color: #434045;
 
   .btn {
     margin: 0 15px;
-    padding: 8px 0;
+    padding: 15px 0;
     background-color: #e9d1ba;
     display: flex;
     justify-content: center;
