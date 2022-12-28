@@ -5,8 +5,10 @@ import { request } from '../api/chatgpt';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
 import { ElMessageBox } from 'element-plus';
-import { wxPayVip, getReqAviaible } from '../api/api';
+import { getReqAviaible } from '../api/api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 const inputData = ref('');
 const mainEl = ref('null');
@@ -54,7 +56,7 @@ const onSubmit = async () => {
         appendTo: pageEl.value,
         callback: (action) => {
           if (action === 'confirm')
-            wxPayVip({ id: user.value.id, openid: user.value.openid, money: 0.01 });
+            router.push('/vip');
         },
       })
       return;
@@ -131,8 +133,6 @@ const compositionEvent = (state) => {
 }
 
 .chat-page {
-  width: 100%;
-  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

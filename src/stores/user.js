@@ -7,6 +7,7 @@ export const useUserStore = defineStore('userStore', () => {
     name: '访客',
     avatar: '/assets/images/user/user-head.svg',
     vip: false,
+    endTime: '',
     id: -1,
   });
   return { user };

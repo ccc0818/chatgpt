@@ -4,13 +4,18 @@ import { createRouter, createWebHashHistory } from "vue-router";
 //2. 路由配置
 const routes = [
   {
-    path: '/', redirect: '/chat',
+    path: '/', redirect: '/home/chat',
     children: [
-      { path: '/chat', component: () => import('../pages/Chat.vue') },
-      { path: '/user', component: () => import('../pages/User.vue') },
+      {
+        path: 'home', component: () => import('../pages/Home.vue'),
+        children: [
+          { path: 'chat', component: () => import('../pages/Chat.vue') },
+          { path: 'user', component: () => import('../pages/User.vue') },
+        ]
+      },
+      { path: 'vip', component: () => import('../pages/Vip.vue') },
     ]
   },
-
   { path: '/:pathMatch(.*)*', redirect: '/' }, //其它没有的路由都跳转到主页
 ];
 

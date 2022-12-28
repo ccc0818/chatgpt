@@ -4,9 +4,11 @@ import { ref } from 'vue';
 import { useUserStore } from '../stores/user'
 import { wxPayVip, activeCdkey } from '../api/api';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router'
 
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
+const router = useRouter();
 
 const menuList = ref([
   { icon: '/assets/images/user/user-item_diamond.png', title: '开通会员畅享无限对话' },
@@ -18,7 +20,7 @@ const menuList = ref([
 const onClickItem = async (index) => {
   switch (index) {
     case 0: //开通会员
-      wxPayVip({ id: user.value.id, money: 0.01 });
+      router.push('/vip');
       break;
     case 1:
       window.location.href = 'https://work.weixin.qq.com/kfid/kfcde6c1907b9f276bd';
@@ -40,7 +42,7 @@ const onClickItem = async (index) => {
         inputErrorMessage: '卡密格式错误',
         inputPattern: /^[a-zA-Z0-9-_]+$/,
         appendTo: pageEl.value,
-        callback: () => {},
+        callback: () => { },
         beforeClose(action, instance, done) {
           if (action === 'confirm') {
             activeCdkey({ id: user.value.id, code: instance.inputValue.trim() }).then(res => {
@@ -55,7 +57,7 @@ const onClickItem = async (index) => {
                   message: '激活失败',
                 })
               }
-            }).finally(() => done())      
+            }).finally(() => done())
           } else
             done();
         }
@@ -98,8 +100,6 @@ const onClickItem = async (index) => {
 }
 
 .user-page {
-  width: 100%;
-  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   justify-content: center;

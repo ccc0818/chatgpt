@@ -8,23 +8,19 @@ onBeforeMount(() => {
   // 获取wx用户信息
   wxUserInfo((res) => {
     const { user } = storeToRefs(useUserStore());
-    const { name, img, state, id, key } = res;
-    user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, key};
+    const { name, img, state, id, key, endtime } = res;
+    user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, key, endTime: endtime};
   });
 });
 </script>
 
 <template>
   <div class="viewport">
-    <RouterView v-slot="{ Component }">
+    <RouterView class="view" v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />
       </KeepAlive>
     </RouterView>
-    <div class="tabbar">
-      <RouterLink class="link" active-class="active" to="/chat">聊天</RouterLink>
-      <RouterLink class="link" active-class="active" to="/user">个人中心</RouterLink>
-    </div>
   </div>
 </template>
 
@@ -62,35 +58,8 @@ onBeforeMount(() => {
   }
 }
 
-.tabbar {
+.view {
   width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-sizing: border-box;
-  user-select: none;
-}
-
-.tabbar .link {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0.45;
-  text-decoration: none;
-}
-
-.tabbar .active {
-  color: #9370d8 !important;
-}
-
-.tabbar {
-  border-top: 1px solid #eee;
-}
-
-.tabbar .link {
-  font-size: 12px;
   height: 100%;
-  color: #666666;
 }
 </style>
