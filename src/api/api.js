@@ -5,7 +5,7 @@ let serverUrl = '';
 
 export function setServerUrl(url) {
   serverUrl = url;
-} 
+}
 
 // 跳转到登陆授权界面 进行登陆 
 export const wxAuthorize = () => {
@@ -49,3 +49,8 @@ export const activeCdkey = ({ id, code }) => {
 export const getReqAviaible = (id) => {
   return request.get('/Interface.php', { params: { id } });
 }
+
+// 加入合伙人类型购买
+export const payJoinUs = (type) => {
+  window.location.href = `${serverUrl}/pay/api.php?vip_type=${type}`;
+} 

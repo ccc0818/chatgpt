@@ -120,6 +120,7 @@ const compositionEvent = (state) => {
       <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
         @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
       <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
+        <img class="img" src="/assets/images/chat/send.png">
       </div>
     </div>
   </div>
@@ -186,7 +187,13 @@ const compositionEvent = (state) => {
   height: 27px;
   width: 27px;
   cursor: pointer;
-  background: url('../assets/images/send.png') no-repeat center/contain;
+}
+
+.panel .btn .img {
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+  object-fit: contain;
 }
 
 .panel .disable {

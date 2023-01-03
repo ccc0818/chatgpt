@@ -8,8 +8,8 @@ onBeforeMount(() => {
   // 获取wx用户信息
   wxUserInfo((res) => {
     const { user } = storeToRefs(useUserStore());
-    const { name, img, state, id, key, endtime } = res;
-    user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, key, endTime: endtime};
+    const { name, img, state, id, key, endtime, vip_type } = res;
+    user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, key, endTime: endtime, level: vip_type};
   });
 });
 </script>

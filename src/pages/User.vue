@@ -1,10 +1,10 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref } from 'vue';
-import { useUserStore } from '../stores/user'
-import { wxPayVip, activeCdkey } from '../api/api';
-import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '../stores/user'
+import { activeCdkey } from '../api/api';
 
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
@@ -23,7 +23,7 @@ const onClickItem = async (index) => {
       router.push('/vip');
       break;
     case 1:
-      window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
+      router.push("/market");
       break;
     case 3:
       window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
