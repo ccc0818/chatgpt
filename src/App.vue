@@ -16,7 +16,7 @@ onBeforeMount(() => {
 
 <template>
   <div class="viewport">
-    <RouterView class="view" v-slot="{ Component }">
+    <RouterView v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />
       </KeepAlive>
@@ -56,10 +56,5 @@ onBeforeMount(() => {
     border: 3px solid #9370d8;
     box-shadow: 0 20px 30px -20px var(--theme-color);
   }
-}
-
-.view {
-  width: 100%;
-  height: 100%;
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
@@ -8,24 +8,30 @@ import { payJoinUs } from '../api/api';
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 
-const dataList = [
+const proxyList = ref([
   { id: 1, level: 'V1', badge: '/assets/images/market/medal_silver.png', price: 199, rate: 50 },
   { id: 2, level: 'V2', badge: '/assets/images/market/medal_gold.png', price: 299, rate: 58 },
   { id: 3, level: 'V3', badge: '/assets/images/market/medal_diamond.png', price: 499, rate: 70 },
-];
+]);
 const proxyInfo = ref({
-  level: user.value.level ?? 0,
+  level: 0,
   promotions: 20
-});
-const proxyList = computed(() => {
-  let tmp = [...dataList];
-  if (proxyInfo.value.level !== 0) {
-    return [tmp[proxyInfo.value.level - 1]];
-  }
-  return tmp;
 });
 const selected = ref(0);
 
+onBeforeMount(() => {
+  let tmp = [...proxyList.value];
+  if (user.value.level) {
+    tmp.forEach((item) => {
+      if (item.level.toLowerCase() === user.value.level) {
+        proxyInfo.value.level = item.id;
+        proxyList.value = [item];
+      }
+    })
+  }
+
+  console.log(proxyList.value)
+})
 
 const onScroll = (e) => {
   const length = proxyList.value.length;
@@ -39,7 +45,7 @@ const onScroll = (e) => {
 }
 
 const onJoinUs = (index) => {
-  payJoinUs(dataList[index].level.toLowerCase())
+  payJoinUs(proxyList.value[index].level.toLowerCase())
 }
 
 const onWithDraw = () => {
@@ -71,17 +77,17 @@ const onWithDraw = () => {
       <div class="proxy">
         <div class="wrap" @scroll="onScroll">
           <ul class="proxy-list">
-            <li class="item" v-for="(item, index) of proxyList" :key="item.id">
-              <img :src="item.badge" class="badge">
+            <li class="item" v-for="(i, index) of proxyList" :key="i.id">
+              <img :src="i.badge" class="badge">
               <div class="info-panel">
-                <span class="level">{{ item.level }}</span>
-                <span class="rate">分佣比例{{ item.rate }}%</span>
+                <span class="level">{{ i.level }}</span>
+                <span class="rate">分佣比例{{ i.rate }}%</span>
               </div>
 
               <!-- 累计推广多少 -->
               <span v-if="proxyInfo.level !== 0" class="promotions">累计推广{{ proxyInfo.promotions }}单</span>
 
-              <div v-if="proxyInfo.level === 0" class="join" @click="() => onJoinUs(index)">{{ item.price }}立即加入</div>
+              <div v-if="proxyInfo.level === 0" class="join" @click="() => onJoinUs(index)">{{ i.price }}立即加入</div>
               <div v-else class="join" @click="() => onWithDraw(index)">立即提现</div>
             </li>
           </ul>
@@ -227,7 +233,7 @@ li {
       .wrap {
         width: 100%;
         height: 180px;
-        overflow-x: auto;
+        overflow-x: scroll;
         padding-top: 15px;
 
         &::-webkit-scrollbar {
@@ -238,6 +244,12 @@ li {
           width: 100%;
           height: 100%;
           display: flex;
+
+          @media screen and (min-width: 1024px) {
+            .item {
+              max-width: 375px;
+            }
+          }
 
           .item {
             background: url('/assets/images/market/card.png') no-repeat center/100% 100%;
@@ -253,6 +265,7 @@ li {
               position: absolute;
               right: 20px;
               top: -15px;
+              -webkit-user-drag: none;
             }
 
             .info-panel {
