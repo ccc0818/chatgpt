@@ -15,6 +15,7 @@ const routes = [
       },
       { path: 'vip', component: () => import('../pages/Vip.vue') },
       { path: 'market', component: () => import('../pages/Market.vue') },
+      { path: 'market_center', component: () => import('../pages/MarketCenter.vue') },
     ]
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }, //其它没有的路由都跳转到主页

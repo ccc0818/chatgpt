@@ -1,6 +1,5 @@
 import request from "../plugins/axios";
-// const serverUrl = localStorage.getItem('serverUrl');
-
+import { getQueryObj } from '../utils/utils';
 let serverUrl = '';
 
 export function setServerUrl(url) {
@@ -11,33 +10,19 @@ export function setServerUrl(url) {
 export const wxAuthorize = () => {
   const isLogin = sessionStorage.getItem("isLogin");
   if (isLogin === null) {
-    window.location.href = serverUrl + '/loginapi.php';
+    const obj = getQueryObj();
+    window.location.href = serverUrl + '/loginapi.php' + (obj.state ? `?state=${obj.state}` : '');
     sessionStorage.setItem("isLogin", "1");
   } else {
     sessionStorage.removeItem('isLogin');
   }
 };
 
-// 解析用户信息
-export const wxUserInfo = (cb) => {
-  let query = window.location.search;
-  query = query.slice(1);
-  let arr = query.split('&');
-  let obj = {};
-  arr.forEach(i => {
-    const [key, val] = i.split('=');
-    if (key === 'name' || key === 'endtime')
-      obj[key] = decodeURI(val);
-    else
-      obj[key] = val;
-  })
-  // 更新user 状态
-  cb(obj);
-}
-
 // 跳转支付页面 
-export const wxPayVip = ({ id, type }) => {
-  window.location.href = `${serverUrl}/pay/api.php?id=${id}&pay_type=${type}`
+export const wxPay = ({ id, payType, vipType }) => {
+  window.location.href = `${serverUrl}/pay/api.php?id=${id}`
+    + (payType ? `&pay_type=${payType}` : '')
+    + (vipType ? `&vip_type=${vipType}` : '');
 }
 
 // 兑换卡密
@@ -49,8 +34,3 @@ export const activeCdkey = ({ id, code }) => {
 export const getReqAviaible = (id) => {
   return request.get('/Interface.php', { params: { id } });
 }
-
-// 加入合伙人类型购买
-export const payJoinUs = (type) => {
-  window.location.href = `${serverUrl}/pay/api.php?vip_type=${type}`;
-} 

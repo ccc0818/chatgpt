@@ -1,9 +1,9 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
-import { payJoinUs } from '../api/api';
+import { wxPay } from '../api/api';
 
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
@@ -13,29 +13,10 @@ const proxyList = ref([
   { id: 2, level: 'V2', badge: '/assets/images/market/medal_gold.png', price: 299, rate: 58 },
   { id: 3, level: 'V3', badge: '/assets/images/market/medal_diamond.png', price: 499, rate: 70 },
 ]);
-const proxyInfo = ref({
-  level: 0,
-  promotions: 20
-});
 const selected = ref(0);
-
-onBeforeMount(() => {
-  let tmp = [...proxyList.value];
-  if (user.value.level) {
-    tmp.forEach((item) => {
-      if (item.level.toLowerCase() === user.value.level) {
-        proxyInfo.value.level = item.id;
-        proxyList.value = [item];
-      }
-    })
-  }
-
-  console.log(proxyList.value)
-})
 
 const onScroll = (e) => {
   const length = proxyList.value.length;
-
   for (let i = length - 1; i >= 0; --i) {
     if (e.target.scrollLeft >= e.target.clientWidth * i) {
       selected.value = i;
@@ -45,11 +26,10 @@ const onScroll = (e) => {
 }
 
 const onJoinUs = (index) => {
-  payJoinUs(proxyList.value[index].level.toLowerCase())
-}
-
-const onWithDraw = () => {
-  //TODO: 提现
+  wxPay({
+    id: user.value.id,
+    vipType: proxyList.value[index].level.toLowerCase()
+  });
 }
 </script>
 
@@ -83,16 +63,11 @@ const onWithDraw = () => {
                 <span class="level">{{ i.level }}</span>
                 <span class="rate">分佣比例{{ i.rate }}%</span>
               </div>
-
-              <!-- 累计推广多少 -->
-              <span v-if="proxyInfo.level !== 0" class="promotions">累计推广{{ proxyInfo.promotions }}单</span>
-
-              <div v-if="proxyInfo.level === 0" class="join" @click="() => onJoinUs(index)">{{ i.price }}立即加入</div>
-              <div v-else class="join" @click="() => onWithDraw(index)">立即提现</div>
+              <div class="join" @click="() => onJoinUs(index)">{{ i.price }}立即加入</div>
             </li>
           </ul>
         </div>
-        <div class="ind" v-if="proxyInfo.level === 0">
+        <div class="ind">
           <span class="dot" v-for="(item, index) of proxyList" :class="selected === index ? 'active' : ''"></span>
         </div>
       </div>
@@ -300,15 +275,6 @@ li {
               font-size: 14px;
               color: #ADB2BE;
               user-select: none;
-            }
-
-            .promotions {
-              color: #A3906B;
-              display: inline-block;
-              position: absolute;
-              bottom: 30px;
-              left: 20px;
-              font-size: 14px;
             }
           }
         }

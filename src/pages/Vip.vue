@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
-import { wxPayVip } from '../api/api'
+import { wxPay } from '../api/api'
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -27,7 +27,10 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  wxPayVip({id: user.value.id, type: selectedIndex.value + 1});
+  wxPay({
+    id: user.value.id,
+    payType: selectedIndex.value + 1
+  });
 } 
 </script>
 

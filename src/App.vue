@@ -1,16 +1,26 @@
 <script setup>
 import { onBeforeMount } from 'vue';
 import { storeToRefs } from 'pinia';
-import { wxUserInfo } from './api/api';
+import { getQueryObj } from './utils/utils';
 import { useUserStore } from './stores/user';
+
+const { user } = storeToRefs(useUserStore());
 
 onBeforeMount(() => {
   // 获取wx用户信息
-  wxUserInfo((res) => {
-    const { user } = storeToRefs(useUserStore());
-    const { name, img, state, id, key, endtime, vip_type } = res;
-    user.value = { login: true, id, name, avatar: img, vip: state === "0" ? false : true, key, endTime: endtime, level: vip_type};
-  });
+  const query = getQueryObj();
+  user.value = { 
+    login: true, 
+    id: query.id, 
+    name: query.name, 
+    avatar: query.img, 
+    vip: query.state === "0" ? false : true, 
+    key: query.key, 
+    endTime: query.endtime, 
+    level: query.vip_type, 
+    commission: query.commission,
+    commissionTotal: query.commission_sum
+  };
 });
 </script>
 

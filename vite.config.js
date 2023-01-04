@@ -25,7 +25,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         //目标代理到线上服务器
-        target: "https://xx.cdyb5.com",
+        target: "http://localhost:8080/",
         changeOrigin: true, //开启代理
         //别名替换
         rewrite: (path) => path.replace(/^\/api/, ""),
