@@ -9,16 +9,16 @@ const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 
 const proxyList = ref([
-  { id: 1, level: 'v1', badge: '/assets/images/market/medal_silver.png', price: 199, rate: 50 },
-  { id: 2, level: 'v2', badge: '/assets/images/market/medal_gold.png', price: 299, rate: 58 },
-  { id: 3, level: 'v3', badge: '/assets/images/market/medal_diamond.png', price: 499, rate: 70 },
+  { id: 1, level: 'v1', price: 199, rate: 50 },
+  { id: 2, level: 'v2', price: 299, rate: 58 },
+  { id: 3, level: 'v3', price: 499, rate: 70 },
 ]);
 const selected = ref(-1);
 
 const onPayProxy = () => {
   wxPay({
     id: user.value.id,
-    vipType: proxyList.value[selected].level,
+    vipType: proxyList.value[selected.value].level,
   });
 }
 
@@ -93,7 +93,7 @@ const onPayProxy = () => {
       </footer>
     </main>
     <Transition name="mask" mode="out-in|in-out">
-      <div class="mask" v-if="selected !== -1" @click.stop="selected = -1">
+      <div class="mask" v-if="selected !== -1" @click.stop="selected = -1"  @touchmove.prevent="">
         <div class="proxy-contain">
           <div class="proxy-card" :class="idx === selected ? 'active' : ''" v-for="(i, idx) of proxyList" :key="i.id"
             @click.stop="selected = idx">
@@ -339,6 +339,7 @@ li {
       top: 50%;
       transform: translateY(-50%);
       padding: 10px 20px;
+      z-index: 2;
 
       .proxy-card {
         width: 100%;
