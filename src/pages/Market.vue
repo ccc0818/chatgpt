@@ -9,38 +9,27 @@ const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 
 const proxyList = ref([
-  { id: 1, level: 'V1', badge: '/assets/images/market/medal_silver.png', price: 199, rate: 50 },
-  { id: 2, level: 'V2', badge: '/assets/images/market/medal_gold.png', price: 299, rate: 58 },
-  { id: 3, level: 'V3', badge: '/assets/images/market/medal_diamond.png', price: 499, rate: 70 },
+  { id: 1, level: 'v1', badge: '/assets/images/market/medal_silver.png', price: 199, rate: 50 },
+  { id: 2, level: 'v2', badge: '/assets/images/market/medal_gold.png', price: 299, rate: 58 },
+  { id: 3, level: 'v3', badge: '/assets/images/market/medal_diamond.png', price: 499, rate: 70 },
 ]);
-const selected = ref(0);
+const selected = ref(-1);
 
-const onScroll = (e) => {
-  const length = proxyList.value.length;
-  for (let i = length - 1; i >= 0; --i) {
-    if (e.target.scrollLeft >= e.target.clientWidth * i) {
-      selected.value = i;
-      break;
-    }
-  }
-}
-
-const onJoinUs = (index) => {
+const onPayProxy = () => {
   wxPay({
     id: user.value.id,
-    vipType: proxyList.value[index].level.toLowerCase()
+    vipType: proxyList.value[selected].level,
   });
 }
+
 </script>
 
 <template>
   <div class="contain">
+    <!-- 返回 -->
+    <span class="iconfont icon-fanhui1 back" @click="() => router.back()"></span>
     <!-- 头部 -->
     <header>
-      <span class="back" @click="() => router.back()">
-        <span class="iconfont icon-fanhui back-icon"></span>
-        <span class="text">返回</span>
-      </span>
       <span class="title">合伙人</span>
     </header>
     <!-- 主体 -->
@@ -48,60 +37,74 @@ const onJoinUs = (index) => {
       <!-- 用户信息 -->
       <div class="user">
         <img class="avatar" :src="user.avatar">
+        <span class="name">{{ user.name }}</span>
+      </div>
+      <!-- 加入我们卡片 -->
+      <div v-if="user.level === '' || user.level === undefined" class="join-card" @click.stop="selected = 0">
+        <div class="icon">
+          <span class="iconfont icon-user"></span>
+        </div>
         <div class="col">
-          <span class="name">{{ user.name }}</span>
-          <span class="msg">加入合伙人&ensp;享高额分佣</span>
+          <p>加入合伙人</p>
+          <p>加入合伙人，享高额分佣！</p>
         </div>
       </div>
-      <!-- 代理类型 -->
-      <div class="proxy">
-        <div class="wrap" @scroll="onScroll">
-          <ul class="proxy-list">
-            <li class="item" v-for="(i, index) of proxyList" :key="i.id">
-              <img :src="i.badge" class="badge">
-              <div class="info-panel">
-                <span class="level">{{ i.level }}</span>
-                <span class="rate">分佣比例{{ i.rate }}%</span>
-              </div>
-              <div class="join" @click="() => onJoinUs(index)">{{ i.price }}立即加入</div>
-            </li>
-          </ul>
+      <div v-else class="join-card" @click.stop="() => router.push('/market_center')">
+        <div class="icon">
+          <span class="iconfont icon-user"></span>
         </div>
-        <div class="ind">
-          <span class="dot" v-for="(item, index) of proxyList" :class="selected === index ? 'active' : ''"></span>
+        <div class="col">
+          <p>{{ user.level }}合伙人</p>
+          <p>当前分佣比例{{ proxyList.find((i) => i.level === user.level).rate }}%</p>
         </div>
+        <div class="detail">详情</div>
       </div>
       <!-- 展示信息 -->
-      <div class="title-h">加入合伙人尊享高额分佣</div>
-      <div class="icon-list">
+      <div class="title-h">合伙人权益</div>
+      <div class="power-card">
         <div class="item">
-          <img class="img" src="/assets/images/market/icon-motor.png">
-          <span class="text">享平台扶持</span>
+          <img class="img" src="/assets/images/market/icon-1.png">
+          <span class="text">平台扶持</span>
         </div>
         <div class="item">
-          <img class="img" src="/assets/images/market/icon-schedule.png">
+          <img class="img" src="/assets/images/market/icon-3.png">
+          <span class="text">免费服务</span>
+        </div>
+        <div class="item">
+          <img class="img" src="/assets/images/market/icon-2.png">
           <span class="text">宣传物料</span>
         </div>
         <div class="item">
-          <img class="img" src="/assets/images/market/icon-assistant.png">
+          <img class="img" src="/assets/images/market/icon-4.png">
           <span class="text">专属客服</span>
         </div>
-        <div class="item">
-          <img class="img" src="/assets/images/market/icon-tips.png">
-          <span class="text">免服务费</span>
-        </div>
       </div>
-      <div class="title-h">加入合伙人须知</div>
-      <p class="item-p">1、代理费不支持退款，请确保能解决您的实际问题</p>
+      <div class="title-join-rule">加入须知</div>
+      <p class="item-p">1、费用不支持退款，请确保能解决您的实际问题</p>
       <p class="item-p">2、享受平台扶持，每10单奖励45/55/80，达到门槛联系客服</p>
       <p class="item-p">3、V1分佣比例50%， V2比例58%，V3比例70%</p>
       <p class="item-p">4、精美的宣传海报和物料助力成功。</p>
       <p class="item-p">5、上下级终身鄉定，一劳永逸享受高额分佣！</p>
       <p class="item-p">6、您只管推广分佣，售后及技术支持交给我们！</p>
       <p class="item-p center">我们將随时为您的成功做好谁备！</p>
-      <p class="item-p">最终解释权归亿柏科技所有</p>
-      <p class="item-p">成都亿柏科技客户服务热线：400-6688-546</p>
+      <footer>
+        <p>最终解释权归亿柏科技所有</p>
+        <p>成都亿柏科技客户服务热线：400-6688-546</p>
+      </footer>
     </main>
+    <Transition name="mask" mode="out-in|in-out">
+      <div class="mask" v-if="selected !== -1" @click.stop="selected = -1">
+        <div class="proxy-contain">
+          <div class="proxy-card" :class="idx === selected ? 'active' : ''" v-for="(i, idx) of proxyList" :key="i.id"
+            @click.stop="selected = idx">
+            <span class="proxy-level">{{ i.level }}</span>
+            <span class="rate">分佣比例{{ i.rate }}%</span>
+            <span class="price">￥{{ i.price }}</span>
+          </div>
+        </div>
+        <div class="purchase" @click.stop="onPayProxy">立即加入</div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -119,38 +122,37 @@ li {
 }
 
 .contain {
-  background-color: #323E5F;
-  display: flex;
-  flex-direction: column;
   width: 100%;
   height: 100vh;
-  padding: 20px 10px;
+  background-color: #fff;
+  position: relative;
+  padding: 30px 20px 15px 20px;
+  display: flex;
+  flex-direction: column;
+
+  .back {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 30px;
+    left: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-image: linear-gradient(to right bottom, #d7d7d7, rgb(241, 240, 240));
+    border-radius: 15px;
+  }
 
   header {
-    display: flex;
-    align-items: center;
-    color: #eee;
-    font-size: 14px;
-    justify-content: space-around;
-
-    .back {
-      position: fixed;
-      display: flex;
-      align-items: center;
-      top: 20px;
-      left: 10px;
-
-      .back-icon,
-      .text {
-        vertical-align: middle;
-      }
-    }
-
+    text-align: center;
+    font-size: 24px;
+    color: #69515D;
+    height: 40px;
+    line-height: 40px;
+    flex-shrink: 0;
   }
 
   main {
-    display: flex;
-    flex-direction: column;
     width: 100%;
     flex: 1;
     margin-top: 20px;
@@ -163,192 +165,229 @@ li {
 
     .user {
       width: 100%;
-      height: 64px;
+      height: 150px;
       overflow: hidden;
       display: flex;
       flex-shrink: 0;
+      flex-direction: column;
+      justify-content: space-around;
       align-items: center;
 
       .avatar {
-        height: 80%;
-        background-color: rgba($color: #fff, $alpha: 0.8);
+        height: 100px;
         border-radius: 50%;
         -webkit-user-drag: none;
+        box-shadow:
+          0px 24.5px 24.7px rgba(255, 120, 154, 0.057),
+          0px 20.4px 32.6px rgba(250, 135, 164, 0.068),
+          0px 15.8px 36.2px rgba(250, 135, 164, 0.075),
+          0px 186px 80px rgba(250, 135, 164, 0.1);
       }
 
-      .col {
-        display: flex;
-        flex-direction: column;
-        margin-left: 10px;
-        flex: 1;
-        padding-right: 10px;
-
-        .name {
-          font-size: 14px;
-          color: #eee;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-
-        .msg {
-          margin-top: 5px;
-          font-size: 12px;
-          color: #DFC7AF;
-        }
+      .name {
+        font-size: 24px;
+        color: #69515D;
       }
     }
 
-    .proxy {
-      width: 100%;
-      overflow: hidden;
-      margin-bottom: 10px;
-      flex-shrink: 0;
+    .join-card {
+      width: 95%;
+      height: 90px;
+      margin: 10px auto;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      background-image: linear-gradient(to right, #f0e8f3, #e9f0fa);
+      padding: 10px 20px;
 
-      .wrap {
-        width: 100%;
-        height: 180px;
-        overflow-x: scroll;
-        padding-top: 15px;
+      .icon {
+        height: 100%;
+        aspect-ratio: 1/1;
+        background: url('/assets/images/market/icon-5.png') no-repeat -35px -28px/200%;
 
-        &::-webkit-scrollbar {
-          display: none;
-        }
-
-        .proxy-list {
+        span {
+          display: block;
           width: 100%;
           height: 100%;
-          display: flex;
+          line-height: 70px;
+          font-size: 30px;
+          text-align: center;
+          color: #fff;
+          user-select: none;
+        }
+      }
 
-          @media screen and (min-width: 1024px) {
-            .item {
-              max-width: 375px;
-            }
+      .col {
+        flex: 1;
+        margin-left: 20px;
+
+        p {
+          &:nth-of-type(1) {
+            color: #A06784;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
           }
 
-          .item {
-            background: url('/assets/images/market/card.png') no-repeat center/100% 100%;
-            width: 100%;
-            height: 100%;
-            flex-shrink: 0;
-            position: relative;
-            margin-right: 10px;
-            position: relative;
-
-            .badge {
-              height: 90px;
-              position: absolute;
-              right: 20px;
-              top: -15px;
-              -webkit-user-drag: none;
-            }
-
-            .info-panel {
-              display: flex;
-              flex-direction: column;
-              position: absolute;
-              top: 5px;
-              left: 20px;
-
-              .level {
-                color: #3C2913;
-                font-size: 36px;
-                font-weight: 900;
-                font-style: italic;
-              }
-
-              .rate {
-                color: #A6926B;
-              }
-            }
-
-            .join {
-              padding: 10px 15px;
-              border-radius: 30px;
-              background-color: #3A3E52;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              position: absolute;
-              right: 20px;
-              bottom: 25px;
-              font-size: 14px;
-              color: #ADB2BE;
-              user-select: none;
-            }
+          &:nth-of-type(2) {
+            color: #AAA6C0;
+            font-size: 12px;
           }
         }
       }
 
-      .ind {
-        display: flex;
-        width: 100%;
-        height: 20px;
-        flex: 1;
-        justify-content: center;
-        align-items: center;
-
-        .dot {
-          display: inline-block;
-          height: 3px;
-          width: 10px;
-          aspect-ratio: 1/1;
-          // border-radius: 50%;
-          background-color: rgba(238, 238, 238, 0.5);
-          margin-right: 5px;
-
-          &.active {
-            background-color: #eee;
-          }
-        }
+      .detail {
+        width: 70px;
+        height: 36px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #A06784;
+        text-align: center;
+        line-height: 36px;
+        background-color: #97cbee;
       }
     }
 
     .title-h {
-      padding-left: 10px;
-      color: #FADDBC;
-      border-left: 3px solid #FADDBC;
-      font-size: 14px;
+      color: #A06784;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 20px 0 10px 0;
     }
 
-    .icon-list {
-      height: 80px;
+    .power-card {
       width: 100%;
+      height: 80px;
       display: flex;
-      justify-content: space-around;
       align-items: center;
-      margin: 10px 0;
-      flex-shrink: 0;
+      justify-content: space-around;
 
       .item {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         align-items: center;
-        height: 90%;
-        color: #eee;
+        justify-content: space-around;
+        height: 100%;
+        width: 80px;
 
         .img {
           width: 48px;
-          border: 1px solid #FADDBC;
-          border-radius: 50%;
+          aspect-ratio: 1/1;
+          border-radius: 15px;
+          object-fit: contain;
           -webkit-user-drag: none;
         }
 
         .text {
           font-size: 12px;
+          color: #A06784;
         }
       }
     }
 
+    .title-join-rule {
+      font-size: 18px;
+      color: #A06784;
+      font-weight: 800;
+      margin: 20px 0 10px 0;
+    }
+
     .item-p {
-      font-size: 12px;
-      color: #DFC7AF;
+      font-size: 14px;
+      color: #AAA6C0;
       line-height: 24px;
 
       &.center {
         text-align: center;
       }
+    }
+
+    footer {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 12px;
+      color: #AAA6C0;
+      line-height: 16px;
+    }
+  }
+
+  .mask-enter-from,
+  .mask-leave-to {
+    transform: translateY(100%);
+  }
+
+  .mask-enter-to,
+  .mask-leave-from {
+    transform: translateY(0);
+  }
+
+
+  .mask {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    background-color: rgba($color: #bbb, $alpha: 0.5);
+    backdrop-filter: blur(16px);
+    transition: all .25s linear;
+
+    .proxy-contain {
+      width: 100%;
+      margin: auto;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 10px 20px;
+
+      .proxy-card {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all .1s linear;
+        color: #A06784;
+        font-weight: 800;
+
+        .proxy-level {
+          font-size: 40px;
+        }
+
+        .rate {
+          font-size: 16px;
+          font-weight: 500;
+        }
+
+        .price {
+          font-size: 24px;
+        }
+
+        &.active {
+          border: 5px solid #f1ab92;
+          background-color: #ffefea;
+          transform: translateY(-5px) scale(1.04);
+        }
+      }
+    }
+
+    .purchase {
+      width: 80%;
+      height: 60px;
+      border-radius: 15px;
+      text-align: center;
+      line-height: 60px;
+      color: #eee;
+      font-size: 20px;
+      background-image: linear-gradient(30deg, #f1ab92, #7abeec);
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 }

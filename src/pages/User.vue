@@ -23,8 +23,7 @@ const onClickItem = async (index) => {
       router.push('/vip');
       break;
     case 1:
-      // user.value.level = 'v1'
-      user.value.level ? router.push("/market_center") : router.push("/market");
+      router.push("/market");
       break;
     case 3:
       window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
