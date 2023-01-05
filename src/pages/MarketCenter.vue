@@ -36,7 +36,7 @@ const downloadQr = () => {
           <span>可提现佣金</span>
           <span>{{ data.withDraw }}</span>
         </div>
-        <span class="btn">提现</span>
+        <span class="btn" @click="router.push('market_center/withdraw')">提现</span>
       </div>
       <div class="card">
         <div class="icon-r"></div>
@@ -44,7 +44,7 @@ const downloadQr = () => {
           <span>总佣金</span>
           <span>{{ data.commission }}</span>
         </div>
-        <span class="btn">佣金记录</span>
+        <span class="btn" @click="router.push('market_center/customer')">佣金记录</span>
       </div>
 
       <!-- 二维码 -->

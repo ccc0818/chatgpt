@@ -127,6 +127,12 @@ const compositionEvent = (state) => {
 </template>
 
 <style scoped>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
 .el-overlay-message-box::after {
   content: '';
   width: 0 !important;
@@ -192,6 +198,7 @@ const compositionEvent = (state) => {
 .panel .btn .img {
   width: 100%;
   height: 100%;
+  background-color: transparent;
   -webkit-user-drag: none;
   object-fit: contain;
 }

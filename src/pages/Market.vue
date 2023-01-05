@@ -7,6 +7,7 @@ import { wxPay } from '../api/api';
 
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
+user.value.level = 'v1'
 
 const proxyList = ref([
   { id: 1, level: 'v1', price: 199, rate: 50 },
@@ -92,7 +93,7 @@ const onPayProxy = () => {
         <p>成都亿柏科技客户服务热线：400-6688-546</p>
       </footer>
     </main>
-    <Transition name="mask" mode="out-in|in-out">
+    <Transition name="mask" mode="out-in">
       <div class="mask" v-if="selected !== -1" @click.stop="selected = -1"  @touchmove.prevent="">
         <div class="proxy-contain">
           <div class="proxy-card" :class="idx === selected ? 'active' : ''" v-for="(i, idx) of proxyList" :key="i.id"

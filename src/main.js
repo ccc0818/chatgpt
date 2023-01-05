@@ -6,8 +6,8 @@ import pinia from './plugins/pinia';
 import { setServerUrl, wxAuthorize } from './api/api';
 
 //引入全局样式
-import './style.css';
 import 'element-plus/dist/index.css';
+import './common.css';
 
 // 初始化配置
 axios.get("/config/config.json").then(res => {
@@ -15,7 +15,7 @@ axios.get("/config/config.json").then(res => {
   setServerUrl(res.data.serverUrl);
   
   // 获取wx授权
-  wxAuthorize();
+  // wxAuthorize();
 
   const app = createApp(App);
   //注册vue-router路由
