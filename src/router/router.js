@@ -7,7 +7,7 @@ const routes = [
     path: '/', redirect: '/home/chat',
     children: [
       {
-        path: 'home', component: () => import('../pages/Home.vue'),
+        path: 'home', component: () => import('../layouts/Home.vue'),
         children: [
           { path: 'chat', component: () => import('../pages/Chat.vue') },
           { path: 'user', component: () => import('../pages/User.vue') },

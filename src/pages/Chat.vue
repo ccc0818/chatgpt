@@ -5,7 +5,6 @@ import { request } from '../api/chatgpt';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
 import { ElMessageBox } from 'element-plus';
-import { getReqAviaible } from '../api/api';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -34,14 +33,9 @@ const onSubmit = async () => {
   //vip 检查
   if (!user.value.vip) {
     let state = true;
-    try {
-      const res = await getReqAviaible(user.value.id);
-      if (res.data === 2)
-        state = false;
-    } catch (err) {
-      console.log(err);
-      state = false;
-    }
+
+    //TODO: 检查user 能否发信息
+
     if (!state) {
       // 弹出开会员对话框
       ElMessageBox.alert('免费次数已用完,开通会员享无限畅聊', '', {
@@ -127,12 +121,6 @@ const compositionEvent = (state) => {
 </template>
 
 <style scoped>
-body {
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
 .el-overlay-message-box::after {
   content: '';
   width: 0 !important;

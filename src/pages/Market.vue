@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
-import { wxPay } from '../api/api';
 
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
@@ -17,10 +16,7 @@ const proxyList = ref([
 const selected = ref(-1);
 
 const onPayProxy = () => {
-  wxPay({
-    id: user.value.id,
-    vipType: proxyList.value[selected.value].level,
-  });
+  //TODO: 微信支付购买合伙人
 }
 
 </script>

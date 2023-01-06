@@ -4,7 +4,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '../stores/user'
-import { activeCdkey } from '../api/api';
 
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
@@ -45,19 +44,8 @@ const onClickItem = async (index) => {
         callback: () => { },
         beforeClose(action, instance, done) {
           if (action === 'confirm') {
-            activeCdkey({ id: user.value.id, code: instance.inputValue.trim() }).then(res => {
-              if (res.data.includes("激活成功")) {
-                ElMessage({
-                  type: 'success',
-                  message: '激活成功',
-                })
-              } else {
-                ElMessage({
-                  type: 'error',
-                  message: '激活失败',
-                })
-              }
-            }).finally(() => done())
+            //TODO: 激活卡密
+            done();
           } else
             done();
         }

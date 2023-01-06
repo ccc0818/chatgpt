@@ -1,5 +1,5 @@
 import axios from "axios";
 
-const request = axios.create({ baseURL: localStorage.getItem('serverUrl') });
+const request = axios.create();
 
 export default request;

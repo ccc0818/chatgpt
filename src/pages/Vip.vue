@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { useUserStore } from '../stores/user';
 import { storeToRefs } from 'pinia';
-import { wxPay } from '../api/api'
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -27,10 +26,7 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  wxPay({
-    id: user.value.id,
-    payType: selectedIndex.value + 1
-  });
+  //TODO: 微信支付购买vip
 } 
 </script>
 
@@ -93,7 +89,7 @@ const payVip = () => {
       <li class="item" v-for="(item, index) of vipTypeList" :key="item.id" :class="getClass(index, item)"
         @click="selectedIndex = index">
         <span class="title">{{ item.title }}</span>
-        <span class="price">¥ <span class="priceN">{{ item.price }}</span></span>
+        <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
         <span class="old-price">¥{{ item.oldPrice }}</span>
         <span class="save">{{ item.save }}</span>
       </li>
@@ -107,7 +103,7 @@ const payVip = () => {
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 $header-color: #434045;
 
 .view {
@@ -281,7 +277,7 @@ $header-color: #434045;
         font-size: 18px;
       }
 
-      .priceN {
+      .price-n {
         font-weight: 900;
         font-style: italic;
         font-size: 24px;
