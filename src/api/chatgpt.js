@@ -1,4 +1,4 @@
-import { ElMessage } from 'element-plus'
+import { showNotify } from 'vant';
 
 let reader;
 export const request = async (query, key, contentUpdate) => {
@@ -29,12 +29,7 @@ export const request = async (query, key, contentUpdate) => {
   if (res.ok === false) {
     res.json().then(res => {
       if (res.error.type === 'insufficient_quota') {
-        ElMessage({
-          showClose: true,
-          message: `无效的API`,
-          type: 'error',
-          duration: 0,
-        })
+        showNotify({ type: 'warning', message: '用户openAI密钥过期' });
       }
     })
     return;

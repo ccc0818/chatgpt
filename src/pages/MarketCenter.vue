@@ -1,16 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
-import { useUserStore } from '../stores/user';
-import { storeToRefs } from 'pinia';
+import useUserStore from '../stores/user';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { user } = storeToRefs(useUserStore());
+const { user } = useUserStore();
 const data = ref({
-  withDraw: user.value.commission,
-  commission: user.value.commissionTotal,
-  qrcodeUrl: location.origin + `/?state=${user.value.id}`
+  withDraw: user.commision,
+  commission: 0,
+  qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`
 });
 
 // console.log(data.value.qrcodeUrl);

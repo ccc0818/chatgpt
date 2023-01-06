@@ -1,14 +1,38 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue';
+import { ref, computed, defineAsyncComponent, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
+import { reqCommisionRecord } from '../api/service';
+import useUserStore from '../stores/user';
+import { showFailToast } from 'vant';
+
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const inputData = ref('');
 const filterKey = ref('全部');
+const { user } = useUserStore();
 
-const customers = [
-  { id: 1, name: '冯益雨', avatar: '/assets/images/user/user-head.svg', vip: '普通会员', time: '2023-1-5 19:15:39', commision: 24.5 },
-];
+const customers = [];
+onBeforeMount(() => {
+  reqCommisionRecord(user.id).then(res => {
+    console.log(res)
+    const items = res.data.yjjl;
+    if (items) {
+      customers = items.map((i) => ({
+        id: i.id,
+        name: i.name,
+        avatar: '/assets/images/user/user-head.svg',
+        vip: i.state === 0 ? '非会员' : '普通会员',
+        time: i.time,
+        commision: i.money
+      }))
+    }
+  }).catch(err => {
+    showFailToast({
+      message: '请求佣金记录失败!',
+      duration: 3000
+    })
+  })
+})
 
 const customerList = computed(() => {
   let tmp = null;

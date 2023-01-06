@@ -2,13 +2,13 @@
 import { ref, nextTick, onUpdated } from 'vue';
 import Bubble from '../components/Bubble.vue';
 import { request } from '../api/chatgpt';
-import { useUserStore } from '../stores/user';
-import { storeToRefs } from 'pinia';
-import { ElMessageBox } from 'element-plus';
+import { reqFreeQueryTimes } from '../api/service';
+import useUserStore from '../stores/user';
+import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const { user } = storeToRefs(useUserStore());
+const { user } = useUserStore();
 const inputData = ref('');
 const mainEl = ref('null');
 const pageEl = ref('null');
@@ -31,28 +31,33 @@ const onSubmit = async () => {
     return;
   }
   //vip 检查
-  if (!user.value.vip) {
-    let state = true;
+  if (user.vip === 0) {
+    //检查user 能否发信息
+    try {
+      const res = await reqFreeQueryTimes(user.id);
+      user.number = res.data;
+    } catch (error) {
+      console.log('获取剩余体验次数失败!');
+      return;
+    }
 
-    //TODO: 检查user 能否发信息
-
-    if (!state) {
+    if (user.number <= 0) {
       // 弹出开会员对话框
-      ElMessageBox.alert('免费次数已用完,开通会员享无限畅聊', '', {
+      showConfirmDialog({
+        message: '免费体验次数用完了, 开通会员享无限畅聊。',
         confirmButtonText: '去开通',
-        cancelButtonText: '取消',
-        confirmButtonClass: 'el-confirm',
-        center: true,
-        roundButton: true,
-        showCancelButton: true,
-        closeOnHashChange: true,
-        showClose: false,
-        appendTo: pageEl.value,
-        callback: (action) => {
-          if (action === 'confirm')
-            router.push('/vip');
-        },
-      })
+        confirmButtonColor: '#cca4e3',
+        cancelButtonText: '再想想',
+        // closeOnClickOverlay: false,
+        overlay: false,
+        // theme: 'round-button'
+        className: 'popup'
+      }).then(() => {
+        // on confirm
+        router.push('/vip');
+      }).catch(() => {
+        // on cancel
+      });
       return;
     }
   }
@@ -77,7 +82,7 @@ const onSubmit = async () => {
   // console.log(queryStr);
   // 获取到收到的数据
   const newId = id++;
-  request(queryStr, user.value.key, (content) => {
+  request(queryStr, user.chatKey, (content) => {
     const item = msgList.value.find(i => i.id === newId);
     if (item)
       item.message = content.replace('AI:', '').trimStart();
@@ -121,12 +126,6 @@ const compositionEvent = (state) => {
 </template>
 
 <style scoped>
-.el-overlay-message-box::after {
-  content: '';
-  width: 0 !important;
-  height: 0 !important;
-}
-
 .chat-page {
   display: flex;
   flex-direction: column;

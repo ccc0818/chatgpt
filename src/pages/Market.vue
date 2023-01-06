@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../stores/user';
+import useUserStore from '../stores/user';
+import { reqPay, reqPriceRate, reqUserInfo } from '../api/service';
 import { storeToRefs } from 'pinia';
+import { showFailToast } from 'vant';
 
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
@@ -15,8 +17,24 @@ const proxyList = ref([
 ]);
 const selected = ref(-1);
 
+onBeforeMount(async () => {
+  reqPriceRate().then(res => {
+    proxyList.value[0].price = res.data.distributed_one;
+    proxyList.value[0].rate = res.data.v_one;
+    proxyList.value[1].price = res.data.distributed_two;
+    proxyList.value[1].rate = res.data.v_two;
+    proxyList.value[2].price = res.data.distributed_three;
+    proxyList.value[2].rate = res.data.v_three;
+  }).catch(() => {
+    showFailToast({
+      message: '获取会员价格失败!',
+      duration: 3000
+    })
+  })
+})
+
 const onPayProxy = () => {
-  //TODO: 微信支付购买合伙人
+  reqPay({ id: user.value.id, type: 'distributed', money: proxyList.value[selected.value].price }, () => reqUserInfo(user.value.id));
 }
 
 </script>
@@ -37,7 +55,7 @@ const onPayProxy = () => {
         <span class="name">{{ user.name }}</span>
       </div>
       <!-- 加入我们卡片 -->
-      <div v-if="user.level === '' || user.level === undefined" class="join-card" @click.stop="selected = 0">
+      <div v-if="user.partner === '' || user.partner === undefined || user.partner === null" class="join-card" @click.stop="selected = 0">
         <div class="icon">
           <span class="iconfont icon-user"></span>
         </div>
@@ -51,8 +69,8 @@ const onPayProxy = () => {
           <span class="iconfont icon-user"></span>
         </div>
         <div class="col">
-          <p>{{ user.level }}合伙人</p>
-          <p>当前分佣比例{{ proxyList.find((i) => i.level === user.level).rate }}%</p>
+          <p>{{ user.partner }}合伙人</p>
+          <p>当前分佣比例{{ user.ratio }}%</p>
         </div>
         <div class="detail">详情</div>
       </div>
@@ -90,7 +108,7 @@ const onPayProxy = () => {
       </footer>
     </main>
     <Transition name="mask" mode="out-in">
-      <div class="mask" v-if="selected !== -1" @click.stop="selected = -1"  @touchmove.prevent="">
+      <div class="mask" v-if="selected !== -1" @click.stop="selected = -1" @touchmove.prevent="">
         <div class="proxy-contain">
           <div class="proxy-card" :class="idx === selected ? 'active' : ''" v-for="(i, idx) of proxyList" :key="i.id"
             @click.stop="selected = idx">

@@ -4,14 +4,18 @@ import router from './router/router';
 import pinia from './plugins/pinia';
 import axios from 'axios';
 import request from './plugins/axios';
+import { wxLogin } from './api/service';
 //引入全局样式
-import 'element-plus/dist/index.css';
 import './assets/base.css';
+import 'vant/lib/index.css';
 
 //加载配置文件
-axios.get('/config.json').then(res => {
+axios.get('/config.json').then(async res => {
   const config = res.data;
   request.defaults.baseURL = config.serverUrl;
+
+  // 微信登陆
+  wxLogin();
 
   const app = createApp(App);
   //注册vue-router路由

@@ -1,13 +1,17 @@
 <script setup>
-import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { showFailToast, showSuccessToast, Dialog, Field, CellGroup } from 'vant';
+import { useRouter } from 'vue-router';
+import useUserStore from '../stores/user';
+import { reqActiveSecret } from '../api/service';
 import { storeToRefs } from 'pinia';
-import { useUserStore } from '../stores/user'
 
 const { user } = storeToRefs(useUserStore());
 const pageEl = ref(null);
 const router = useRouter();
+const show = ref(false);
+const inputSecret = ref('');
+const errMsg = ref('');
 
 const menuList = ref([
   { icon: '/assets/images/user/user-item_diamond.png', title: '开通会员畅享无限对话' },
@@ -15,6 +19,16 @@ const menuList = ref([
   { icon: '/assets/images/user/user-item_lock.png', title: '卡密兑换' },
   { icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
 ]);
+
+
+const onFormatter = (val) => { 
+  if (/^[A-Za-z0-9]+$/.test(val)) {
+    errMsg.value = '';
+  } else {
+    errMsg.value = '请输入有效的卡密';
+  }
+  return val
+}
 
 const onClickItem = async (index) => {
   switch (index) {
@@ -28,32 +42,27 @@ const onClickItem = async (index) => {
       window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
       break;
     case 2: //兑换卡密
-      ElMessageBox.prompt('', '', {
-        confirmButtonText: '兑换',
-        cancelButtonText: '取消',
-        center: true,
-        roundButton: true,
-        showClose: false,
-        showInput: true,
-        showCancelButton: true,
-        closeOnHashChange: true,
-        inputPlaceholder: '输入你的卡密',
-        inputErrorMessage: '卡密格式错误',
-        inputPattern: /^[a-zA-Z0-9-_]+$/,
-        appendTo: pageEl.value,
-        callback: () => { },
-        beforeClose(action, instance, done) {
-          if (action === 'confirm') {
-            //TODO: 激活卡密
-            done();
-          } else
-            done();
-        }
-      })
+      show.value = true;
       break;
     default:
       break;
   }
+}
+
+const onEmitSecret = () => {
+  reqActiveSecret({ id: user.id, secret: instance.inputValue.trim() }).then(res => {
+    console.log(res)
+    if (res.data === 200)
+      showSuccessToast({
+        message: '兑换成功',
+        duration: 2000
+      });
+    else
+      showFailToast({
+        message: '兑换失败',
+        duration: 2000
+      })
+  })
 }
 
 </script>
@@ -63,7 +72,7 @@ const onClickItem = async (index) => {
     <div class="main">
       <div class="user-info">
         <img class="avatar" :src="user.avatar">
-        <div class="name"><span v-if="user.vip" class="vip"></span>{{ user.name }}</div>
+        <div class="name"><span v-if="user.vip !== 0" class="vip"></span>{{ user.nickname }}</div>
       </div>
       <ul class="menu">
         <li class="menu-item" v-for="(item, index) of menuList" :key="index" @click="onClickItem(index)">
@@ -76,17 +85,26 @@ const onClickItem = async (index) => {
         </li>
       </ul>
     </div>
+
+    <Dialog v-model:show="show" title="卡密兑换" show-cancel-button confirm-button-text="兑换" confirm-button-color="#cca4e3"
+      @confirm="onEmitSecret" :confirm-button-disabled="errMsg !== ''">
+      <CellGroup inset>
+        <Field v-model="inputSecret" 
+        rows="1" 
+        autosize
+        type="textarea"
+        placeholder="请输入你的卡密"
+        :border="true"
+        :clearable="true"
+        :formatter="onFormatter"
+        :error-message="errMsg"
+      />
+      </CellGroup>
+    </Dialog>
   </div>
 </template>
 
-<style>
-.el-overlay-message-box::after {
-  content: '';
-  width: 0 !important;
-  height: 0 !important;
-  overflow: hidden;
-}
-
+<style scoped>
 .user-page {
   display: flex;
   flex-direction: column;

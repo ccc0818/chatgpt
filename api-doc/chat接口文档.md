@@ -29,10 +29,16 @@ parent_user_id属性必须有
 | starttime      | 会员开通日期         | string     |
 | endtime        | 会员结束日期         | string     |
 | state          | 会员开通状态         | int 0否1是 |
+| partner        | 合伙人状态 v1 v2 v3  | string     |
+| *ratio*        | 比例                 | string     |
 | number         | 普通用户使用剩余次数 | int 默认5  |
 | chat_key       | 会员秘钥             | string     |
 | parent_user_id | 上级id               | int        |
 | yongjin        | 佣金                 | string     |
+
+##  佣金
+
+后端域名/index/index/yongjin?id=用户id
 
 | yjjl           | 佣金记录                            | array  |
 | -------------- | ----------------------------------- | ------ |
@@ -43,8 +49,6 @@ parent_user_id属性必须有
 | money          | 充值金额                            | string |
 | time           | 充值时间                            | string |
 | state          | 充值状态 （已筛选只返回充值成功的） |        |
-
-
 
 ## 激活码激活
 
