@@ -2,23 +2,20 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { Uploader, Popup, showNotify } from 'vant';
-import { upload } from '../api/service';
+import { reqUserInfo, upload } from '../api/service';
 import useUserStore from '../stores/user';
-import useCommisionStore from '../stores/commision';
 import { storeToRefs } from 'pinia';
 
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
-const { user } = useUserStore();
-const { commision } = storeToRefs(useCommisionStore())
+const { user } = storeToRefs(useUserStore());
 
-const balance = ref(commision.value.withDraw);
 const inputPrice = ref(null);
 const showPopup = ref(false); 
 const fileList = ref([]);
 const uploadFile = ref(null);
 
-const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= balance.value)
+const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.value.withdraw))
 
 const onFileUpload = (file) => {
   fileList.value[0] = { content: file.content }
@@ -29,13 +26,17 @@ const onAckQr = () => {
   // 确认上传支付宝二维码
   const fd = new FormData();
   fd.append('file', uploadFile.value);
-  fd.append('id', user.id);
+  fd.append('id', user.value.id);
   fd.append('money', inputPrice.value);
 
   upload(fd).then(res => {
-    console.log(res)
-    if (res.status !== 200 || res.data.code !== 200) 
+    if (res.status !== 200 || parseInt(res.data.code) !== 200) {
       showNotify({ type: 'danger', message: '提现失败!', duration: 5000 });
+    } else {
+      reqUserInfo(user.value.id);
+      showNotify({ type: 'success', message: '提现完成! 将会在24小时内到账', duration: 2000 }); 
+    }
+    showPopup.value = false;
   })
 }
 </script>
@@ -52,8 +53,8 @@ const onAckQr = () => {
           <input type="number" placeholder="请输入提现金额" v-model="inputPrice">
         </div>
         <div class="balance">
-          <span>余额¥{{ balance }}，</span>
-          <span @click="inputPrice = balance">全部提现</span>
+          <span>余额¥{{ user.withdraw }}，</span>
+          <span @click="inputPrice = user.withdraw">全部提现</span>
         </div>
       </div>
       <!-- 提现按钮 -->

@@ -20,7 +20,7 @@ const menuList = ref([
   { icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
 ]);
 
-const onFormatter = (val) => { 
+const onFormatter = (val) => {
   if (/^[A-Za-z0-9]+$/.test(val)) {
     errMsg.value = '';
   } else {
@@ -71,7 +71,12 @@ const onEmitSecret = () => {
     <div class="main">
       <div class="user-info">
         <img class="avatar" :src="user.avatar">
-        <div class="name"><span v-if="user.vip !== 0" class="vip"></span>{{ user.nickname }}</div>
+        <div class="mid">
+          <span>ID: {{ user.id }}</span>
+        </div>
+        <div class="name">
+          <span v-if="user.vip !== 0" class="vip"></span>{{ user.nickname }}
+        </div>
       </div>
       <ul class="menu">
         <li class="menu-item" v-for="(item, index) of menuList" :key="index" @click="onClickItem(index)">
@@ -88,16 +93,8 @@ const onEmitSecret = () => {
     <Dialog v-model:show="show" title="卡密兑换" show-cancel-button confirm-button-text="兑换" confirm-button-color="#cca4e3"
       @confirm="onEmitSecret" :confirm-button-disabled="errMsg !== ''">
       <CellGroup inset>
-        <Field v-model="inputSecret" 
-        rows="1" 
-        autosize
-        type="textarea"
-        placeholder="请输入你的卡密"
-        :border="true"
-        :clearable="true"
-        :formatter="onFormatter"
-        :error-message="errMsg"
-      />
+        <Field v-model="inputSecret" rows="1" autosize type="textarea" placeholder="请输入你的卡密" :border="true"
+          :clearable="true" :formatter="onFormatter" :error-message="errMsg" />
       </CellGroup>
     </Dialog>
   </div>
@@ -134,17 +131,28 @@ const onEmitSecret = () => {
   flex-direction: column;
   align-items: center;
   border-radius: 30px;
-  padding: 30px 0;
+  padding: 15px 0;
 }
 
 .user-info .avatar {
   width: 30%;
   aspect-ratio: 1/1;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   box-shadow: 0 0 16px 0 #9370d8;
   border-radius: 50%;
   -webkit-user-drag: none;
   cursor: pointer;
+}
+
+.user-info .mid {
+  flex-shrink: 0;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+}
+
+.user-info .mid span {
+  line-height: 40px;
 }
 
 .user-info .name {
@@ -152,8 +160,8 @@ const onEmitSecret = () => {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 40px;
-  font-size: 30px;
+  height: 30px;
+  font-size: 26px;
   color: var(--theme-color);
   cursor: pointer;
   text-overflow: ellipsis;
@@ -216,16 +224,16 @@ const onEmitSecret = () => {
 }
 
 .menu .menu-item .left .icon {
-  height: 100%;
-  aspect-ratio: 1/1;
+  height: 70px;
+  width: 70px;
   border-radius: 20px;
   margin-right: 10px;
   background-color: #eeeeeebf;
 }
 
 .menu .menu-item .left .icon .img {
-  width: 100%;
-  height: 100%;
+  height: 70px;
+  width: 70px;
   object-fit: contain;
   transform: scale(0.6);
 }

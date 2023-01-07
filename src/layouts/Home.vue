@@ -2,7 +2,11 @@
 </script>
 
 <template>
-  <RouterView class="view"></RouterView>
+  <RouterView class="view" v-slot="{ Component }">
+    <KeepAlive>
+      <component :is="Component" />
+    </KeepAlive>
+  </RouterView>
   <div class="tabbar">
     <RouterLink class="link" active-class="active" to="/home/chat">聊天</RouterLink>
     <RouterLink class="link" active-class="active" to="/home/user">个人中心</RouterLink>

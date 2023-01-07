@@ -12,7 +12,7 @@ const useUserStore = defineStore('userStore', () => {
     endTime: '',
     chatKey: '', //会员密匙
     parentUserId: -1,
-    commision: '', //佣金
+    withdraw: '', //佣金
     partner: '', //合伙人状态
     // partner: 'v1',
     ratio: '' // 当前分佣比例

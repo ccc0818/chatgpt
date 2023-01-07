@@ -41,7 +41,7 @@ const customerList = computed(() => {
       </div>
       <!-- 列表区 -->
       <ul class="customer-contain">
-        <li class="item" v-for="(i, idx) of customerList" :key="i.id">
+        <li class="item" v-for="i of customerList" :key="i.id">
           <div class="left">
             <img class="avatar" :src="i.tx === '' ? '/assets/images/user/user-head.svg' : i.tx" draggable="false">
             <p class="id">ID: {{ i.user_id }}</p>

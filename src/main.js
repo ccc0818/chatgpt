@@ -10,7 +10,8 @@ import './assets/base.css';
 import 'vant/lib/index.css';
 
 // 打印版本号
-console.log('v1.0.7');
+console.log('current version: v1.0.10');
+console.log('欢迎使用 chatgpt web !');
 
 //加载配置文件
 axios.get('/config.json').then(async res => {
@@ -27,20 +28,3 @@ axios.get('/config.json').then(async res => {
   app.use(pinia);
   app.mount('#app');
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

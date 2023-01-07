@@ -69,7 +69,7 @@ const onPayProxy = () => {
         </div>
         <div class="col">
           <p>{{ user.partner }}合伙人</p>
-          <p>当前分佣比例{{ user.ratio }}%</p>
+          <p>当前分佣比例{{ user.ratio }}</p>
         </div>
         <div class="detail">详情</div>
       </div>

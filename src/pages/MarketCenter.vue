@@ -3,15 +3,16 @@ import { ref, onBeforeMount } from 'vue';
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import useUserStore from '../stores/user';
 import { useRouter } from 'vue-router';
-import { showFailToast } from 'vant';
+import { showNotify } from 'vant';
 import { reqCommisionRecord } from '../api/service';
 import useCommisionStore from '../stores/commision';
 
 const router = useRouter();
 const { user } = useUserStore();
 const { commision } = useCommisionStore();
+
 const data = ref({
-  withDraw: user.commision,
+  withDraw: user.withdraw,
   commision: 0,
   qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`,
 });
@@ -29,12 +30,10 @@ onBeforeMount(() => {
   reqCommisionRecord(user.id).then(res => {
     // console.log(res)
     if (res.status === 200) {
-      data.value.commision = res.data.yjzh;
-      commision.withDraw = data.value.withDraw;
-      commision.commision = res.data.yjzh;
+      data.value.commision = commision.commision = res.data.yjzh.toFixed(4);
       commision.commisionRecords = res.data.yjjl;
     }
-  }).catch(() => showFailToast("获取佣金信息失败!"))
+  }).catch((err) => showNotify({ type: 'danger', message: "获取佣金信息失败!" + err}))
 })
 </script>
 
@@ -139,6 +138,7 @@ onBeforeMount(() => {
       align-items: center;
       padding: 15px;
       margin-top: 25px;
+      flex-shrink: 0;
 
       .icon-w {
         height: 80%;
@@ -161,6 +161,7 @@ onBeforeMount(() => {
         flex: 1;
         justify-content: space-around;
         padding: 0 15px;
+        max-width: 40%;
 
         span {
           &:nth-of-type(1) {

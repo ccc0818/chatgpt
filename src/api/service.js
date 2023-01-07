@@ -4,6 +4,37 @@ import useUserStore from '../stores/user';
 import { getQueryObj } from '../utils/utils';
 import { showToast } from "vant";
 
+const reqSign = () => {
+  const url = encodeURI(location.href.split('#')[0]);
+  return request.post(`/index/index/signature`, { url });
+}
+
+const wxInitConfig = () => {
+  reqSign().then(res => {
+    console.log(res)
+    console.log(res.data.timestamp)
+    if (res.status === 200) {
+      wx.config({
+        debug: false,
+        appId: res.data.appId,
+        timestamp: res.data.timestamp,
+        nonceStr: res.data.nonceStr,
+        signature: res.data.signature,
+        jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem"]
+      });
+
+      wx.ready(() => {
+        console.log('wx ready.');
+        wx.hideAllNonBaseMenuItem();
+      })
+
+      wx.error((err) => {
+        console.log('wx error!', err);
+      })
+    }
+  })
+}
+
 export const reqUserInfo = (id) => {
   request.get(`/index/index/userinfo?id=${id}`).then(res => {
     const { user } = useUserStore();
@@ -17,7 +48,7 @@ export const reqUserInfo = (id) => {
     user.endTime = userInfo.endtime;
     user.chatKey = userInfo.chat_key;
     user.parentUserId = userInfo.parent_user_id;
-    user.commision = userInfo.yongjin;
+    user.withdraw = userInfo.yongjin;
     user.partner = userInfo.partner;
     user.ratio = userInfo.ratio;
     // console.log(user);
@@ -55,30 +86,6 @@ const reqWxInfo = ({ id, type = 'vip', money = 0.01 }) => {
   return request.get('/index/index/pay', { params: { id, type, money } });
 }
 
-export function wxInitConfig(id) {
-  reqWxInfo({ id }).then(res => {
-    if (res.status === 200) {
-      wx.config({
-        debug: false,
-        appId: res.data.appId,
-        timeStamp: res.data.timeStamp,
-        nonceStr: res.data.nonceStr,
-        signature: res.data.paySign,
-        jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem"]
-      });
-
-      wx.ready(() => {
-        console.log('wx ready.');
-        // wx.hideAllNonBaseMenuItem();
-      })
-
-      wx.error((err) => {
-        console.log('wx error!', err);
-      })
-    }
-  })
-}
-
 export const reqPay = ({ id, type, money }, success, error) => {
   reqWxInfo({ id, type, money }).then((res) => {
     if (res.status === 200) {
@@ -112,7 +119,7 @@ export const reqPay = ({ id, type, money }, success, error) => {
             type: 'fail',
             message: '支付取消',
             duration: 2000
-          })  
+          })
         }
       });
     }
