@@ -11,7 +11,6 @@ const router = useRouter();
 const { user } = useUserStore();
 const inputData = ref('');
 const mainEl = ref('null');
-const pageEl = ref('null');
 const input = ref('');
 let id = 0;
 const msgList = ref([
@@ -107,7 +106,7 @@ const compositionEvent = (state) => {
 </script>
 
 <template>
-  <div ref="pageEl" class="chat-page">
+  <div class="chat-page">
     <!-- main -->
     <div class="main" ref="mainEl" overflow="scroll-y">
       <Bubble v-for="item of msgList" :key="item.id" :isUser="item.isUser"

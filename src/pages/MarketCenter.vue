@@ -1,15 +1,19 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import useUserStore from '../stores/user';
 import { useRouter } from 'vue-router';
+import { showFailToast } from 'vant';
+import { reqCommisionRecord } from '../api/service';
+import useCommisionStore from '../stores/commision';
 
 const router = useRouter();
 const { user } = useUserStore();
+const { commision } = useCommisionStore();
 const data = ref({
   withDraw: user.commision,
-  commission: 0,
-  qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`
+  commision: 0,
+  qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`,
 });
 
 // console.log(data.value.qrcodeUrl);
@@ -20,6 +24,18 @@ const downloadQr = () => {
   a.download = 'qrcode.png';
   a.click();
 }
+
+onBeforeMount(() => {
+  reqCommisionRecord(user.id).then(res => {
+    // console.log(res)
+    if (res.status === 200) {
+      data.value.commision = res.data.yjzh;
+      commision.withDraw = data.value.withDraw;
+      commision.commision = res.data.yjzh;
+      commision.commisionRecords = res.data.yjjl;
+    }
+  }).catch(() => showFailToast("获取佣金信息失败!"))
+})
 </script>
 
 <template>
@@ -41,9 +57,10 @@ const downloadQr = () => {
         <div class="icon-r"></div>
         <div class="mid">
           <span>总佣金</span>
-          <span>{{ data.commission }}</span>
+          <span>{{ data.commision }}</span>
         </div>
-        <span class="btn" @click="router.push('market_center/customer')">佣金记录</span>
+        <span class="btn"
+          @click="router.push('market_center/customer')">佣金记录</span>
       </div>
 
       <!-- 二维码 -->
@@ -51,16 +68,9 @@ const downloadQr = () => {
         <p class='title'>长按保存推广二维码</p>
         <div class="wrapper">
           <div class="inner">
-            <VueQr ref="qrNode" 
-            :text="data.qrcodeUrl" 
-            :correctLevel="3" 
-            :size="256" 
-            colorDark="#000000"
-            colorLight="#ffffff" 
-            logoSrc="/assets/images/openai.png"
-            :logoMargin="0"
-            logoBackgroundColor="#ffffff"
-            ></VueQr>
+            <VueQr ref="qrNode" :text="data.qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000"
+              colorLight="#ffffff" logoSrc="/assets/images/openai.png" :logoMargin="0" logoBackgroundColor="#ffffff">
+            </VueQr>
           </div>
         </div>
       </div>
@@ -114,6 +124,7 @@ const downloadQr = () => {
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
+
     &::-webkit-scrollbar {
       display: none;
     }

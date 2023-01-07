@@ -9,6 +9,9 @@ import { wxLogin } from './api/service';
 import './assets/base.css';
 import 'vant/lib/index.css';
 
+// 打印版本号
+console.log('v1.0.4');
+
 //加载配置文件
 axios.get('/config.json').then(async res => {
   const config = res.data;

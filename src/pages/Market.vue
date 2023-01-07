@@ -8,7 +8,7 @@ import { showFailToast } from 'vant';
 
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
-// user.value.level = 'v1'
+// user.value.partner = 'v1'
 
 const proxyList = ref([
   { id: 1, level: 'v1', price: 199, rate: 50 },

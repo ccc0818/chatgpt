@@ -1,47 +1,25 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount } from 'vue';
+import { ref, computed, defineAsyncComponent, onBeforeMount, defineProps } from 'vue';
 import { useRouter } from 'vue-router';
-import { reqCommisionRecord } from '../api/service';
-import useUserStore from '../stores/user';
-import { showFailToast } from 'vant';
+import useCommisionStore from '../stores/commision';
 
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const inputData = ref('');
 const filterKey = ref('全部');
-const { user } = useUserStore();
-
-const customers = [];
-onBeforeMount(() => {
-  reqCommisionRecord(user.id).then(res => {
-    console.log(res)
-    const items = res.data.yjjl;
-    if (items) {
-      customers = items.map((i) => ({
-        id: i.id,
-        name: i.name,
-        avatar: '/assets/images/user/user-head.svg',
-        vip: i.state === 0 ? '非会员' : '普通会员',
-        time: i.time,
-        commision: i.money
-      }))
-    }
-  }).catch(err => {
-    showFailToast({
-      message: '请求佣金记录失败!',
-      duration: 3000
-    })
-  })
-})
+const { commision } = useCommisionStore();
+const customers = [...commision.commisionRecords];
 
 const customerList = computed(() => {
   let tmp = null;
   if (filterKey.value === '全部')
     tmp = [...customers];
   else if (filterKey.value === '会员')
-    tmp = customers.filter(i => i.vip === '大会员'); 
+    tmp = customers.filter(i => i.type.includes('会员'));
+  else if (filterKey.value === '合伙人')
+    tmp = customers.filter(i => i.type.includes('合伙人'));
 
-  return tmp.filter((i) => i.id.toString() === inputData.value || i.name.includes(inputData.value))
+  return tmp.filter((i) => i.user_id.toString() === inputData.value || i.name.includes(inputData.value));
 })
 
 </script>
@@ -59,19 +37,20 @@ const customerList = computed(() => {
       <div class="filter">
         <span :class="filterKey === '全部' ? 'active' : ''" @click="filterKey = '全部'">全部</span>
         <span :class="filterKey === '会员' ? 'active' : ''" @click="filterKey = '会员'">会员</span>
+        <span :class="filterKey === '合伙人' ? 'active' : ''" @click="filterKey = '合伙人'">合伙人</span>
       </div>
       <!-- 列表区 -->
       <ul class="customer-contain">
         <li class="item" v-for="(i, idx) of customerList" :key="i.id">
           <div class="left">
-            <img class="avatar" :src="i.avatar" draggable="false">
-            <p class="id">ID: {{ i.id }}</p>
+            <img class="avatar" :src="i.tx === '' ? '/assets/images/user/user-head.svg' : i.tx" draggable="false">
+            <p class="id">ID: {{ i.user_id }}</p>
           </div>
           <div class="right">
             <p class="name">{{ i.name }}</p>
-            <p class="vip-type">等级: {{ i.vip }}</p>
+            <p class="vip-type">等级: {{ i.type }}</p>
             <p class="time">时间: {{ i.time }}</p>
-            <p class="commision">佣金: {{ i.commision }}</p>
+            <p class="commision">佣金: {{ i.money }}</p>
           </div>
         </li>
       </ul>
@@ -174,7 +153,8 @@ const customerList = computed(() => {
         display: flex;
         align-items: center;
 
-        .left, .right {
+        .left,
+        .right {
           display: flex;
           flex-direction: column;
           height: 100%;
