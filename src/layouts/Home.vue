@@ -17,14 +17,16 @@
 
 .tabbar {
   width: 100%;
-  height: 50px;
+  height: 60px;
+  padding-bottom: 10px;
+  border-top: 1px solid #ddd !important;
   display: flex;
   justify-content: space-around;
   align-items: center;
   box-sizing: border-box;
   user-select: none;
   border-top: 1px solid #eee;
-  font-size: 12px;
+  font-size: 14px;
 
   .link {
     display: flex;

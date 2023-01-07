@@ -1,21 +1,42 @@
 <script setup>
-import { ref, defineAsyncComponent, reactive } from 'vue';
+import { ref, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
+import { Uploader, Popup, showNotify } from 'vant';
+import { upload } from '../api/service';
+import useUserStore from '../stores/user';
+import useCommisionStore from '../stores/commision';
+import { storeToRefs } from 'pinia';
+
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
-
 const router = useRouter();
-const checked = reactive({
-  ant: false,
-})
-const inputPrice = ref('');
-const balance = ref(1232)
+const { user } = useUserStore();
+const { commision } = storeToRefs(useCommisionStore())
 
-const onAntChecked = () => {
-  checked.ant = true;
+const balance = ref(commision.value.withDraw);
+const inputPrice = ref(null);
+const showPopup = ref(false); 
+const fileList = ref([]);
+const uploadFile = ref(null);
+
+const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= balance.value)
+
+const onFileUpload = (file) => {
+  fileList.value[0] = { content: file.content }
+  uploadFile.value = file.file;
 }
 
-const onWithDraw = () => {
-  // TODO: 提现逻辑
+const onAckQr = () => {
+  // 确认上传支付宝二维码
+  const fd = new FormData();
+  fd.append('file', uploadFile.value);
+  fd.append('id', user.id);
+  fd.append('money', inputPrice.value);
+
+  upload(fd).then(res => {
+    console.log(res)
+    if (res.status !== 200 || res.data.code !== 200) 
+      showNotify({ type: 'danger', message: '提现失败!', duration: 5000 });
+  })
 }
 </script>
 
@@ -23,14 +44,6 @@ const onWithDraw = () => {
   <div class="contain">
     <Header title="提现" @onBack="router.back()"></Header>
     <main>
-      <!-- 支付类型 -->
-      <div class="pay-list">
-        <div class="item" @click="onAntChecked">
-          <img src="/assets/images/market/logo-ant.png" draggable="false">
-          <span class="name">支付宝</span>
-          <input class="radio" type="radio" name="pay-list" disabled :checked="checked.ant">
-        </div>
-      </div>
       <!-- 提现金额输入 -->
       <div class="withdraw">
         <p class="title">提现金额(元)</p>
@@ -44,8 +57,28 @@ const onWithDraw = () => {
         </div>
       </div>
       <!-- 提现按钮 -->
-      <div class="withdraw-btn" :class="parseFloat(inputPrice) > 0 ? 'active' : ''" @click="onWithDraw">提现</div>
+      <button class="withdraw-btn" 
+      :class="inputValidate() ? 'active' : ''" 
+      :disabled="!inputValidate()"
+      @click="showPopup = true"
+      >提现</button>
     </main>
+
+    <Popup :show="showPopup" 
+      round 
+      position="bottom" 
+      closeable
+      close-on-click-overlay
+      :style="{ height: 'auto', display: 'flex', justifyContent: 'space-around', flexDirection: 'column', alignItems: 'center'}"
+      @click-overlay="showPopup = false"
+      @click-close-icon="showPopup = false"
+    >
+      <span style="color: #999; font-size: 18px; margin: 10px 0;">上传您的支付宝收款码</span>
+      <Uploader maxCount="1" uploadText="上传你的收款码" :afterRead=onFileUpload @click.stop="" previewSize="256px"
+        :previewImage="true" imageFit="contain" v-model="fileList" :preview-full-image="false" @delete="uploadFile = null"></Uploader>
+      <!-- 确定按钮 -->
+      <button @click.stop="onAckQr" style="width: 50%; height: 50px; padding: 10px 10px; background-color: #eee; text-align: center; line-height: 30px; margin-bottom: 20px; border-radius: 8px; color: #999; border: none;" :disabled="!uploadFile" :style="uploadFile ? 'background-color: #00c900; color: #eee;' : ''">确定</button>
+    </Popup>
   </div>
 </template>
 
@@ -66,61 +99,6 @@ const onWithDraw = () => {
   main {
     flex: 1;
     width: 100%;
-
-    .pay-list {
-      width: 100%;
-      background-color: #fff;
-      border-bottom: 1px solid #eee;
-
-      .item {
-        height: 50px;
-        overflow: hidden;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-
-        img {
-          height: 30px;
-        }
-
-        .name {
-          flex: 1;
-          padding-left: 20px;
-          font-size: 16px;
-          color: #444;
-        }
-
-        .radio {
-          appearance: unset;
-          border: 1px solid #999;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          position: relative;
-
-          &::after {
-            content: '';
-            width: 90%;
-            height: 90%;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #16b6fb;
-            ;
-            display: none;
-          }
-
-          &:checked {
-            &::after {
-              display: block;
-            }
-          }
-        }
-      }
-    }
 
     .withdraw {
       width: 100%;
@@ -181,6 +159,8 @@ const onWithDraw = () => {
       text-align: center;
       line-height: 50px;
       color: #fff;
+      border: none;
+      display: block;
 
       &.active {
         background-color: #00c900;

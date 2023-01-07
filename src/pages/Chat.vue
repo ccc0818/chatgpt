@@ -135,6 +135,7 @@ const compositionEvent = (state) => {
 .main {
   flex: 1;
   width: calc(100% + 17px);
+  padding-top: 20px;
   height: 100%;
   box-sizing: border-box;
   padding-right: 17px;
@@ -144,7 +145,7 @@ const compositionEvent = (state) => {
 }
 
 .panel {
-  height: 45px;
+  height: 50px;
   width: 100%;
   border: 1px solid #eee;
   box-sizing: border-box;

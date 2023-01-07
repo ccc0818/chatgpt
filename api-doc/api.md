@@ -38,15 +38,18 @@ parent_user_id属性必须有
 
 ##  佣金
 
-后端域名/index/index/yongjin?id=用户id
+后端域名/index/index/yjjl?id=用户id
 
 | yjjl           | 佣金记录                            | array  |
 | -------------- | ----------------------------------- | ------ |
 | id             | 充值记录的id 可以不写               | int    |
 | user_id        | 下级充值用户id                      | int    |
 | parent_user_id | 当前用户id                          | int    |
+| name           | 用户名                              | string |
+| tx             | 用户头像                            | string |
 | order_no       | 订单号                              | string |
 | money          | 充值金额                            | string |
+| type           | 购买类型                            | string |
 | time           | 充值时间                            | string |
 | state          | 充值状态 （已筛选只返回充值成功的） |        |
 

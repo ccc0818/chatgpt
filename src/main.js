@@ -10,7 +10,7 @@ import './assets/base.css';
 import 'vant/lib/index.css';
 
 // 打印版本号
-console.log('v1.0.4');
+console.log('v1.0.7');
 
 //加载配置文件
 axios.get('/config.json').then(async res => {

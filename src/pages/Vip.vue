@@ -255,9 +255,8 @@ $header-color: #434045;
   }
 
   .combo {
-    padding: 20px 15px 10px 15px;
+    padding: 30px 15px;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -275,7 +274,8 @@ $header-color: #434045;
       align-items: center;
       border: 1px solid #c3c3c3;
       border-radius: 10px;
-      padding: 15px;
+      width: clamp(150px, 150px, 200px);
+      padding: 15px 0;
       margin: 0 5px;
       flex-shrink: 0;
       position: relative;

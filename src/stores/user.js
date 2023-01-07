@@ -14,6 +14,7 @@ const useUserStore = defineStore('userStore', () => {
     parentUserId: -1,
     commision: '', //佣金
     partner: '', //合伙人状态
+    // partner: 'v1',
     ratio: '' // 当前分佣比例
   });
   return { user };

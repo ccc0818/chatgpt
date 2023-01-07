@@ -20,7 +20,6 @@ const menuList = ref([
   { icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
 ]);
 
-
 const onFormatter = (val) => { 
   if (/^[A-Za-z0-9]+$/.test(val)) {
     errMsg.value = '';
