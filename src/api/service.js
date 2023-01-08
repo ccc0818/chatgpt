@@ -4,15 +4,15 @@ import useUserStore from '../stores/user';
 import { getQueryObj } from '../utils/utils';
 import { showToast } from "vant";
 
+// 请求signature appId 等签名信息
 const reqSign = () => {
   const url = encodeURI(location.href.split('#')[0]);
   return request.post(`/index/index/signature`, { url });
 }
 
+// 初始化wx sdk api 配置
 const wxInitConfig = () => {
   reqSign().then(res => {
-    console.log(res)
-    console.log(res.data.timestamp)
     if (res.status === 200) {
       wx.config({
         debug: false,
@@ -25,7 +25,7 @@ const wxInitConfig = () => {
 
       wx.ready(() => {
         console.log('wx ready.');
-        wx.hideAllNonBaseMenuItem();
+        // wx.hideAllNonBaseMenuItem();
       })
 
       wx.error((err) => {
@@ -35,6 +35,7 @@ const wxInitConfig = () => {
   })
 }
 
+// 根据用户id请求用户信息
 export const reqUserInfo = (id) => {
   request.get(`/index/index/userinfo?id=${id}`).then(res => {
     const { user } = useUserStore();
@@ -55,6 +56,7 @@ export const reqUserInfo = (id) => {
   })
 }
 
+// 请求微信授权
 export const wxLogin = async () => {
   const query = getQueryObj();
 
@@ -66,26 +68,32 @@ export const wxLogin = async () => {
   }
 }
 
+// 请求售卖会员类型 和 加入合伙人类型 以及价格信息
 export const reqPriceRate = () => {
   return request.get('/index/index/payinfo');
 }
 
+// 请求用户的推广记录
 export const reqCommisionRecord = (id) => {
   return request.get(`/index/index/yjjl?id=${id}`);
 }
 
+// 请求用户的剩余体验消息条数
 export const reqFreeQueryTimes = (id) => {
   return request.get(`/index/index/probation?id=${id}`);
 }
 
+// 请求兑换卡密
 export const reqActiveSecret = ({ id, secret }) => {
   return request.get('/index/index/code', { params: { id, activation_code: secret } });
 }
 
+// 请求微信支付的订单sign 等信息
 const reqWxInfo = ({ id, type = 'vip', money = 0.01 }) => {
   return request.get('/index/index/pay', { params: { id, type, money } });
 }
 
+// 拉起微信支付
 export const reqPay = ({ id, type, money }, success, error) => {
   reqWxInfo({ id, type, money }).then((res) => {
     if (res.status === 200) {
@@ -126,6 +134,7 @@ export const reqPay = ({ id, type, money }, success, error) => {
   })
 }
 
+// 上传提现二维码以及提现请求
 export const upload = (fd) => {
   return request.post('/index/index/withdraw', fd);
 }

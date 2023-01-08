@@ -1,7 +1,7 @@
 <script setup>
 import { ref, nextTick, onUpdated } from 'vue';
 import Bubble from '../components/Bubble.vue';
-import { request } from '../api/chatgpt';
+import { gptSendMessage } from '../api/chatgpt';
 import { reqFreeQueryTimes } from '../api/service';
 import useUserStore from '../stores/user';
 import { showConfirmDialog } from 'vant';
@@ -37,7 +37,7 @@ const onSubmit = async () => {
       user.number = res.data;
     } catch (error) {
       console.log('获取剩余体验次数失败!');
-      return;
+      user.number = 0;
     }
 
     if (user.number <= 0) {
@@ -54,8 +54,6 @@ const onSubmit = async () => {
       }).then(() => {
         // on confirm
         router.push('/vip');
-      }).catch(() => {
-        // on cancel
       });
       return;
     }
@@ -68,25 +66,13 @@ const onSubmit = async () => {
   // 清除输入框
   inputData.value = '';
 
-  let queryStr = '';
-  msgList.value.forEach(e => {
-    if (e.isUser) {
-      queryStr += `You: ${e.message}\n`;
-    } else {
-      queryStr += `AI: ${e.message}\n`;
-    }
-  });
-
-  queryStr = queryStr.replace('AI: ', '');
-  // console.log(queryStr);
   // 获取到收到的数据
-  const newId = id++;
-  request(queryStr, user.chatKey, (content) => {
-    const item = msgList.value.find(i => i.id === newId);
-    if (item)
-      item.message = content.replace('AI:', '').trimStart();
-    else
-      msgList.value.push({ id: newId, isUser: false, message: content.replace('AI:', '').trimStart() });
+  let newIndex = null;
+  gptSendMessage(msgList.value, user.chatKey, (content) => {
+    if (newIndex === null) 
+      newIndex = msgList.value.push({ id: id++, isUser: false, message: content }) - 1;
+    else 
+      msgList.value[newIndex].message = content;
   });
 }
 

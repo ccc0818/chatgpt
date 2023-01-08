@@ -37,11 +37,11 @@ const onClickItem = async (index) => {
     case 1:
       router.push("/market");
       break;
-    case 3:
-      window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
-      break;
     case 2: //兑换卡密
       show.value = true;
+      break;
+    case 3:
+      window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
       break;
     default:
       break;

@@ -1,11 +1,30 @@
 import { showNotify } from 'vant';
-
 let reader;
-export const request = async (query, key, contentUpdate) => {
+
+const gptJoinPrompt = (chatRecords) => {
+  let queryStr = '';
+  chatRecords.forEach(i => {
+    if (i.id === 0) {
+      queryStr += i.message + '\n';
+      return;
+    }
+    if (i.isUser) 
+      queryStr += `\nHuman: ${i.message}`;
+    else 
+      queryStr += `\nAI: ${i.message}`;
+  });
+  queryStr += '\nAI:';
+  // console.log(queryStr);
+
+  return queryStr;
+}  
+
+export const gptSendMessage = async (chatRecords, key, contentUpdateCb) => {
   // 如果上一次的reader stream 还在 那么就cancel掉
   if (reader)
     await reader.cancel();
 
+  // 生成prompt
   let content = '';
 
   const res = await fetch('https://api.openai.com/v1/completions', {
@@ -16,20 +35,25 @@ export const request = async (query, key, contentUpdate) => {
     },
     body: JSON.stringify({
       model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
-      prompt: query, // 请求信息
-      max_tokens: 2048, // 最大数据片
+      prompt: gptJoinPrompt(chatRecords), // 请求信息
+      max_tokens: 1024, // 最大数据片
       temperature: 0.9, // 分析力度
       top_p: 1,
-      presence_penalty: 0,
+      presence_penalty: 0.6,
       frequency_penalty: 0,
       stream: true, //流式传输
+      stop: [" Human:", " AI:"],
     })
   });
-  // key 失效
+
+  // 请求失败
   if (res.ok === false) {
     res.json().then(res => {
-      if (res.error.type === 'insufficient_quota') {
-        showNotify({ type: 'warning', message: '用户openAI密钥过期' });
+      if (res.error.code === 'invalid_api_key') 
+        showNotify({ type: 'danger', message: '无效的api_key!' })
+      else if (res.error.code === null) {
+        if (res.error.type === 'insufficient_quota') 
+          showNotify({ type: 'warning', message: 'api_key过期!' });
       }
     })
     return;
@@ -55,11 +79,11 @@ export const request = async (query, key, contentUpdate) => {
     content += texts.join('');
 
     // 执行回掉
-    contentUpdate(content);
+    contentUpdateCb(content);
 
     return reader.read().then(readStream); // 继续读取
   }).catch(err => {
-    console.log('读取流失败!', err);
+    showNotify({type:'danger', message: '读取数据流失败！请重试'});
     return;
   });
 }
