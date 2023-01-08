@@ -1,25 +1,54 @@
 <script setup>
-import { ref, nextTick, onUpdated } from 'vue';
+import { ref, nextTick, onUpdated, onBeforeMount } from 'vue';
 import Bubble from '../components/Bubble.vue';
 import { gptSendMessage } from '../api/chatgpt';
 import { reqFreeQueryTimes } from '../api/service';
 import useUserStore from '../stores/user';
 import { showConfirmDialog } from 'vant';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import useRobotStore from '../stores/robot';
+import { storeToRefs } from 'pinia';
 
+const route = useRoute();
 const router = useRouter();
 const { user } = useUserStore();
+const { robots } = storeToRefs(useRobotStore());
 const inputData = ref('');
 const mainEl = ref('null');
 const input = ref('');
 let id = 0;
-const msgList = ref([
-  { id: id++, isUser: false, message: '你好，我是最强人工智能ChatGPT，我能回答你所有问题，快来和我聊天吧！' }
-]);
+const msgList = ref([]);
+
+onBeforeMount(() => {
+  robots.value.currentRobot = robots.value.robots[0];
+  msgList.value.push({
+    id: id++,
+    isUser: false,
+    message: robots.value.robots[0].salutation
+  });
+})
+
 
 onUpdated(() => {
   // 自动滚动到底部
   nextTick(() => mainEl.value.scrollTop = mainEl.value.scrollHeight);
+
+  // 判断是否需要切换机器人
+  if (robots.value.changed) {
+    id = 0;
+    msgList.value = [{
+      id: id++,
+      isUser: false,
+      message: robots.value.currentRobot.salutation
+    }];
+
+    let tmp = [
+      ...msgList.value,
+      { id, isUser: true, message: robots.value.currentRobot.type }
+    ]
+    gptSendMessage(tmp, user.chatKey);
+    robots.value.changed = false;
+  }
 });
 
 // 发送聊天消息
@@ -69,9 +98,9 @@ const onSubmit = async () => {
   // 获取到收到的数据
   let newIndex = null;
   gptSendMessage(msgList.value, user.chatKey, (content) => {
-    if (newIndex === null) 
+    if (newIndex === null)
       newIndex = msgList.value.push({ id: id++, isUser: false, message: content }) - 1;
-    else 
+    else
       msgList.value[newIndex].message = content;
   });
 }
@@ -96,7 +125,7 @@ const compositionEvent = (state) => {
     <!-- main -->
     <div class="main" ref="mainEl" overflow="scroll-y">
       <Bubble v-for="item of msgList" :key="item.id" :isUser="item.isUser"
-        :avatar="item.isUser ? user.avatar : '/assets/images/openai.png'" :message="item.message">
+        :avatar="item.isUser ? user.avatar : robots.currentRobot.avatar" :message="item.message">
       </Bubble>
     </div>
     <!-- input -->

@@ -60,8 +60,10 @@ export const reqUserInfo = (id) => {
 export const wxLogin = async () => {
   const query = getQueryObj();
 
+  const serverUrl = localStorage.getItem('serverUrl');
+
   if (query.redirect_uri === undefined)
-    location.href = 'https://htceshi.cdyb5.com/index/index/login' + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
+    location.href = `${serverUrl}/index/index/login` + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
   else {
     reqUserInfo(query.id);
     wxInitConfig(query.id);

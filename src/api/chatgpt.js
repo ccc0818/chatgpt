@@ -79,7 +79,7 @@ export const gptSendMessage = async (chatRecords, key, contentUpdateCb) => {
     content += texts.join('');
 
     // 执行回掉
-    contentUpdateCb(content);
+    contentUpdateCb && contentUpdateCb(content);
 
     return reader.read().then(readStream); // 继续读取
   }).catch(err => {

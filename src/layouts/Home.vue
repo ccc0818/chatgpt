@@ -9,6 +9,7 @@
   </RouterView>
   <div class="tabbar">
     <RouterLink class="link" active-class="active" to="/home/chat">聊天</RouterLink>
+    <RouterLink class="link" active-class="active" to="/home/robot">机器人</RouterLink>
     <RouterLink class="link" active-class="active" to="/home/user">个人中心</RouterLink>
   </div>
 </template>
@@ -17,6 +18,7 @@
 .view {
   width: 100%;
   height: calc(100% - 50px);
+  position: relative;
 }
 
 .tabbar {
