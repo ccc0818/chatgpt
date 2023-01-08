@@ -1,9 +1,11 @@
 ## chatgpt聊天机器人
 
 ```
-技术栈: vue系列 vite chatgpt-api pinia 
+技术栈: vue系列 vite chatgpt-api pinia weixin-js-sdk vue-qr
 
-简介: 使用fetch向chatgpt服务器请求数据,返回的数据以eventStream 的方式进行接收, 将收到的数据依次更新到数据存储列表中。
-后端开发: 对接微信授权+用户管理
+简介: 
+	运用openai的开放接口请求聊天机器人数据,返回的数据以eventStream 的方式进行接收, 将收到的数据依次更新到聊天记录列表中并响应式渲染,
+	通过微信开放接口获取微信授权得到用户信息并在后端存储,
+	用户可以开通vip,加入合伙人以及推广分佣,用户还可以通过上传自己的收款码的方式来提现自己的推广奖金。
 ```
 
