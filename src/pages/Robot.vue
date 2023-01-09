@@ -11,6 +11,8 @@ const { setOneRobot, initRobots, removeOneRobot } = useRobotStore();
 const showOverlay = ref(false);
 const showContext = ref(false);
 const contextEl = ref(null);
+const viewEl = ref(null);
+const transformOrigin = ref('top left');
 let currentSelect;
 
 onBeforeMount(() => initRobots())
@@ -50,12 +52,17 @@ const onAddRobot = (form) => {
 }
 
 const onShowContext = (x, y, idx) => {
-  if (showContext.value === false) {
+  showContext.value = true;
+  currentSelect = idx;
+
+  if (x + 165 > viewEl.value.clientWidth) {
+    transformOrigin.value = 'top right';
+    contextEl.value.style.left = x - 165 + 'px';
+  } else {
+    transformOrigin.value = 'top left';
     contextEl.value.style.left = x + 5 + 'px';
-    contextEl.value.style.top = y + 5 + 'px';
-    currentSelect = idx;
-    showContext.value = true;
   }
+  contextEl.value.style.top = y + 5 + 'px';
 }
 
 let timer;
@@ -71,18 +78,18 @@ const onLongPressCancel = () => clearTimeout(timer);
 </script>
 
 <template>
-  <div class="view" @click="showContext = false">
+  <div ref="viewEl" id="robot" class="view" @click="showContext = false" @contextmenu.prevent="">
     <div class="cell" v-for="i of robots.robots" :key="i.id" @click.stop="onRobot(i)" @contextmenu.prevent="">
       <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
       <span class="name" unselectable>{{ i.name }}</span>
     </div>
     <div class="cell" v-for="(i, idx) of robots.userRobots" :key="i.id" @click.stop="onRobot(i)"
-      @contextmenu.prevent="onShowContext($event.pageX, $event.pageY, idx)" @touchstart.stop="onLongPress($event, idx)"
-      @touchmove.stop="onLongPressCancel" @touchend.stop="onLongPressCancel">
+      @contextmenu.prevent.stop="onShowContext($event.target.offsetLeft + $event.offsetX, $event.target.offsetTop + $event.offsetY, idx)"
+      @touchstart.stop="onLongPress" @touchmove.stop="onLongPressCancel" @touchend.stop.prevent="onLongPressCancel">
       <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
       <span class="name" unselectable>{{ i.name }}</span>
     </div>
-    <div class="cell" @click="showOverlay = true;">
+    <div class="cell" @click="showOverlay = true;" @contextmenu.prevent="">
       <span class="iconfont icon-jia add"></span>
       <span class="name">添加机器人</span>
     </div>
@@ -106,13 +113,15 @@ const onLongPressCancel = () => clearTimeout(timer);
       </CellGroup>
     </Overlay>
 
-    <Teleport to="body">
-      <Transition name="context">
-        <div class="context" v-show="showContext" ref="contextEl">
-          <span class="menu-item" @click="() => { removeOneRobot(currentSelect); showContext = false; }">删除</span>
+    <Transition name="context">
+      <div class="context" v-show="showContext" ref="contextEl" :style="{ transformOrigin }">
+        <div class="menu-item" @click="() => { removeOneRobot(currentSelect); showContext = false; }">
+          <span class="iconfont icon-shanchu icon" />
+          <span class="text">删除</span>
         </div>
-      </Transition>
-    </Teleport>
+
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -121,6 +130,8 @@ const onLongPressCancel = () => clearTimeout(timer);
 
 .view {
   display: grid;
+  height: 100%;
+  overflow-y: auto;
   justify-content: space-between;
   padding: 20px;
   grid-template-columns: repeat(auto-fill, 100px);
@@ -212,6 +223,59 @@ const onLongPressCancel = () => clearTimeout(timer);
       letter-spacing: 30px;
       padding-left: 30px;
     }
+  }
+
+  .context {
+    width: 160px;
+    background-color: #eee;
+    border-radius: 3px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 5px;
+    transition: all .2s ease-out;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 50%);
+    transform-origin: top left;
+
+    .menu-item {
+      display: flex;
+      height: 30px;
+      font-size: 14px;
+      color: #9370d8;
+      border-radius: 3px;
+      text-align: center;
+      line-height: 30px;
+      user-select: none;
+      justify-content: flex-start;
+      padding: 0 10px;
+
+      &:hover {
+        background-color: rgba(100, 100, 100, 0.5);
+      }
+
+      &:nth-last-child(1):hover {
+        background-color: rgba(255, 100, 100, 0.5);
+        color: red;
+      }
+
+      .text {
+        flex: 1;
+        text-align: left;
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .context-enter-from,
+  .context-leave-to {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  .context-enter-to,
+  .context-leave-from {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>
