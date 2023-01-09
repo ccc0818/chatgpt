@@ -107,9 +107,11 @@ const onLongPressCancel = () => clearTimeout(timer);
     </Overlay>
 
     <Teleport to="body">
-      <div class="context" v-show="showContext" ref="contextEl">
-        <span class="menu-item" @click="() => { removeOneRobot(currentSelect); showContext = false; }">删除</span>
-      </div>
+      <Transition name="context">
+        <div class="context" v-show="showContext" ref="contextEl">
+          <span class="menu-item" @click="() => { removeOneRobot(currentSelect); showContext = false; }">删除</span>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -133,6 +135,7 @@ const onLongPressCancel = () => clearTimeout(timer);
     // overflow: hidden;
     padding: 5px 0;
     position: relative;
+    user-select: none;
 
     img {
       width: 80px;
@@ -143,6 +146,7 @@ const onLongPressCancel = () => clearTimeout(timer);
       object-fit: contain;
       background-color: #d0b8ff;
       border-radius: 10px;
+      pointer-events: none;
     }
 
     .name {

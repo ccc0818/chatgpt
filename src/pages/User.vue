@@ -7,7 +7,6 @@ import { reqActiveSecret } from '../api/service';
 import { storeToRefs } from 'pinia';
 
 const { user } = storeToRefs(useUserStore());
-const pageEl = ref(null);
 const router = useRouter();
 const show = ref(false);
 const inputSecret = ref('');
@@ -49,8 +48,8 @@ const onClickItem = async (index) => {
 }
 
 const onEmitSecret = () => {
-  reqActiveSecret({ id: user.id, secret: instance.inputValue.trim() }).then(res => {
-    console.log(res)
+  reqActiveSecret({ id: user.id, secret: inputSecret.value.trim() }).then(res => {
+    // console.log(res)
     if (res.data === 200)
       showSuccessToast({
         message: '兑换成功',
@@ -62,12 +61,13 @@ const onEmitSecret = () => {
         duration: 2000
       })
   })
+  inputSecret.value = '';
 }
 
 </script>
 
 <template>
-  <div ref="pageEl" class="user-page">
+  <div class="user-page">
     <div class="main">
       <div class="user-info">
         <img class="avatar" :src="user.avatar">
