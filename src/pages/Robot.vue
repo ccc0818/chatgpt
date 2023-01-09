@@ -8,18 +8,22 @@ import useRobotStore from '../stores/robot';
 const router = useRouter();
 const { robots } = storeToRefs(useRobotStore());
 const { setOneRobot, initRobots, removeOneRobot } = useRobotStore();
-const showDelete = ref(false);
 const showOverlay = ref(false);
+const showContext = ref(false);
+const contextEl = ref(null);
+let currentSelect;
 
 onBeforeMount(() => initRobots())
 onBeforeRouteLeave(() => {
-  showDelete.value = false;
+  showContext.value = false;
   showOverlay.value = false;
 });
 
 const onRobot = (item) => {
-  if (showDelete.value)
+  if (showContext.value) {
+    showContext.value = false;
     return;
+  }
 
   if (robots.value.currentRobot != item) {
     robots.value.changed = true;
@@ -38,35 +42,47 @@ const onAddRobot = (form) => {
   let { name, type, salutation, character } = form;
   type = `现在开始, 你的名字是${name}, 你将模仿为${type}, 你的性格是${character}。`;
   setOneRobot({ name, type, salutation, avatar: '/assets/images/openai.png' });
+  robotInfo.name = '';
+  robotInfo.type = '';
+  robotInfo.salutation = '';
+  robotInfo.character = '';
   showOverlay.value = false;
 }
 
+const onShowContext = (x, y, idx) => {
+  if (showContext.value === false) {
+    contextEl.value.style.left = x + 5 + 'px';
+    contextEl.value.style.top = y + 5 + 'px';
+    currentSelect = idx;
+    showContext.value = true;
+  }
+}
+
 let timer;
-const onLongPress = () => {
+const onLongPress = (e, idx) => {
+  showContext.value = false;
+
+  clearTimeout(timer);
   timer = setTimeout(() => {
-    showDelete.value = true;
-  }, 3000);
+    onShowContext(e.touches[0].pageX, e.touches[0].pageY, idx);
+  }, 500);
 }
 const onLongPressCancel = () => clearTimeout(timer);
 </script>
 
 <template>
-  <div class="view" @click="showDelete = false">
-    <div class="cell" :class="showDelete ? 'shake' : ''" v-for="i of robots.robots" :key="i.id" @click.stop="onRobot(i)"
-      @touchstart="onLongPress" @touchmove="onLongPressCancel" @touchcancel="onLongPressCancel"
-      @contextmenu.prevent="showDelete = true">
-      <img :src="i.avatar" alt="图片加载失败" draggable="false">
-      <span class="name">{{ i.name }}</span>
+  <div class="view" @click="showContext = false">
+    <div class="cell" v-for="i of robots.robots" :key="i.id" @click.stop="onRobot(i)" @contextmenu.prevent="">
+      <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
+      <span class="name" unselectable>{{ i.name }}</span>
     </div>
-    <div class="cell" :class="showDelete ? 'shake' : ''" v-for="(i, idx) of robots.userRobots" :key="i.id"
-      @click.stop="showDelete ? removeOneRobot(idx) : onRobot(i)" 
-      @contextmenu.prevent="showDelete = true"
-      >
-      <img :src="i.avatar" alt="图片加载失败" draggable="false">
-      <span class="name">{{ i.name }}</span>
-      <Icon v-show="showDelete" name="cross" class="badge-icon"></Icon>
+    <div class="cell" v-for="(i, idx) of robots.userRobots" :key="i.id" @click.stop="onRobot(i)"
+      @contextmenu.prevent="onShowContext($event.pageX, $event.pageY, idx)" @touchstart.stop="onLongPress($event, idx)"
+      @touchmove.stop="onLongPressCancel" @touchend.stop="onLongPressCancel">
+      <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
+      <span class="name" unselectable>{{ i.name }}</span>
     </div>
-    <div v-show="!showDelete" class="cell" @click="showOverlay = true;">
+    <div class="cell" @click="showOverlay = true;">
       <span class="iconfont icon-jia add"></span>
       <span class="name">添加机器人</span>
     </div>
@@ -89,6 +105,12 @@ const onLongPressCancel = () => clearTimeout(timer);
         </Form>
       </CellGroup>
     </Overlay>
+
+    <Teleport to="body">
+      <div class="context" v-show="showContext" ref="contextEl">
+        <span class="menu-item" @click="() => { removeOneRobot(currentSelect); showContext = false; }">删除</span>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -103,6 +125,7 @@ const onLongPressCancel = () => clearTimeout(timer);
   grid-template-rows: repeat(auto-fit, 110px);
   gap: 10px;
   background-color: #eee;
+  position: relative;
 
   .cell {
     width: 100px;
@@ -110,28 +133,6 @@ const onLongPressCancel = () => clearTimeout(timer);
     // overflow: hidden;
     padding: 5px 0;
     position: relative;
-
-    @keyframes shake {
-      25% {
-        transform: rotateZ(2deg);
-      }
-
-      50% {
-        transform: rotateZ(0deg);
-      }
-
-      75% {
-        transform: rotateZ(-2deg);
-      }
-
-      100% {
-        transform: rotateZ(0deg);
-      }
-    }
-
-    &.shake {
-      animation: shake 0.3s infinite linear;
-    }
 
     img {
       width: 80px;
@@ -208,7 +209,5 @@ const onLongPressCancel = () => clearTimeout(timer);
       padding-left: 30px;
     }
   }
-
-
 }
 </style>

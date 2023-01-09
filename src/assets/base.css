@@ -12,3 +12,34 @@
     0px 0px 89.2px rgba(0, 0, 0, 0.09),
     0px 0px 149px rgba(0, 0, 0, 0.14) !important;
 }
+
+.context {
+  width: 100px;
+  background-color: #2c2c2c;
+  border-radius: 5px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 5px;
+}
+
+.context .menu-item {
+  display: block;
+  height: 24px;
+  font-size: 14px;
+  color: #fff;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 24px;
+  user-select: none;
+}
+
+.context .menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: rgb(255, 255, 255);
+}
+
+.context .menu-item:nth-last-child(1):hover {
+  background-color: rgba(255, 0, 0, 0.5);
+  color: red;
+}
