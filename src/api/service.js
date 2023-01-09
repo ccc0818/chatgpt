@@ -6,8 +6,8 @@ import { showToast } from "vant";
 
 // 请求signature appId 等签名信息
 const reqSign = () => {
-  const url = encodeURI(location.href.split('#')[0]);
-  return request.post(`/index/index/signature`, { url });
+  const url = location.href.split('#')[0];
+  return request.post(`/index/index/signature`, JSON.stringify({ url }));
 }
 
 // 初始化wx sdk api 配置
@@ -20,12 +20,16 @@ const wxInitConfig = () => {
         timestamp: res.data.timestamp,
         nonceStr: res.data.nonceStr,
         signature: res.data.signature,
-        jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem"]
+        jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem", "hideOptionMenu"]
       });
 
       wx.ready(() => {
         console.log('wx ready.');
-        // wx.hideAllNonBaseMenuItem();
+        // 隐藏非基础的wx功能按钮
+        wx.hideAllNonBaseMenuItem();
+
+        // 隐藏右上角菜单按钮
+        wx.hideOptionMenu();
       })
 
       wx.error((err) => {
@@ -139,4 +143,14 @@ export const reqPay = ({ id, type, money }, success, error) => {
 // 上传提现二维码以及提现请求
 export const upload = (fd) => {
   return request.post('/index/index/withdraw', fd);
+}
+
+// 请求提现记录
+export const reqWithdrawRecords = (id) => {
+  return request.get('/index/index/withdraw_records', { params: { id } });
+}
+
+// 密钥欠费
+export const reqApiKeyArrear = (id) => {
+  return request.get(`index/index/arrear?id=${id}`);
 }

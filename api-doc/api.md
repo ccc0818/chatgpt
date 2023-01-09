@@ -1,5 +1,7 @@
 后端域名https://htceshi.cdyb5.com
 
+chatgpt.cdyb5.com 这个是线上前端域名
+xx.cdyb5.com 是线上后端域名
 
 
 ## **微信登录接口**

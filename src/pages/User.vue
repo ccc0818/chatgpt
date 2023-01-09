@@ -17,6 +17,7 @@ const menuList = ref([
   { icon: '/assets/images/user/user-item_walt.png', title: '加入代理赚钱' },
   { icon: '/assets/images/user/user-item_lock.png', title: '卡密兑换' },
   { icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
+  { icon: '/assets/images/user/user-item_add.png', title: '关注公众号', uniBase64: "MzkzOTM4MjQyNQ==" }
 ]);
 
 const onFormatter = (val) => {
@@ -41,6 +42,9 @@ const onClickItem = async (index) => {
       break;
     case 3:
       window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
+      break;
+    case 4:
+      window.location.href = `https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=${menuList.value[4].uniBase64}&scene=124#wechat_redirect`;
       break;
     default:
       break;

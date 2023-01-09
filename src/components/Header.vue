@@ -3,13 +3,16 @@ import {defineProps, defineEmits} from 'vue';
 defineProps({
   title: String,
 })
-const emits = defineEmits(['onBack']);
+const emits = defineEmits(['onBack', 'onMenu']);
 </script>
 
 <template>
   <div class="header">
     <span class="iconfont icon-fanhui1 back" @click="emits('onBack')"></span>
     <span class="title" v-if="title">{{title}}</span>
+    <span class="menu" @click="emits('onMenu')">
+      <slot name="menu"></slot>
+    </span>
   </div>
 </template>
 
@@ -41,6 +44,18 @@ const emits = defineEmits(['onBack']);
     transform: translate(-50%, -50%);
     font-size: 18px;
     letter-spacing: 2px;
+  }
+
+  .menu {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

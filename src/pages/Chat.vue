@@ -157,6 +157,7 @@ const compositionEvent = (state) => {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  background: #eee;
 }
 
 .panel {
