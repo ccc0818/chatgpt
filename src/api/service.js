@@ -66,7 +66,7 @@ export const wxLogin = async () => {
     location.href = `${serverUrl}/index/index/login` + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
   else {
     reqUserInfo(query.id);
-    wxInitConfig(query.id);
+    wxInitConfig();
   }
 }
 
