@@ -85,7 +85,7 @@ const onLongPressCancel = () => clearTimeout(timer);
     </div>
     <div class="cell" v-for="(i, idx) of robots.userRobots" :key="i.id" @click.stop="onRobot(i)"
       @contextmenu.prevent.stop="onShowContext($event.target.offsetLeft + $event.offsetX, $event.target.offsetTop + $event.offsetY, idx)"
-      @touchstart.stop="onLongPress" @touchmove.stop="onLongPressCancel" @touchend.stop.prevent="onLongPressCancel">
+      @touchstart.stop="onLongPress" @touchmove.stop="onLongPressCancel" @touchend.stop="onLongPressCancel">
       <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
       <span class="name" unselectable>{{ i.name }}</span>
     </div>
