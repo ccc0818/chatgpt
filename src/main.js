@@ -10,7 +10,7 @@ import './assets/base.css';
 import 'vant/lib/index.css';
 
 // 打印版本号
-console.log('current version: v1.2.1');
+console.log('current version: v1.2.2');
 console.log('欢迎使用 chatgpt web !');
 
 //加载配置文件

@@ -1,7 +1,7 @@
 <script setup>
-import { ref, defineAsyncComponent, onBeforeMount } from 'vue';
+import { ref, defineAsyncComponent, onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { Uploader, Popup, showNotify, Overlay, PullRefresh } from 'vant';
+import { Uploader, Popup, showNotify, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
 import { reqUserInfo, reqWithdrawRecords, upload } from '../api/service';
 import useUserStore from '../stores/user';
 import { storeToRefs } from 'pinia';
@@ -10,7 +10,9 @@ const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 
-const inputPrice = ref(null);
+const inputPrice = ref('');
+const inputMaxLength = 8;
+const showNumberBoard = ref(false);
 const showPopup = ref(false);
 const fileList = ref([]);
 const uploadFile = ref(null);
@@ -33,7 +35,7 @@ onBeforeMount(() => {
   updateWithdrawRecords();
 })
 
-const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.value.withdraw))
+const inputValidate = () => (parseFloat(inputPrice.value) > 0 && parseFloat(inputPrice.value) <= parseFloat(user.value.withdraw))
 
 const onFileUpload = (file) => {
   fileList.value[0] = { content: file.content }
@@ -62,6 +64,8 @@ const onShowWithdraw = () => {
   updateWithdrawRecords();
   showDrawRecords.value = true;
 }
+
+watch(inputPrice, (n, o) => console.log(n));
 </script>
 
 <template>
@@ -77,7 +81,8 @@ const onShowWithdraw = () => {
         <p class="title">提现金额(元)</p>
         <div class="input-panel">
           <span>¥</span>
-          <input type="number" placeholder="请输入提现金额" v-model="inputPrice">
+          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额" v-model="inputPrice" :readonly="showNumberBoard"
+            @touchstart.stop="showNumberBoard = true" />
         </div>
         <div class="balance">
           <span>余额¥{{ user.withdraw }}，</span>
@@ -118,6 +123,10 @@ const onShowWithdraw = () => {
         </div>
       </PullRefresh>
     </Overlay>
+
+    <NumberKeyboard v-model="inputPrice" :show="showNumberBoard" @blur="showNumberBoard = false" :maxlength="inputMaxLength"
+      safe-area-inset-bottom theme="custom" extra-key="." close-button-text="完成">
+    </NumberKeyboard>
   </div>
 </template>
 
@@ -167,16 +176,19 @@ const onShowWithdraw = () => {
           font-size: 36px;
         }
 
-        input {
+        .input {
           outline: none;
           border: none;
           padding-left: 15px;
           height: 100%;
           font-size: 28px;
+          flex: 1;
 
-          &::placeholder {
-            font-size: 18px;
-            color: #999;
+          :deep(.van-field__control) {
+            &::placeholder {
+              font-size: 18px;
+              color: #999;
+            }
           }
         }
       }
@@ -257,6 +269,7 @@ const onShowWithdraw = () => {
             color: rgb(255, 93, 93);
             font-size: 18px;
           }
+
           .time {
             font-size: 14px;
             color: #999;
