@@ -11,7 +11,6 @@ const router = useRouter();
 const show = ref(false);
 const inputSecret = ref('');
 const errMsg = ref('');
-
 const menuList = ref([
   { icon: '/assets/images/user/user-item_diamond.png', title: '开通会员畅享无限对话' },
   { icon: '/assets/images/user/user-item_walt.png', title: '加入代理赚钱' },
@@ -20,6 +19,7 @@ const menuList = ref([
   { icon: '/assets/images/user/user-item_add.png', title: '关注公众号', uniBase64: "MzkzOTM4MjQyNQ==" }
 ]);
 
+// methods
 const onFormatter = (val) => {
   if (/^[A-Za-z0-9]+$/.test(val)) {
     errMsg.value = '';
@@ -72,7 +72,6 @@ const onEmitSecret = () => {
   })
   inputSecret.value = '';
 }
-
 </script>
 
 <template>
@@ -109,7 +108,7 @@ const onEmitSecret = () => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .user-page {
   display: flex;
   flex-direction: column;
@@ -147,10 +146,12 @@ const onEmitSecret = () => {
   width: 30%;
   aspect-ratio: 1/1;
   margin-bottom: 15px;
-  box-shadow: 0 0 16px 0 #9370d8;
+  box-shadow: 0 0 16px 0 $theme;
   border-radius: 50%;
   -webkit-user-drag: none;
   cursor: pointer;
+  border: 2px solid $theme;
+  background-color: #fff;
 }
 
 .user-info .mid {

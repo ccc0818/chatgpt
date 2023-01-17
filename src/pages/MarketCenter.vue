@@ -10,6 +10,7 @@ import useCommisionStore from '../stores/commision';
 const router = useRouter();
 const { user } = useUserStore();
 const { commision } = useCommisionStore();
+const qrNode = ref(null);
 
 const data = ref({
   withDraw: user.withdraw,
@@ -17,24 +18,21 @@ const data = ref({
   qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`,
 });
 
-// console.log(data.value.qrcodeUrl);
-const qrNode = ref(null);
+reqCommisionRecord(user.id).then(res => {
+  // console.log(res)
+  if (res.status === 200) {
+    data.value.commision = commision.commision = res.data.yjzh.toFixed(4);
+    commision.commisionRecords = res.data.yjjl;
+  }
+}).catch((err) => showNotify({ type: 'danger', message: "获取佣金信息失败!" + err }));
+
+// methods
 const downloadQr = () => {
   const a = document.createElement('a');
   a.href = qrNode.value.imgUrl;
   a.download = 'qrcode.png';
   a.click();
 }
-
-onBeforeMount(() => {
-  reqCommisionRecord(user.id).then(res => {
-    // console.log(res)
-    if (res.status === 200) {
-      data.value.commision = commision.commision = res.data.yjzh.toFixed(4);
-      commision.commisionRecords = res.data.yjjl;
-    }
-  }).catch((err) => showNotify({ type: 'danger', message: "获取佣金信息失败!" + err}))
-})
 </script>
 
 <template>
@@ -58,8 +56,7 @@ onBeforeMount(() => {
           <span>总佣金</span>
           <span>{{ data.commision }}</span>
         </div>
-        <span class="btn"
-          @click="router.push('market_center/customer')">佣金记录</span>
+        <span class="btn" @click="router.push('market_center/customer')">佣金记录</span>
       </div>
 
       <!-- 二维码 -->

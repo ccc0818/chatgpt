@@ -5,28 +5,25 @@ import { gptSendMessage } from '../api/chatgpt';
 import { reqFreeQueryTimes } from '../api/service';
 import useUserStore from '../stores/user';
 import { showConfirmDialog } from 'vant';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import useRobotStore from '../stores/robot';
 import { storeToRefs } from 'pinia';
 
-const route = useRoute();
 const router = useRouter();
 const { user } = useUserStore();
 const { robots } = storeToRefs(useRobotStore());
 const inputData = ref('');
 const mainEl = ref('null');
-const input = ref('');
 let id = 0;
 const msgList = ref([]);
 
-onBeforeMount(() => {
-  robots.value.currentRobot = robots.value.robots[0];
-  msgList.value.push({
-    id: id++,
-    isUser: false,
-    message: robots.value.robots[0].salutation
-  });
-})
+// 初始化机器人 created 周期
+robots.value.currentRobot = robots.value.robots[0];
+msgList.value.push({
+  id: id++,
+  isUser: false,
+  message: robots.value.robots[0].salutation
+});
 
 
 onUpdated(() => {
@@ -104,20 +101,6 @@ const onSubmit = async () => {
       msgList.value[newIndex].message = content;
   });
 }
-
-const inputEnterEvent = (e) => {
-  if (e.charCode === 13) {
-    inputData.value.length && onSubmit()
-  }
-}
-
-const compositionEvent = (state) => {
-  if (state) { //start
-    input.value.removeEventListener('keypress', inputEnterEvent);
-  } else {
-    input.value.addEventListener('keypress', inputEnterEvent);
-  }
-}
 </script>
 
 <template>
@@ -130,8 +113,7 @@ const compositionEvent = (state) => {
     </div>
     <!-- input -->
     <div class="panel">
-      <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?"
-        @compositionstart="compositionEvent(1)" @compositionend="compositionEvent(0)">
+      <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?" @change="onSubmit">
       <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
         <img class="img" src="/assets/images/chat/send.png">
       </div>
@@ -139,7 +121,7 @@ const compositionEvent = (state) => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .chat-page {
   display: flex;
   flex-direction: column;
@@ -193,9 +175,13 @@ const compositionEvent = (state) => {
 
 .panel .btn {
   margin: 0 10px;
-  height: 27px;
-  width: 27px;
+  height: 80%;
+  aspect-ratio: 1/.6;
+  padding: 5px;
   cursor: pointer;
+  background-color: lighten($theme, 30);
+  border: 2px solid $theme;
+  border-radius: 10px;
 }
 
 .panel .btn .img {
@@ -207,11 +193,7 @@ const compositionEvent = (state) => {
 }
 
 .panel .disable {
-  filter: grayscale(0.5);
-}
-
-.el-confirm {
-  background: #f4c86d !important;
-  border: none !important;
+  filter: grayscale(.8);
+  cursor: not-allowed;
 }
 </style>

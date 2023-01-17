@@ -10,6 +10,7 @@ const filterKey = ref('全部');
 const { commision } = useCommisionStore();
 const customers = [...commision.commisionRecords];
 
+// computed
 const customerList = computed(() => {
   let tmp = null;
   if (filterKey.value === '全部')
@@ -21,7 +22,6 @@ const customerList = computed(() => {
 
   return tmp.filter((i) => i.user_id.toString() === inputData.value || i.name.includes(inputData.value));
 })
-
 </script>
 
 <template>

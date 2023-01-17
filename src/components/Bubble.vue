@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps({
+defineProps({
   isUser: {
     type: Boolean,
     require: true,
@@ -32,7 +32,7 @@ const props = defineProps({
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .wrapper {
   width: 100%;
   min-height: 80px;
@@ -51,6 +51,8 @@ const props = defineProps({
   border-radius: 50%;
   overflow: hidden;
   margin-right: 10px;
+  border: 2px solid $theme;
+  background-color: #fff;
 }
 .avatar-user {
   margin-right: 0px;

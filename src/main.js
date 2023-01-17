@@ -6,11 +6,11 @@ import axios from 'axios';
 import request from './plugins/axios';
 import { wxLogin } from './api/service';
 //引入全局样式
-import './assets/base.css';
+import '@/styles/default.scss';
 import 'vant/lib/index.css';
 
 // 打印版本号
-console.log('current version: v1.2.3');
+console.log('current version: v1.2.4');
 console.log('欢迎使用 chatgpt web !');
 
 //加载配置文件

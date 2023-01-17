@@ -16,26 +16,25 @@ const proxyList = ref([
 ]);
 const selected = ref(-1);
 
-onBeforeMount(async () => {
-  reqPriceRate().then(res => {
-    proxyList.value[0].price = res.data.distributed_one;
-    proxyList.value[0].rate = res.data.v_one;
-    proxyList.value[1].price = res.data.distributed_two;
-    proxyList.value[1].rate = res.data.v_two;
-    proxyList.value[2].price = res.data.distributed_three;
-    proxyList.value[2].rate = res.data.v_three;
-  }).catch(() => {
-    showFailToast({
-      message: '获取会员价格失败!',
-      duration: 3000
-    })
+// 请求分佣数据
+reqPriceRate().then(res => {
+  proxyList.value[0].price = res.data.distributed_one;
+  proxyList.value[0].rate = res.data.v_one;
+  proxyList.value[1].price = res.data.distributed_two;
+  proxyList.value[1].rate = res.data.v_two;
+  proxyList.value[2].price = res.data.distributed_three;
+  proxyList.value[2].rate = res.data.v_three;
+}).catch(() => {
+  showFailToast({
+    message: '获取会员价格失败!',
+    duration: 3000
   })
 })
 
+// methods
 const onPayProxy = () => {
   reqPay({ id: user.value.id, type: 'distributed', money: proxyList.value[selected.value].price }, () => reqUserInfo(user.value.id));
 }
-
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineAsyncComponent, onBeforeMount, watch } from 'vue';
+import { ref, defineAsyncComponent, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { Uploader, Popup, showNotify, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
 import { reqUserInfo, reqWithdrawRecords, upload } from '../api/service';
@@ -20,6 +20,8 @@ const withdrawRecords = ref([]);
 const showDrawRecords = ref(false);
 const loading = ref(false);
 
+
+// methods
 // 请求提现记录
 const updateWithdrawRecords = () => {
   loading.value = true;
@@ -30,10 +32,7 @@ const updateWithdrawRecords = () => {
       showNotify({ type: 'danger', message: '获取提现记录失败!' })
   }).finally(() => loading.value = false)
 }
-
-onBeforeMount(() => {
-  updateWithdrawRecords();
-})
+updateWithdrawRecords();
 
 const inputValidate = () => (parseFloat(inputPrice.value) > 0 && parseFloat(inputPrice.value) <= parseFloat(user.value.withdraw))
 
@@ -64,8 +63,6 @@ const onShowWithdraw = () => {
   updateWithdrawRecords();
   showDrawRecords.value = true;
 }
-
-watch(inputPrice, (n, o) => console.log(n));
 </script>
 
 <template>

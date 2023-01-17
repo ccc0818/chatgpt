@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <RouterView class="view" v-slot="{ Component }">
     <KeepAlive>
@@ -33,6 +30,7 @@
   user-select: none;
   border-top: 1px solid #eee;
   font-size: 14px;
+  flex: 0 0 auto;
 
   .link {
     display: flex;
@@ -41,10 +39,12 @@
     flex: 0.45;
     text-decoration: none;
     color: #2c2c2c;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .active {
-    color: #9370d8 !important;
+    color: $theme !important;
   }
 }
 </style>

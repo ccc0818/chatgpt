@@ -8,23 +8,22 @@ import { reqPriceRate, reqPay, reqUserInfo } from '../api/service';
 const router = useRouter();
 const { user } = storeToRefs(useUserStore());
 const vipTypeList = ref([
-  { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: ''},
+  { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: '' },
   { id: 1, title: '季度会员', price: 109, oldPrice: 207, save: '', hot: true },
   { id: 2, title: '年度会员', price: 298, oldPrice: 828, save: '' },
 ])
 const selectedIndex = ref(0);
 
-onBeforeMount(async () => {
-  reqPriceRate().then(res => {
-    vipTypeList.value[0].price = res.data.vip_one;
-    vipTypeList.value[1].price = res.data.vip_two;
-    vipTypeList.value[2].price = res.data.vip_three;
-    vipTypeList.value.forEach(i => i.save = `立省${i.oldPrice - i.price}元`)
-  }).catch(() => {
-    console.log('获取会员价格失败!');
-  })
+reqPriceRate().then(res => {
+  vipTypeList.value[0].price = res.data.vip_one;
+  vipTypeList.value[1].price = res.data.vip_two;
+  vipTypeList.value[2].price = res.data.vip_three;
+  vipTypeList.value.forEach(i => i.save = `立省${i.oldPrice - i.price}元`)
+}).catch(() => {
+  console.log('获取会员价格失败!');
 })
 
+// methods
 const getClass = (index, item) => {
   let classStr = '';
   if (index === selectedIndex.value)
@@ -38,7 +37,7 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  reqPay({ id: user.value.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price}, () => reqUserInfo(user.value.id));
+  reqPay({ id: user.value.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price }, () => reqUserInfo(user.value.id));
 } 
 </script>
 
@@ -97,15 +96,17 @@ const payVip = () => {
     </div>
 
     <!-- 套餐列表 -->
-    <ul class="combo">
-      <li class="item" v-for="(item, index) of vipTypeList" :key="item.id" :class="getClass(index, item)"
-        @click="selectedIndex = index">
-        <span class="title">{{ item.title }}</span>
-        <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
-        <span class="old-price">¥{{ item.oldPrice }}</span>
-        <span class="save">{{ item.save }}</span>
-      </li>
-    </ul>
+    <div class="type-list">
+      <ul class="combo">
+        <li class="item" v-for="(item, index) of vipTypeList" :key="item.id" :class="getClass(index, item)"
+          @click="selectedIndex = index">
+          <span class="title">{{ item.title }}</span>
+          <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
+          <span class="old-price">¥{{ item.oldPrice }}</span>
+          <span class="save">{{ item.save }}</span>
+        </li>
+      </ul>
+    </div>
 
     <!-- 提示 -->
     <p class="tips">会员服务为虚拟商品，支付成功后不支持退款</p>
@@ -174,6 +175,8 @@ $header-color: #434045;
         height: 100%;
         border-radius: 50%;
         margin-right: 10px;
+        background-color: #fff;
+        border: 2px solid #fff;
       }
 
       .col {
@@ -214,28 +217,29 @@ $header-color: #434045;
 
     .panel {
       margin-top: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-content: space-around;
+      display: grid;
+      grid-template-columns: repeat(2, 50%);
+      gap: 8px;
       height: 120px;
-      border: none;
 
       .item {
+        width: 100%;
         display: flex;
         align-items: center;
-        width: 50%;
+        justify-content: center;
 
         .img {
           height: 48px;
-          margin-right: 8px;
         }
 
         .col {
           display: flex;
           flex-direction: column;
           height: 100%;
-          justify-content: flex-end;
+          width: calc(100% - 48px);
+          justify-content: center;
+          padding-left: 8px;
+
 
           .name {
             font-size: 14px;
@@ -247,88 +251,98 @@ $header-color: #434045;
             color: #c3c3c3;
             transform-origin: left;
             transform: scale(0.8);
-            white-space: nowrap;
+            white-space: normal;
           }
         }
       }
     }
   }
 
-  .combo {
-    padding: 30px 15px;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
+  .type-list {
     overflow-x: auto;
     scroll-behavior: smooth;
+    padding: 30px 0;
+    // margin: 0 10px;
 
     &::-webkit-scrollbar {
       display: none;
     }
 
-    .item {
-      list-style: none;
-      list-style-position: inside;
+    .combo {
+      // box-sizing: content-box;
       display: flex;
-      flex-direction: column;
+      min-width: 100%;
       align-items: center;
-      border: 1px solid #c3c3c3;
-      border-radius: 10px;
-      width: clamp(150px, 150px, 200px);
-      padding: 15px 0;
-      margin: 0 5px;
-      flex-shrink: 0;
-      position: relative;
+      padding: 0 10px;
+      // border: 1px solid red;
+      width: fit-content;
+      justify-content: space-around;
 
-      .title {
-        font-size: 16px;
-        color: #8e887e;
-        margin-bottom: 10px;
+      .item {
+        list-style: none;
+        list-style-position: inside;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border: 1px solid #c3c3c3;
+        border-radius: 10px;
+        width: clamp(150px, 150px, 200px);
+        padding: 15px 0;
+        margin: 0 5px;
+        flex: 0 0 auto;
+        position: relative;
+        cursor: pointer;
+
+        .title {
+          font-size: 16px;
+          color: #8e887e;
+          margin-bottom: 10px;
+        }
+
+        .price {
+          font-size: 18px;
+        }
+
+        .price-n {
+          font-weight: 900;
+          font-style: italic;
+          font-size: 24px;
+        }
+
+        .old-price {
+          font-size: 18px;
+          color: #c3c3c3;
+          text-decoration: line-through;
+          margin-bottom: 10px;
+        }
+
+        .save {
+          background-color: #ecdfcb;
+          padding: 3px 10px;
+          font-size: 14px;
+          border-radius: 15px;
+        }
       }
 
-      .price {
-        font-size: 18px;
+      .active {
+        background-color: #f5eee3;
       }
 
-      .price-n {
-        font-weight: 900;
-        font-style: italic;
-        font-size: 24px;
+      .hot::after {
+        content: '热门';
+        width: 40px;
+        height: 26px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        left: 0;
+        top: -20px;
+        background-color: #171717;
+        color: rgb(166, 166, 166);
+        font-size: 12px;
+        border-radius: 13px 13px 13px 0;
       }
-
-      .old-price {
-        font-size: 18px;
-        color: #c3c3c3;
-        text-decoration: line-through;
-        margin-bottom: 10px;
-      }
-
-      .save {
-        background-color: #ecdfcb;
-        padding: 3px 10px;
-        font-size: 14px;
-        border-radius: 15px;
-      }
-    }
-
-    .active {
-      background-color: #f5eee3;
-    }
-
-    .hot::after {
-      content: '热门';
-      width: 40px;
-      height: 26px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      left: 0;
-      top: -20px;
-      background-color: #171717;
-      color: rgb(166, 166, 166);
-      font-size: 12px;
-      border-radius: 13px 13px 13px 0;
     }
   }
 

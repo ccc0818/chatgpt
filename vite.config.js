@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import postcssPresetEnv from "postcss-preset-env"
+import postcssPresetEnv from "postcss-preset-env";
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,29 +15,29 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
-    })
+    }),
   ],
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: 8080,
-    open: true,
+    open: false,
     http: true,
     ssr: false,
     cors: true,
-    proxy: {
-      "/api": {
-        //目标代理到线上服务器
-        target: "http://localhost:8080/",
-        changeOrigin: true, //开启代理
-        //别名替换
-        rewrite: (path) => path.replace(/^\/api/, ""),
-        // ws: true, //socket协议开启
-      },
-    }
+  },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
   css: {
     postcss: {
-      plugins: [postcssPresetEnv()]
-    }
-  }
-})
+      plugins: [postcssPresetEnv()],
+    },
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/styles/variable.scss";`,
+      },
+    },
+  },
+});

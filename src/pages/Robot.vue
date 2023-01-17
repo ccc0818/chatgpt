@@ -13,14 +13,24 @@ const showContext = ref(false);
 const contextEl = ref(null);
 const viewEl = ref(null);
 const transformOrigin = ref('top left');
+const robotInfo = reactive({
+  name: '',
+  type: '',
+  salutation: '',
+  character: ''
+});
 let currentSelect;
+let timer;
 
-onBeforeMount(() => initRobots())
+// 初始化机器人数据
+initRobots();
+
 onBeforeRouteLeave(() => {
   showContext.value = false;
   showOverlay.value = false;
 });
 
+// methods
 const onRobot = (item) => {
   if (showContext.value) {
     showContext.value = false;
@@ -34,12 +44,6 @@ const onRobot = (item) => {
   router.replace('/home/chat')
 }
 
-const robotInfo = reactive({
-  name: '',
-  type: '',
-  salutation: '',
-  character: ''
-});
 const onAddRobot = (form) => {
   let { name, type, salutation, character } = form;
   type = `现在开始, 你的名字是${name}, 你将模仿为${type}, 你的性格是${character}。`;
@@ -65,7 +69,6 @@ const onShowContext = (x, y, idx) => {
   contextEl.value.style.top = y + 5 + 'px';
 }
 
-let timer;
 const onLongPress = (e, idx) => {
   showContext.value = false;
 
@@ -155,7 +158,7 @@ const onLongPressCancel = () => clearTimeout(timer);
       display: block;
       padding: 0;
       object-fit: contain;
-      background-color: #d0b8ff;
+      background-color: lighten($theme, 20);
       border-radius: 10px;
       pointer-events: none;
     }
@@ -165,7 +168,7 @@ const onLongPressCancel = () => clearTimeout(timer);
       width: 100%;
       height: 15px;
       font-size: 12px;
-      color: #9370d8;
+      color: $theme;
       text-align: center;
       line-height: 15px;
       margin-top: 10px;
@@ -182,7 +185,7 @@ const onLongPressCancel = () => clearTimeout(timer);
       line-height: 80px;
       font-size: 48px;
       user-select: none;
-      background-color: rgba($color: #9370d8, $alpha: 0.5);
+      background-color: rgba($color: $theme, $alpha: 0.5);
     }
 
     .badge-icon {
@@ -212,7 +215,7 @@ const onLongPressCancel = () => clearTimeout(timer);
     .add-btn {
       outline: none;
       border: none;
-      background-color: #9370d8;
+      background-color: $theme;
       width: clamp(150px, 80%, 400px);
       height: 40px;
       margin: 10px auto;
@@ -241,7 +244,7 @@ const onLongPressCancel = () => clearTimeout(timer);
       display: flex;
       height: 30px;
       font-size: 14px;
-      color: #9370d8;
+      color: $theme;
       border-radius: 3px;
       text-align: center;
       line-height: 30px;

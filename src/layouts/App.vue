@@ -1,6 +1,3 @@
-<script setup>
-</script>
-
 <template>
   <div class="viewport">
     <RouterView v-slot="{ Component }">
@@ -11,7 +8,7 @@
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .viewport {
   box-sizing: border-box;
   position: absolute;
@@ -40,7 +37,7 @@
     bottom: 10%;
     transform: translateX(-50%);
     border-radius: 10px;
-    border: 3px solid #9370d8;
+    border: 3px solid $theme;
     box-shadow: 0 20px 30px -20px var(--theme-color);
   }
 }

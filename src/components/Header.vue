@@ -1,15 +1,18 @@
 <script setup>
-import {defineProps, defineEmits} from 'vue';
+import { defineProps, defineEmits } from 'vue';
+// props
 defineProps({
   title: String,
 })
+
+// emits
 const emits = defineEmits(['onBack', 'onMenu']);
 </script>
 
 <template>
   <div class="header">
     <span class="iconfont icon-fanhui1 back" @click="emits('onBack')"></span>
-    <span class="title" v-if="title">{{title}}</span>
+    <span class="title" v-if="title">{{ title }}</span>
     <span class="menu" @click="emits('onMenu')">
       <slot name="menu"></slot>
     </span>
