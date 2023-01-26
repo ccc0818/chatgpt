@@ -51,10 +51,10 @@ onUpdated(() => {
 // 发送聊天消息
 const onSubmit = async () => {
   // 不允许输入为空
-  if (inputData.value.trimStart() === '') {
-    inputData.value = '';
+  if (!inputData.value.length) {
     return;
   }
+
   //vip 检查
   if (user.vip === 0) {
     //检查user 能否发信息
@@ -76,7 +76,7 @@ const onSubmit = async () => {
         // closeOnClickOverlay: false,
         overlay: false,
         // theme: 'round-button'
-        className: 'popup'
+        className: 'popup',
       }).then(() => {
         // on confirm
         router.push('/vip');
@@ -113,8 +113,9 @@ const onSubmit = async () => {
     </div>
     <!-- input -->
     <div class="panel">
-      <input ref="input" class="ipt" type="text" v-model="inputData" placeholder="你想和我聊点什么?" @change="onSubmit">
-      <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="inputData.length && onSubmit()">
+      <input ref="input" class="ipt" type="text" v-model.trim="inputData" placeholder="你想和我聊点什么?" 
+      @keydown.enter="!$event.isComposing && onSubmit()">
+      <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="onSubmit()">
         <img class="img" src="/assets/images/chat/send.png">
       </div>
     </div>
@@ -174,14 +175,15 @@ const onSubmit = async () => {
 }
 
 .panel .btn {
-  margin: 0 10px;
+  margin: 0 5px;
   height: 80%;
-  aspect-ratio: 1/.6;
+  aspect-ratio: 1/.5;
   padding: 5px;
   cursor: pointer;
   background-color: lighten($theme, 30);
   border: 2px solid $theme;
   border-radius: 10px;
+  flex: 0 0 auto;
 }
 
 .panel .btn .img {

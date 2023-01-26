@@ -61,16 +61,17 @@ export const reqUserInfo = (id) => {
 }
 
 // 请求微信授权
-export const wxLogin = async () => {
+export const wxLogin = (callback) => {
   const query = getQueryObj();
 
   const serverUrl = localStorage.getItem('serverUrl');
 
-  if (query.redirect_uri === undefined)
+  if (query.redirect_uri === undefined) {
     location.href = `${serverUrl}/index/index/login` + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
-  else {
+  } else {
     reqUserInfo(query.id);
     wxInitConfig();
+    callback();
   }
 }
 
