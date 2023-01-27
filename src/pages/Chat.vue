@@ -177,7 +177,7 @@ const onSubmit = async () => {
 .panel .btn {
   margin: 0 5px;
   height: 80%;
-  aspect-ratio: 1/.5;
+  aspect-ratio: 1/.7;
   padding: 5px;
   cursor: pointer;
   background-color: lighten($theme, 30);

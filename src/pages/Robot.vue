@@ -68,27 +68,17 @@ const onShowContext = (x, y, idx) => {
   }
   contextEl.value.style.top = y + 5 + 'px';
 }
-
-const onLongPress = (e, idx) => {
-  showContext.value = false;
-
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    onShowContext(e.touches[0].pageX, e.touches[0].pageY, idx);
-  }, 500);
-}
-const onLongPressCancel = () => clearTimeout(timer);
 </script>
 
 <template>
-  <div ref="viewEl" id="robot" class="view" @click="showContext = false" @contextmenu.prevent="">
-    <div class="cell" v-for="i of robots.robots" :key="i.id" @click.stop="onRobot(i)" @contextmenu.prevent="">
+  <div ref="viewEl" id="robot" class="view" @click="showContext = false" @contextmenu.prevent>
+    <div class="cell" v-for="i of robots.robots" :key="i.id" @click.stop="onRobot(i)" @contextmenu.prevent>
       <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
       <span class="name" unselectable>{{ i.name }}</span>
     </div>
     <div class="cell" v-for="(i, idx) of robots.userRobots" :key="i.id" @click.stop="onRobot(i)"
-      @contextmenu.prevent.stop="onShowContext($event.target.offsetLeft + $event.offsetX, $event.target.offsetTop + $event.offsetY, idx)"
-      @touchstart.stop="onLongPress" @touchmove.stop="onLongPressCancel" @touchend.stop="onLongPressCancel">
+      v-longpress="(e) => { showContext = false;; onShowContext(e.touches[0].pageX, e.touches[0].pageY, idx) }"
+      @contextmenu.prevent.stop="onShowContext($event.target.offsetLeft + $event.offsetX, $event.target.offsetTop + $event.offsetY, idx)">
       <img :src="i.avatar" alt="图片加载失败" draggable="false" unselectable>
       <span class="name" unselectable>{{ i.name }}</span>
     </div>

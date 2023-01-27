@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3828459 */
-  src: url('iconfont.woff2?t=1673279258314') format('woff2'),
-       url('iconfont.woff?t=1673279258314') format('woff'),
-       url('iconfont.ttf?t=1673279258314') format('truetype');
+  src: url('iconfont.woff2?t=1674803702821') format('woff2'),
+       url('iconfont.woff?t=1674803702821') format('woff'),
+       url('iconfont.ttf?t=1674803702821') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-fuzhi:before {
+  content: "\ec7a";
 }
 
 .icon-zhangdan:before {
