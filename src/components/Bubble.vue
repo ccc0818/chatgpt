@@ -26,16 +26,16 @@ const hidecopyHandle = () => {
 
 const copyHandle = () => {
   navigator.clipboard.writeText(props.message);
-  hidecopyHandle();
+  // hidecopyHandle();
 }
 </script>
 
 <template>
-  <div v-if="!isUser" class="wrapper" @click="hidecopyHandle">
+  <div v-if="!isUser" class="wrapper">
     <div class="avatar">
       <img class="img" :src="avatar">
     </div>
-    <div class="msg-box" v-longpress="showcopyHandle" @mouseenter="showcopyHandle" @mouseleave="hidecopyHandle">
+    <div class="msg-box">
       <div class="blob" @contextmenu.prevent>
         {{ message }}
       </div>
@@ -82,18 +82,19 @@ const copyHandle = () => {
       flex: 0 0 auto;
       cursor: pointer;
       transition: .2s;
-      transform: scale(0);
+      // transform: scale(1);
     }
   }
 
-  // @media (width > 750px) {
-  //   &:hover .copy-btn {
-  //     transform: scale(1);
-  //   }
-  // }
+  @media (width > 750px) {
+    .copy-btn {
+      transform: scale(0);
+    }
+    &:hover .copy-btn {
+      transform: scale(1);
+    }
+  }
 }
-
-
 
 .wrapper-user {
   justify-content: flex-end
@@ -127,12 +128,13 @@ const copyHandle = () => {
   background-color: #d7d8db;
   color: #161d2f;
   max-width: 70%;
-  padding: 8px;
+  padding: 15px;
   border-radius: 3px 12px 12px 12px;
   box-sizing: border-box;
   word-break: break-all;
   white-space: pre-wrap;
   transition: width height .3s linear;
+  user-select: none;
 }
 
 .blob-user {
