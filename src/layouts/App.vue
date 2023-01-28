@@ -1,3 +1,6 @@
+<script setup>
+</script>
+
 <template>
   <div class="viewport">
     <RouterView v-slot="{ Component }">

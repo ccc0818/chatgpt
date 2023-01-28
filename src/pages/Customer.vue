@@ -1,13 +1,14 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount, defineProps } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import useCommisionStore from '../stores/commision';
+import useStore from '../store';
 
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const inputData = ref('');
 const filterKey = ref('全部');
-const { commision } = useCommisionStore();
+const { commisionStore } = useStore();
+const { commision } = commisionStore;
 const customers = [...commision.commisionRecords];
 
 // computed

@@ -2,11 +2,12 @@
 import { ref } from 'vue';
 import { showFailToast, showSuccessToast, Dialog, Field, CellGroup, showImagePreview } from 'vant';
 import { useRouter } from 'vue-router';
-import useUserStore from '../stores/user';
 import { reqActiveSecret } from '../api/service';
+import useStore from '../store';
 import { storeToRefs } from 'pinia';
 
-const { user } = storeToRefs(useUserStore());
+const { userStore } = useStore();
+const { user } = storeToRefs(userStore);
 const router = useRouter();
 const show = ref(false);
 const inputSecret = ref('');
@@ -32,10 +33,10 @@ const onFormatter = (val) => {
 const onClickItem = async (index) => {
   switch (index) {
     case 0: //开通会员
-      router.push('/vip');
+      router.push({ name: 'vip' });
       break;
     case 1:
-      router.push("/market");
+      router.push({ name: 'market' });
       break;
     case 2: //兑换卡密
       show.value = true;
@@ -57,7 +58,7 @@ const onClickItem = async (index) => {
 }
 
 const onEmitSecret = () => {
-  reqActiveSecret({ id: user.value.id, secret: inputSecret.value.trim() }).then(res => {
+  reqActiveSecret({ id: user.id, secret: inputSecret.value.trim() }).then(res => {
     // console.log(res)
     if (res.data === 200)
       showSuccessToast({
@@ -83,7 +84,7 @@ const onEmitSecret = () => {
           <span>ID: {{ user.id }}</span>
         </div>
         <div class="name">
-          <span v-if="user.vip !== 0" class="vip"></span>{{ user.nickname }}
+          <span v-if="user.state !== 0" class="vip"></span>{{ user.nickname }}
         </div>
       </div>
       <ul class="menu">

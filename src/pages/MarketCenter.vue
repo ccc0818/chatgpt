@@ -1,30 +1,19 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
-import useUserStore from '../stores/user';
+import useStore from '../store';
 import { useRouter } from 'vue-router';
 import { showNotify } from 'vant';
 import { reqCommisionRecord } from '../api/service';
-import useCommisionStore from '../stores/commision';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const { user } = useUserStore();
-const { commision } = useCommisionStore();
+const { commisionStore, userStore } = useStore();
+const { user } = storeToRefs(userStore);
+const { commision } = storeToRefs(commisionStore);
+commisionStore.getCommision();
 const qrNode = ref(null);
-
-const data = ref({
-  withDraw: user.withdraw,
-  commision: 0,
-  qrcodeUrl: location.origin + `/?parent_user_id=${user.id}`,
-});
-
-reqCommisionRecord(user.id).then(res => {
-  // console.log(res)
-  if (res.status === 200) {
-    data.value.commision = commision.commision = res.data.yjzh.toFixed(4);
-    commision.commisionRecords = res.data.yjjl;
-  }
-}).catch((err) => showNotify({ type: 'danger', message: "获取佣金信息失败!" + err }));
+const qrcodeUrl = location.origin + `/?parent_user_id=${user.id}`;
 
 // methods
 const downloadQr = () => {
@@ -46,17 +35,17 @@ const downloadQr = () => {
         <div class="icon-w"></div>
         <div class="mid">
           <span>可提现佣金</span>
-          <span>{{ data.withDraw }}</span>
+          <span>{{ user.yongjin }}</span>
         </div>
-        <span class="btn" @click="router.push('market_center/withdraw')">提现</span>
+        <span class="btn" @click="router.push({ name: 'withdraw' })">提现</span>
       </div>
       <div class="card">
         <div class="icon-r"></div>
         <div class="mid">
           <span>总佣金</span>
-          <span>{{ data.commision }}</span>
+          <span>{{ commision.commision }}</span>
         </div>
-        <span class="btn" @click="router.push('market_center/customer')">佣金记录</span>
+        <span class="btn" @click="router.push({ name: 'market_customer' })">佣金记录</span>
       </div>
 
       <!-- 二维码 -->
@@ -64,8 +53,8 @@ const downloadQr = () => {
         <p class='title'>长按保存推广二维码</p>
         <div class="wrapper">
           <div class="inner">
-            <VueQr ref="qrNode" :text="data.qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000"
-              colorLight="#ffffff" logoSrc="/assets/images/openai.png" :logoMargin="0" logoBackgroundColor="#ffffff">
+            <VueQr ref="qrNode" :text="qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000" colorLight="#ffffff"
+              logoSrc="/assets/images/openai.png" :logoMargin="0" logoBackgroundColor="#ffffff">
             </VueQr>
           </div>
         </div>

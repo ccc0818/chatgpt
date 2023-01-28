@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
-import useUserStore from '../stores/user';
+import { ref } from 'vue';
+import useStore from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { reqPriceRate, reqPay, reqUserInfo } from '../api/service';
 
 const router = useRouter();
-const { user } = storeToRefs(useUserStore());
+const { userStore } = useStore();
+const { user } = storeToRefs(userStore);
+const { refreshUserInfo } = userStore;
 const vipTypeList = ref([
   { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: '' },
   { id: 1, title: '季度会员', price: 109, oldPrice: 207, save: '', hot: true },
@@ -37,7 +39,7 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  reqPay({ id: user.value.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price }, () => reqUserInfo(user.value.id));
+  reqPay({ id: user.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price }, refreshUserInfo);
 } 
 </script>
 
@@ -54,7 +56,7 @@ const payVip = () => {
         <img class="avatar" :src="user.avatar">
         <div class="col">
           <span class="name">{{ user.nickname }}</span>
-          <span class="date">{{ user.vip ? `畅聊会员将于: ${user.endTime.split(' ')[0]}到期` : '开通会员享畅聊' }}</span>
+          <span class="date">{{ user.state ? `畅聊会员将于: ${user.endTime.split(' ')[0]}到期` : '开通会员享畅聊' }}</span>
         </div>
       </div>
       <img class="logo" src="../assets/images/vip/ChatVIP.png">
@@ -112,7 +114,7 @@ const payVip = () => {
     <p class="tips">会员服务为虚拟商品，支付成功后不支持退款</p>
 
     <!-- 开通 -->
-    <div class="btn" @click="payVip">{{ user.vip ? '立即续费' : '立即开通' }}</div>
+    <div class="btn" @click="payVip">{{ user.state ? '立即续费' : '立即开通' }}</div>
   </div>
 </template>
 

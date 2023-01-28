@@ -1,17 +1,18 @@
 <script setup>
-import { ref, nextTick, onUpdated, onBeforeMount } from 'vue';
+import { ref, nextTick, onUpdated } from 'vue';
 import Bubble from '../components/Bubble.vue';
 import { gptSendMessage } from '../api/chatgpt';
 import { reqFreeQueryTimes } from '../api/service';
-import useUserStore from '../stores/user';
 import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
-import useRobotStore from '../stores/robot';
 import { storeToRefs } from 'pinia';
+import useStore from '../store';
 
 const router = useRouter();
-const { user } = useUserStore();
-const { robots } = storeToRefs(useRobotStore());
+const { userStore, robotStore } = useStore();
+const { user } = storeToRefs(userStore);
+const { robots } = storeToRefs(robotStore);
+
 const inputData = ref('');
 const mainEl = ref('null');
 let id = 0;
@@ -43,7 +44,7 @@ onUpdated(() => {
       ...msgList.value,
       { id, isUser: true, message: robots.value.currentRobot.type }
     ]
-    gptSendMessage(tmp, user.chatKey);
+    gptSendMessage(tmp);
     robots.value.changed = false;
   }
 });
@@ -56,7 +57,7 @@ const onSubmit = async () => {
   }
 
   //vip 检查
-  if (user.vip === 0) {
+  if (user.state === 0) {
     //检查user 能否发信息
     try {
       const res = await reqFreeQueryTimes(user.id);
@@ -79,7 +80,7 @@ const onSubmit = async () => {
         className: 'popup',
       }).then(() => {
         // on confirm
-        router.push('/vip');
+        router.push({name: 'vip'});
       });
       return;
     }
@@ -94,7 +95,7 @@ const onSubmit = async () => {
 
   // 获取到收到的数据
   let newIndex = null;
-  gptSendMessage(msgList.value, user.chatKey, (content) => {
+  gptSendMessage(msgList.value, (content) => {
     if (newIndex === null)
       newIndex = msgList.value.push({ id: id++, isUser: false, message: content }) - 1;
     else

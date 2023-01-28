@@ -3,12 +3,14 @@ import { ref, defineAsyncComponent, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { Uploader, Popup, showNotify, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
 import { reqUserInfo, reqWithdrawRecords, upload } from '../api/service';
-import useUserStore from '../stores/user';
+import useStore from '../store';
 import { storeToRefs } from 'pinia';
 
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
-const { user } = storeToRefs(useUserStore());
+const { userStore } = useStore();
+const { user } = storeToRefs(userStore);
+const {refreshUserInfo} = userStore;
 
 const inputPrice = ref('');
 const inputMaxLength = 8;
@@ -25,7 +27,7 @@ const loading = ref(false);
 // 请求提现记录
 const updateWithdrawRecords = () => {
   loading.value = true;
-  reqWithdrawRecords(user.value.id).then(res => {
+  reqWithdrawRecords(user.id).then(res => {
     if (res.status === 200)
       withdrawRecords.value = res.data;
     else
@@ -34,7 +36,7 @@ const updateWithdrawRecords = () => {
 }
 updateWithdrawRecords();
 
-const inputValidate = () => (parseFloat(inputPrice.value) > 0 && parseFloat(inputPrice.value) <= parseFloat(user.value.withdraw))
+const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.yongjin))
 
 const onFileUpload = (file) => {
   fileList.value[0] = { content: file.content }
@@ -45,14 +47,14 @@ const onAckQr = () => {
   // 确认上传支付宝二维码
   const fd = new FormData();
   fd.append('file', uploadFile.value);
-  fd.append('id', user.value.id);
+  fd.append('id', user.id);
   fd.append('money', inputPrice.value);
 
   upload(fd).then(res => {
     if (res.status !== 200 || parseInt(res.data.code) !== 200) {
       showNotify({ type: 'danger', message: '提现失败!', duration: 5000 });
     } else {
-      reqUserInfo(user.value.id);
+      refreshUserInfo();
       showNotify({ type: 'success', message: '提现完成! 将会在24小时内到账', duration: 2000 });
     }
     showPopup.value = false;
@@ -78,12 +80,12 @@ const onShowWithdraw = () => {
         <p class="title">提现金额(元)</p>
         <div class="input-panel">
           <span>¥</span>
-          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额" v-model="inputPrice" :readonly="showNumberBoard"
-            @touchstart.stop="showNumberBoard = true" />
+          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额" v-model.number="inputPrice"
+            :readonly="showNumberBoard" @touchstart.stop="showNumberBoard = true" />
         </div>
         <div class="balance">
-          <span>余额¥{{ user.withdraw }}，</span>
-          <span @click="inputPrice = user.withdraw">全部提现</span>
+          <span>余额¥{{ user.yongjin }}，</span>
+          <span @click="inputPrice = user.yongjin">全部提现</span>
         </div>
       </div>
       <!-- 提现按钮 -->
@@ -121,8 +123,8 @@ const onShowWithdraw = () => {
       </PullRefresh>
     </Overlay>
 
-    <NumberKeyboard v-model="inputPrice" :show="showNumberBoard" @blur="showNumberBoard = false" :maxlength="inputMaxLength"
-      safe-area-inset-bottom theme="custom" extra-key="." close-button-text="完成">
+    <NumberKeyboard v-model="inputPrice" :show="showNumberBoard" @blur="showNumberBoard = false"
+      :maxlength="inputMaxLength" safe-area-inset-bottom theme="custom" extra-key="." close-button-text="完成">
     </NumberKeyboard>
   </div>
 </template>

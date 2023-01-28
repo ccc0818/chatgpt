@@ -1,8 +1,8 @@
 import wx from "weixin-js-sdk";
 import request from '../plugins/axios';
-import useUserStore from '../stores/user';
 import { getQueryObj } from '../utils/utils';
 import { showToast } from "vant";
+import useStore from "@/store";
 
 // 请求signature appId 等签名信息
 const reqSign = () => {
@@ -41,37 +41,26 @@ const wxInitConfig = () => {
 
 // 根据用户id请求用户信息
 export const reqUserInfo = (id) => {
-  request.get(`/index/index/userinfo?id=${id}`).then(res => {
-    const { user } = useUserStore();
-    const userInfo = res.data.user_id;
-    user.id = userInfo.id;
-    user.nickname = userInfo.nickname;
-    user.avatar = userInfo.avatar;
-    user.vip = userInfo.state;
-    user.number = userInfo.number;
-    user.startTime = userInfo.starttime;
-    user.endTime = userInfo.endtime;
-    user.chatKey = userInfo.chat_key;
-    user.parentUserId = userInfo.parent_user_id;
-    user.withdraw = userInfo.yongjin;
-    user.partner = userInfo.partner;
-    user.ratio = userInfo.ratio;
-    // console.log(user);
-  })
+  request.get(`/index/index/userinfo?id=${id}`);
 }
 
 // 请求微信授权
-export const wxLogin = (callback) => {
+export const wxLogin = () => {
   const query = getQueryObj();
 
   const serverUrl = localStorage.getItem('serverUrl');
 
   if (query.redirect_uri === undefined) {
     location.href = `${serverUrl}/index/index/login` + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
+    return;
   } else {
-    reqUserInfo(query.id);
+    // 初始化微信配置
     wxInitConfig();
-    callback();
+    // 初始化用户信息
+    const store = useStore();
+    // 加载用户信息
+    store.userStore.getUserInfo(query.id);
+    return true;
   }
 }
 

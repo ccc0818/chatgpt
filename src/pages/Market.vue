@@ -1,13 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import useUserStore from '../stores/user';
+import useStore from '../store';
 import { reqPay, reqPriceRate, reqUserInfo } from '../api/service';
 import { storeToRefs } from 'pinia';
 import { showFailToast } from 'vant';
 
 const router = useRouter();
-const { user } = storeToRefs(useUserStore());
+const { userStore } = useStore();
+const { user } = storeToRefs(userStore);
+const { refreshUserInfo } = userStore;
 
 const proxyList = ref([
   { id: 1, level: 'v1', price: 199, rate: 50 },
@@ -33,7 +35,7 @@ reqPriceRate().then(res => {
 
 // methods
 const onPayProxy = () => {
-  reqPay({ id: user.value.id, type: 'distributed', money: proxyList.value[selected.value].price }, () => reqUserInfo(user.value.id));
+  reqPay({ id: user.id, type: 'distributed', money: proxyList.value[selected.value].price }, refreshUserInfo);
 }
 </script>
 
@@ -50,7 +52,7 @@ const onPayProxy = () => {
       <!-- 用户信息 -->
       <div class="user">
         <img class="avatar" :src="user.avatar">
-        <span class="name">{{ user.name }}</span>
+        <span class="name">{{ user.nickname }}</span>
       </div>
       <!-- 展示信息 -->
       <div class="title-h">合伙人权益</div>
@@ -83,7 +85,7 @@ const onPayProxy = () => {
           <p>加入合伙人，享高额分佣！</p>
         </div>
       </div>
-      <div v-else class="join-card" @click.stop="() => router.push('/market_center')">
+      <div v-else class="join-card" @click.stop="() => router.push({ name: 'market_detail'})">
         <div class="icon">
           <span class="iconfont icon-user"></span>
         </div>

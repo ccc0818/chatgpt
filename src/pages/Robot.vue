@@ -1,13 +1,14 @@
 <script setup>
 import { storeToRefs } from 'pinia';
-import { ref, reactive, onBeforeMount } from 'vue';
-import { Overlay, Field, CellGroup, Form, Button, Badge, Icon } from 'vant';
+import { ref, reactive } from 'vue';
+import { Overlay, Field, CellGroup, Form, Button } from 'vant';
 import { onBeforeRouteLeave, useRouter } from 'vue-router';
-import useRobotStore from '../stores/robot';
+import useStore from '../store';
 
 const router = useRouter();
-const { robots } = storeToRefs(useRobotStore());
-const { setOneRobot, initRobots, removeOneRobot } = useRobotStore();
+const { robotStore } = useStore();
+const { robots } = storeToRefs(robotStore);
+const { setOneRobot, initRobots, removeOneRobot } = robotStore;
 const showOverlay = ref(false);
 const showContext = ref(false);
 const contextEl = ref(null);
