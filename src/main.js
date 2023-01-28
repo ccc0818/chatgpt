@@ -23,6 +23,8 @@ axios.get("/config.json").then(async (res) => {
   // 微信登陆
   wxLogin(initApp);
 
+  // initApp()
+
   function initApp() {
     const app = createApp(App);
     // 注册全局指令

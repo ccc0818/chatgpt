@@ -16,13 +16,13 @@ const props = defineProps({
 });
 
 // methods
-const showcopyHandle = () => {
-  copyBtn.value.style.transform = 'scale(1)';
-}
+// const showcopyHandle = () => {
+//   copyBtn.value.style.transform = 'scale(1)';
+// }
 
-const hidecopyHandle = () => {
-  copyBtn.value.style.transform = 'scale(0)';
-}
+// const hidecopyHandle = () => {
+//   copyBtn.value.style.transform = 'scale(0)';
+// }
 
 const copyHandle = () => {
   navigator.clipboard.writeText(props.message);
@@ -36,7 +36,7 @@ const copyHandle = () => {
       <img class="img" :src="avatar">
     </div>
     <div class="msg-box">
-      <div class="blob" @contextmenu.prevent>
+      <div class="blob blob-ai">
         {{ message }}
       </div>
       <span ref="copyBtn" class="iconfont icon-fuzhi copy-btn" @click.stop="copyHandle"></span>
@@ -83,6 +83,11 @@ const copyHandle = () => {
       cursor: pointer;
       transition: .2s;
       // transform: scale(1);
+    }
+
+    .blob-ai {
+      flex-grow: 1;
+      max-width: 80%;
     }
   }
 
@@ -134,7 +139,7 @@ const copyHandle = () => {
   word-break: break-all;
   white-space: pre-wrap;
   transition: width height .3s linear;
-  user-select: none;
+  // user-select: none;
 }
 
 .blob-user {
