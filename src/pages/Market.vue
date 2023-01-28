@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useUserStore from '../stores/user';
 import { reqPay, reqPriceRate, reqUserInfo } from '../api/service';

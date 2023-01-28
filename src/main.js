@@ -11,7 +11,7 @@ import "@/styles/default.scss";
 import "vant/lib/index.css";
 
 // 打印版本号
-console.log("current version: v1.3.1");
+console.log("current version: v1.3.2");
 console.log("欢迎使用 chatgpt web !");
 
 //加载配置文件
