@@ -1,17 +1,12 @@
-import { defineStore } from "pinia";
-import {reactive} from 'vue';
 import useCommisionStore from "./commision";
 import useUserStore from "./user";
 import useRobotStore from "./robot";
 
-const useStore = defineStore("store", () => {
-  const store = reactive({
+export default function useStore() {
+  return {
     commisionStore: useCommisionStore(),
     userStore: useUserStore(),
     robotStore: useRobotStore(),
-  });
+  };
+};
 
-  return store;
-});
-
-export default useStore;
