@@ -28,6 +28,6 @@ axios.get("/config.json").then(async (res) => {
   //注册vue-router路由
   app.use(router);
   // 微信登陆
-  // wxLogin() && app.mount("#app");
-  app.mount("#app");
+  wxLogin() && app.mount("#app");
+  // app.mount("#app");
 });
