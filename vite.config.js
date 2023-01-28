@@ -76,7 +76,7 @@ export default defineConfig({
         {
           name: "weixin-js-sdk",
           var: "wx",
-          path: "http://res2.wx.qq.com/open/js/jweixin-1.6.0.js",
+          path: "https://res2.wx.qq.com/open/js/jweixin-1.6.0.js",
         },
       ],
     }),
