@@ -81,10 +81,12 @@ export default defineConfig({
       ],
     }),
     visualizer({
-      filename: "report.html",
+      emitFile: false,
+      // filename: "report.html",
       open: true,
       gzipSize: true,
       brotliSize: true,
+      template: "treemap",
     }),
   ],
   server: {
