@@ -1,17 +1,15 @@
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import useStore from '../store';
 import { useRouter } from 'vue-router';
-import { showNotify } from 'vant';
-import { reqCommisionRecord } from '../api/service';
 import { storeToRefs } from 'pinia';
 
 const router = useRouter();
 const { commisionStore, userStore } = useStore();
 const { user } = storeToRefs(userStore);
 const { commision } = storeToRefs(commisionStore);
-commisionStore.getCommision();
+commisionStore.getCommision(user.value);
 const qrNode = ref(null);
 const qrcodeUrl = location.origin + `/?parent_user_id=${user.value.id}`;
 

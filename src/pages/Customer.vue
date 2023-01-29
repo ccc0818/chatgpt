@@ -2,13 +2,14 @@
 import { ref, computed, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import useStore from '../store';
+import { storeToRefs } from 'pinia';
 
 const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const inputData = ref('');
 const filterKey = ref('全部');
 const { commisionStore } = useStore();
-const { commision } = commisionStore;
+const { commision } = storeToRefs(commisionStore);
 const customers = [...commision.value.commisionRecords];
 
 // computed

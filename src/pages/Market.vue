@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useStore from '../store';
-import { reqPay, reqPriceRate, reqUserInfo } from '../api/service';
+import { reqPay, reqPriceRate } from '../api/service';
 import { storeToRefs } from 'pinia';
 import { showFailToast } from 'vant';
 
@@ -12,9 +12,9 @@ const { user } = storeToRefs(userStore);
 const { refreshUserInfo } = userStore;
 
 const proxyList = ref([
-  { id: 1, level: 'v1', price: 199, rate: 50 },
-  { id: 2, level: 'v2', price: 299, rate: 58 },
-  { id: 3, level: 'v3', price: 499, rate: 70 },
+  { id: 1, level: 'v1' },
+  { id: 2, level: 'v2'},
+  { id: 3, level: 'v3'},
 ]);
 const selected = ref(-1);
 

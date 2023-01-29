@@ -28,29 +28,12 @@ const useUserStore = defineStore("userStore", () => {
     };
   }
 
-  async function getUserInfo(id) {
+  async function getUserInfo(payload) {
     if (user.value.loaded) return;
 
-    const resp = await reqUserInfo(id);
-    if (!resp) return;
-
+    const resp = await reqUserInfo(payload);
     user.value = resp.data.user_id;
     user.value.loaded = true;
-
-    console.log("用户信息加载完成", user);
-
-    // user.id = userInfo.id;
-    // user.nickname = userInfo.nickname;
-    // user.avatar = userInfo.avatar;
-    // user.vip = userInfo.state;
-    // user.number = userInfo.number;
-    // user.startTime = userInfo.starttime;
-    // user.endTime = userInfo.endtime;
-    // user.chatKey = userInfo.chat_key;
-    // user.parentUserId = userInfo.parent_user_id;
-    // user.withdraw = userInfo.yongjin;
-    // user.partner = userInfo.partner;
-    // user.ratio = userInfo.ratio;
   }
 
   async function refreshUserInfo() {

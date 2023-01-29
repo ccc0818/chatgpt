@@ -1,93 +1,93 @@
 import wx from "weixin-js-sdk";
-import request from '../plugins/axios';
-import { getQueryObj } from '../utils/utils';
+import request from "../plugins/axios";
+import { getQueryObj } from "../utils/utils";
 import { showToast } from "vant";
 import useStore from "@/store";
 
 // 请求signature appId 等签名信息
 const reqSign = () => {
-  const url = location.href.split('#')[0];
+  const url = location.href.split("#")[0];
   return request.post(`/index/index/signature`, JSON.stringify({ url }));
-}
+};
 
 // 初始化wx sdk api 配置
-const wxInitConfig = () => {
-  reqSign().then(res => {
-    if (res.status === 200) {
-      wx.config({
-        debug: false,
-        appId: res.data.appId,
-        timestamp: res.data.timestamp,
-        nonceStr: res.data.nonceStr,
-        signature: res.data.signature,
-        jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem", "hideOptionMenu"]
-      });
+const wxInitConfig = async () => {
+  const res = await reqSign();
+  wx.config({
+    debug: false,
+    appId: res.data.appId,
+    timestamp: res.data.timestamp,
+    nonceStr: res.data.nonceStr,
+    signature: res.data.signature,
+    jsApiList: ["chooseWXPay", "hideAllNonBaseMenuItem", "hideOptionMenu"],
+  });
 
-      wx.ready(() => {
-        console.log('wx ready.');
-        // 隐藏非基础的wx功能按钮
-        wx.hideAllNonBaseMenuItem();
+  wx.ready(() => {
+    // 隐藏非基础的wx功能按钮
+    wx.hideAllNonBaseMenuItem();
 
-        // 隐藏右上角菜单按钮
-        wx.hideOptionMenu();
-      })
+    // 隐藏右上角菜单按钮
+    wx.hideOptionMenu();
+  });
 
-      wx.error((err) => {
-        console.log('wx error!', err);
-      })
-    }
-  })
-}
+  wx.error((err) => {
+    console.log("wx error!", err);
+  });
+};
 
 // 根据用户id请求用户信息
 export const reqUserInfo = (id) => {
-  request.get(`/index/index/userinfo?id=${id}`);
-}
+  return request.get(`/index/index/userinfo?id=${id}`);
+};
 
 // 请求微信授权
 export const wxLogin = () => {
   const query = getQueryObj();
 
-  const serverUrl = localStorage.getItem('serverUrl');
+  const serverUrl = localStorage.getItem("serverUrl");
 
   if (query.redirect_uri === undefined) {
-    location.href = `${serverUrl}/index/index/login` + (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : '');
+    location.href =
+      `${serverUrl}/index/index/login` +
+      (query.parent_user_id ? `?parent_user_id=${query.parent_user_id}` : "");
     return;
   } else {
     // 初始化微信配置
     wxInitConfig();
     // 初始化用户信息
-    const store = useStore();
+    const { userStore } = useStore();
     // 加载用户信息
-    store.userStore.getUserInfo(query.id);
+    userStore.getUserInfo(query.id);
     return true;
   }
-}
+};
 
 // 请求售卖会员类型 和 加入合伙人类型 以及价格信息
 export const reqPriceRate = () => {
-  return request.get('/index/index/payinfo');
-}
+  return request.get("/index/index/payinfo");
+};
 
 // 请求用户的推广记录
 export const reqCommisionRecord = (id) => {
   return request.get(`/index/index/yjjl?id=${id}`);
-}
+};
 
 // 请求用户的剩余体验消息条数
 export const reqFreeQueryTimes = (id) => {
   return request.get(`/index/index/probation?id=${id}`);
-}
+};
 
 // 请求兑换卡密
 export const reqActiveSecret = ({ id, secret }) => {
-  return request.get('/index/index/code', { params: { id, activation_code: secret } });
-}
+  return request.get("/index/index/code", {
+    params: { id, activation_code: secret },
+  });
+};
 
 // 请求微信支付的订单sign 等信息
-const reqWxInfo = ({ id, type = 'vip', money = 0.01 }) => {
-  return request.get('/index/index/pay', { params: { id, type, money } });
-}
+const reqWxInfo = ({ id, type = "vip", money = 0.01 }) => {
+  return request.get("/index/index/pay", { params: { id, type, money } });
+};
 
 // 拉起微信支付
 export const reqPay = ({ id, type, money }, success, error) => {
@@ -104,43 +104,43 @@ export const reqPay = ({ id, type, money }, success, error) => {
           console.log(res);
           success && success(res);
           showToast({
-            type: 'success',
-            message: '支付成功',
-            duration: 2000
-          })
+            type: "success",
+            message: "支付成功",
+            duration: 2000,
+          });
         },
         fail: (err) => {
           console.log(err);
           error && error(err);
           showToast({
-            type: 'fail',
-            message: '支付失败',
-            duration: 2000
-          })
+            type: "fail",
+            message: "支付失败",
+            duration: 2000,
+          });
         },
         cancel: () => {
           showToast({
-            type: 'fail',
-            message: '支付取消',
-            duration: 2000
-          })
-        }
+            type: "fail",
+            message: "支付取消",
+            duration: 2000,
+          });
+        },
       });
     }
-  })
-}
+  });
+};
 
 // 上传提现二维码以及提现请求
 export const upload = (fd) => {
-  return request.post('/index/index/withdraw', fd);
-}
+  return request.post("/index/index/withdraw", fd);
+};
 
 // 请求提现记录
 export const reqWithdrawRecords = (id) => {
-  return request.get('/index/index/withdraw_records', { params: { id } });
-}
+  return request.get("/index/index/withdraw_records", { params: { id } });
+};
 
 // 密钥欠费
 export const reqApiKeyArrear = (id) => {
   return request.get(`index/index/arrear?id=${id}`);
-}
+};
