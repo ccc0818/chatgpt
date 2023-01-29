@@ -80,13 +80,13 @@ export default defineConfig({
         },
       ],
     }),
-    visualizer({
-      emitFile: false,
-      // filename: "report.html",
-      open: true,
-      gzipSize: true,
-      brotliSize: true,
-    }),
+    // visualizer({
+    //   emitFile: false,
+    //   // filename: "report.html",
+    //   open: true,
+    //   gzipSize: true,
+    //   brotliSize: true,
+    // }),
   ],
   server: {
     host: "0.0.0.0",

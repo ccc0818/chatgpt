@@ -23,8 +23,8 @@ const gptJoinPrompt = (chatRecords) => {
 
 export const gptSendMessage = (chatRecords, contentUpdateCb) => {
   const { userStore } = useStore();
-  const { state } = storeToRefs(user);
-  const { setUser } = user;
+  const { user } = storeToRefs(userStore);
+  const { setUser } = userStore;
 
   let retryCount = 0;
   async function send() {
@@ -38,7 +38,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${state.chat_key}`,
+        Authorization: `Bearer ${user.value.chat_key}`,
       },
       body: JSON.stringify({
         model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001

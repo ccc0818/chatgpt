@@ -57,17 +57,13 @@ const onSubmit = async () => {
   }
 
   //vip 检查
-  if (user.state === 0) {
+  if (user.value.state === 0) {
+    let freeCount = 0;
     //检查user 能否发信息
-    try {
-      const res = await reqFreeQueryTimes(user.id);
-      user.number = res.data;
-    } catch (error) {
-      console.log('获取剩余体验次数失败!');
-      user.number = 0;
-    }
+    const res = await reqFreeQueryTimes(user.value.id);
+    freeCount = res.data;
 
-    if (user.number <= 0) {
+    if (freeCount <= 0) {
       // 弹出开会员对话框
       showConfirmDialog({
         message: '免费体验次数用完了, 开通会员享无限畅聊。',
@@ -80,7 +76,7 @@ const onSubmit = async () => {
         className: 'popup',
       }).then(() => {
         // on confirm
-        router.push({name: 'vip'});
+        router.push({ name: 'vip' });
       });
       return;
     }
@@ -114,8 +110,8 @@ const onSubmit = async () => {
     </div>
     <!-- input -->
     <div class="panel">
-      <input ref="input" class="ipt" type="text" v-model.trim="inputData" placeholder="你想和我聊点什么?" 
-      @keydown.enter="!$event.isComposing && onSubmit()">
+      <input ref="input" class="ipt" type="text" v-model.trim="inputData" placeholder="你想和我聊点什么?"
+        @keydown.enter="!$event.isComposing && onSubmit()">
       <div class="btn" :class="!inputData.length ? 'disable' : ''" @click="onSubmit()">
         <img class="img" src="/assets/images/chat/send.png">
       </div>

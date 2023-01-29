@@ -39,7 +39,7 @@ const getClass = (index, item) => {
 
 // 支付购买
 const payVip = () => {
-  reqPay({ id: user.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price }, refreshUserInfo);
+  reqPay({ id: user.value.id, type: 'vip', money: vipTypeList.value[selectedIndex.value].price }, refreshUserInfo);
 } 
 </script>
 
@@ -56,7 +56,7 @@ const payVip = () => {
         <img class="avatar" :src="user.avatar">
         <div class="col">
           <span class="name">{{ user.nickname }}</span>
-          <span class="date">{{ user.state ? `畅聊会员将于: ${user.endTime.split(' ')[0]}到期` : '开通会员享畅聊' }}</span>
+          <span class="date">{{ user.state ? `畅聊会员将于: ${user.endtime.split(' ')[0]}到期` : '开通会员享畅聊' }}</span>
         </div>
       </div>
       <img class="logo" src="../assets/images/vip/ChatVIP.png">

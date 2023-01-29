@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { ref } from "vue";
 import { reqUserInfo } from "@/api/service";
 
 const useUserStore = defineStore("userStore", () => {
-  const user = reactive({
+  const user = ref({
     loaded: false,
     id: -1,
     nickname: "未登陆",
@@ -22,20 +22,20 @@ const useUserStore = defineStore("userStore", () => {
 
   // actions
   function setUser(obj) {
-    user = reactive({
-      ...user,
+    user.value = {
+      ...user.value,
       ...obj,
-    });
+    };
   }
 
   async function getUserInfo(id) {
-    if (state.loaded) return;
+    if (user.value.loaded) return;
 
     const resp = await reqUserInfo(id);
     if (!resp) return;
 
-    user = reactive({ ...resp.data.user_id });
-    user.loaded = true;
+    user.value = resp.data.user_id;
+    user.value.loaded = true;
 
     console.log("用户信息加载完成", user);
 
@@ -54,12 +54,12 @@ const useUserStore = defineStore("userStore", () => {
   }
 
   async function refreshUserInfo() {
-    if (!user.loaded)
+    if (!user.value.loaded)
       return;
       
-    const resp = await reqUserInfo(user.id);
+    const resp = await reqUserInfo(user.value.id);
     if (!resp) return;
-    user = reactive({ ...resp.data.user_id });
+    user.value = resp.data.user_id;
   }
 
   return { user, setUser, getUserInfo, refreshUserInfo };

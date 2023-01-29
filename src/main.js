@@ -1,11 +1,13 @@
 import { createApp } from "vue";
 import App from "./layouts/App.vue";
 import router from "@/router";
-import pinia from "./plugins/pinia";
 import axios from "axios";
 import request from "./plugins/axios";
 import { wxLogin } from "./api/service";
 import { vLongPress } from "@/directives";
+import { createPinia } from "pinia";
+const pinia = createPinia();
+
 //引入全局样式
 import "@/styles/default.scss";
 import "vant/lib/index.css";

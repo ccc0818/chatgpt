@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { reactive } from 'vue';
+import { ref } from 'vue';
 
 const useCommisionStore = defineStore('commisionStore', () => {
-  const commision = reactive({
+  const commision = ref({
     loaded: false,
     commision: 0,
     commisionRecords: [],
@@ -15,9 +15,9 @@ const useCommisionStore = defineStore('commisionStore', () => {
       .then((res) => {
         // console.log(res)
         if (res.status === 200) {
-          commision.loaded = true;
-          commision.commision = res.data.yjzh.toFixed(4);
-          commision.commisionRecords = res.data.yjjl;
+          commision.value.loaded = true;
+          commision.value.commision = res.data.yjzh.toFixed(4);
+          commision.value.commisionRecords = res.data.yjjl;
         }
       })
       .catch((err) =>

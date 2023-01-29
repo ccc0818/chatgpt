@@ -58,7 +58,7 @@ const onClickItem = async (index) => {
 }
 
 const onEmitSecret = () => {
-  reqActiveSecret({ id: user.id, secret: inputSecret.value.trim() }).then(res => {
+  reqActiveSecret({ id: user.value.id, secret: inputSecret.value.trim() }).then(res => {
     // console.log(res)
     if (res.data === 200)
       showSuccessToast({

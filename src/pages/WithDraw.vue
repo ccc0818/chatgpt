@@ -10,7 +10,7 @@ const Header = defineAsyncComponent(() => import('../components/Header.vue'));
 const router = useRouter();
 const { userStore } = useStore();
 const { user } = storeToRefs(userStore);
-const {refreshUserInfo} = userStore;
+const { refreshUserInfo } = userStore;
 
 const inputPrice = ref('');
 const inputMaxLength = 8;
@@ -27,7 +27,7 @@ const loading = ref(false);
 // 请求提现记录
 const updateWithdrawRecords = () => {
   loading.value = true;
-  reqWithdrawRecords(user.id).then(res => {
+  reqWithdrawRecords(user.value.id).then(res => {
     if (res.status === 200)
       withdrawRecords.value = res.data;
     else
@@ -36,7 +36,7 @@ const updateWithdrawRecords = () => {
 }
 updateWithdrawRecords();
 
-const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.yongjin))
+const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.value.yongjin))
 
 const onFileUpload = (file) => {
   fileList.value[0] = { content: file.content }
@@ -47,7 +47,7 @@ const onAckQr = () => {
   // 确认上传支付宝二维码
   const fd = new FormData();
   fd.append('file', uploadFile.value);
-  fd.append('id', user.id);
+  fd.append('id', user.value.id);
   fd.append('money', inputPrice.value);
 
   upload(fd).then(res => {
@@ -80,8 +80,8 @@ const onShowWithdraw = () => {
         <p class="title">提现金额(元)</p>
         <div class="input-panel">
           <span>¥</span>
-          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额" v-model.number="inputPrice"
-            :readonly="showNumberBoard" @touchstart.stop="showNumberBoard = true" />
+          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额"
+            v-model.number="inputPrice" :readonly="showNumberBoard" @touchstart.stop="showNumberBoard = true" />
         </div>
         <div class="balance">
           <span>余额¥{{ user.yongjin }}，</span>

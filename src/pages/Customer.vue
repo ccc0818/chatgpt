@@ -9,7 +9,7 @@ const inputData = ref('');
 const filterKey = ref('全部');
 const { commisionStore } = useStore();
 const { commision } = commisionStore;
-const customers = [...commision.commisionRecords];
+const customers = [...commision.value.commisionRecords];
 
 // computed
 const customerList = computed(() => {

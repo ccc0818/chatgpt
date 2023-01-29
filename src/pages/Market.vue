@@ -35,7 +35,7 @@ reqPriceRate().then(res => {
 
 // methods
 const onPayProxy = () => {
-  reqPay({ id: user.id, type: 'distributed', money: proxyList.value[selected.value].price }, refreshUserInfo);
+  reqPay({ id: user.value.id, type: 'distributed', money: proxyList.value[selected.value].price }, refreshUserInfo);
 }
 </script>
 

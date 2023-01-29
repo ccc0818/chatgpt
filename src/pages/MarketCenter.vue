@@ -13,7 +13,7 @@ const { user } = storeToRefs(userStore);
 const { commision } = storeToRefs(commisionStore);
 commisionStore.getCommision();
 const qrNode = ref(null);
-const qrcodeUrl = location.origin + `/?parent_user_id=${user.id}`;
+const qrcodeUrl = location.origin + `/?parent_user_id=${user.value.id}`;
 
 // methods
 const downloadQr = () => {
