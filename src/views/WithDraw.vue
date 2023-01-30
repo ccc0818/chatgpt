@@ -68,7 +68,7 @@ const onShowWithdraw = () => {
 </script>
 
 <template>
-  <div class="contain">
+  <div class="withdraw-container">
     <Header title="提现" @onBack="router.back()" @onMenu="onShowWithdraw">
       <template #menu>
         <span class="iconfont icon-zhangdan menu"></span>
@@ -132,18 +132,13 @@ const onShowWithdraw = () => {
 <style scoped lang="scss">
 @import '../assets/icon-fonts/iconfont.css';
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-.contain {
+.withdraw-container {
   width: 100%;
   height: 100vh;
   background-color: #eee;
   display: flex;
   flex-direction: column;
+  padding-top: 50px;
 
   .menu {
     font-size: 25px;

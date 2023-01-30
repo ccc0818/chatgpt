@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router';
 import useStore from '../store';
 import { reqPay, reqPriceRate } from '@/api';
 import { storeToRefs } from 'pinia';
-import { showFailToast } from 'vant';
+import { imageProps, showFailToast } from 'vant';
+import Header from '@/components/Header';
 
 const router = useRouter();
 const { userStore } = useStore();
@@ -13,8 +14,8 @@ const { refreshUserInfo } = userStore;
 
 const proxyList = ref([
   { id: 1, level: 'v1' },
-  { id: 2, level: 'v2'},
-  { id: 3, level: 'v3'},
+  { id: 2, level: 'v2' },
+  { id: 3, level: 'v3' },
 ]);
 const selected = ref(-1);
 
@@ -40,13 +41,8 @@ const onPayProxy = () => {
 </script>
 
 <template>
-  <div class="contain">
-    <!-- 返回 -->
-    <span class="iconfont icon-fanhui1 back" @click="() => router.back()"></span>
-    <!-- 头部 -->
-    <header>
-      <span class="title">合伙人</span>
-    </header>
+  <div class="market-container">
+    <Header @onBack="router.back()" title="合伙人" />
     <!-- 主体 -->
     <main>
       <!-- 用户信息 -->
@@ -85,7 +81,7 @@ const onPayProxy = () => {
           <p>加入合伙人，享高额分佣！</p>
         </div>
       </div>
-      <div v-else class="join-card" @click.stop="() => router.push({ name: 'market_detail'})">
+      <div v-else class="join-card" @click.stop="() => router.push({ name: 'market_detail' })">
         <div class="icon">
           <span class="iconfont icon-user"></span>
         </div>
@@ -136,57 +132,21 @@ const onPayProxy = () => {
 <style scoped lang="scss">
 @import '../assets/icon-fonts/iconfont.css';
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-li {
-  list-style: none;
-}
-
-.contain {
+.market-container {
   width: 100%;
   height: 100vh;
   background-color: #fff;
-  position: relative;
-  padding: 30px 20px 15px 20px;
-  display: flex;
-  flex-direction: column;
+  padding-top: 50px;
+  overflow-y: scroll;
 
-  .back {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 30px;
-    left: 15px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-image: linear-gradient(to right bottom, #d7d7d7, rgb(241, 240, 240));
-    border-radius: 15px;
-  }
-
-  header {
-    text-align: center;
-    font-size: 24px;
-    color: #69515D;
-    height: 40px;
-    line-height: 40px;
-    flex-shrink: 0;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
   main {
     width: 100%;
     flex: 1;
-    margin-top: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding: 30px 20px 15px 20px;
 
     .user {
       width: 100%;

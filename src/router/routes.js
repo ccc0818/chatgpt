@@ -6,31 +6,47 @@ export default [
       {
         name: "home",
         path: "home",
-        component: () => import("../layouts/Home.vue"),
+        component: () => import("@/views/Home"),
         children: [
-          { path: "chat", component: () => import("../pages/Chat.vue") },
-          { path: "robot", component: () => import("../pages/Robot.vue") },
-          { path: "user", component: () => import("../pages/User.vue") },
+          {
+            name: "chat",
+            path: "chat",
+            component: () => import("@/views/Chat"),
+          },
+          {
+            name: "robot",
+            path: "robot",
+            component: () => import("@/views/Robot"),
+          },
+          {
+            name: "user",
+            path: "user",
+            component: () => import("@/views/User"),
+          },
         ],
       },
-      { name: "vip", path: "vip", component: () => import("../pages/Vip.vue") },
-      { name: "market", path: "market", component: () => import("../pages/Market.vue") },
+      { name: "vip", path: "vip", component: () => import("@/views/Vip") },
+      {
+        name: "market",
+        path: "market",
+        component: () => import("@/views/Market"),
+      },
       {
         name: "market_detail",
         path: "market_center",
-        component: () => import("../pages/MarketCenter.vue"),
+        component: () => import("@/views/MarketCenter"),
       },
       {
         name: "market_customer",
         path: "market_center/customer",
-        component: () => import("../pages/Customer.vue"),
+        component: () => import("@/views/Customer"),
       },
       {
         name: "withdraw",
         path: "market_center/withdraw",
-        component: () => import("../pages/WithDraw.vue"),
+        component: () => import("@/views/WithDraw"),
       },
     ],
   },
-  { path: '/:pathMatch(.*)*', redirect: "/" }, //其它没有的路由都跳转到主页
+  { path: "/:pathMatch(.*)*", redirect: "/" }, //其它没有的路由都跳转到主页
 ];

@@ -4,6 +4,7 @@ import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import useStore from '../store';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import Header from '@/components/Header';
 
 const router = useRouter();
 const { commisionStore, userStore } = useStore();
@@ -23,11 +24,8 @@ const downloadQr = () => {
 </script>
 
 <template>
-  <div class="contain">
-    <!-- 返回 -->
-    <span class="iconfont icon-fanhui1 back" @click="() => router.back()"></span>
-    <!-- header -->
-    <header>合伙人中心</header>
+  <div class="marketcenter-container">
+    <Header @onBack="router.back()" title="合伙人中心" />
     <main>
       <div class="card">
         <div class="icon-w"></div>
@@ -66,51 +64,21 @@ const downloadQr = () => {
 <style scoped lang="scss">
 @import '../assets/icon-fonts/iconfont.css';
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.contain {
-  width: 100%;
+.marketcenter-container {
   height: 100vh;
   background-color: #eee;
-  position: relative;
-  padding: 30px 15px 15px 15px;
-  display: flex;
-  flex-direction: column;
+  overflow-y: scroll;
+  padding-top: 50px;
 
-  .back {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 30px;
-    left: 15px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-image: linear-gradient(to right bottom, #d7d7d7, rgb(241, 240, 240));
-    border-radius: 15px;
-  }
-
-  header {
-    text-align: center;
-    font-size: 24px;
-    color: #69515D;
-    height: 40px;
-    line-height: 40px;
-    flex-shrink: 0;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
   main {
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding: 0 15px;
 
     .card {
       width: 100%;

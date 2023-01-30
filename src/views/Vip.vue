@@ -4,6 +4,7 @@ import useStore from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { reqPriceRate, reqPay } from '@/api';
+import Header from '@/components/Header';
 
 const router = useRouter();
 const { userStore } = useStore();
@@ -44,12 +45,8 @@ const payVip = () => {
 </script>
 
 <template>
-  <div class="view">
-    <!-- 返回按钮 -->
-    <span class="return" @click="router.back()">&lt; 返回</span>
-    <div class="background"></div>
-    <!-- header -->
-    <div class="header">会员中心</div>
+  <div class="vip-container">
+    <Header @onBack="router.back()" title="会员中心" />
     <!-- card -->
     <div class="card">
       <div class="row">
@@ -118,49 +115,19 @@ const payVip = () => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-$header-color: #434045;
-
-.view {
+<style scoped lang="scss">
+.vip-container {
   overflow-y: auto;
-  position: relative;
+  height: 100%;
+  padding-top: 50px;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  .return {
-    display: block;
-    position: absolute;
-    left: 15px;
-    top: 20px;
-    color: #eee;
-    user-select: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .background {
-    width: 100%;
-    height: 250px;
-    background-color: $header-color;
-    border-radius: 0% 0% 0% 80% / 0% 0% 0% 13%;
-    position: absolute;
-    top: 0;
-    z-index: -1;
-  }
-
-  .header {
-    color: #fff;
-    text-align: center;
-    padding: 20px 0 20px 0;
-  }
-
   .card {
     background: url(../assets/images/vip/card.png) no-repeat center/cover;
-    margin: 0 15px;
+    margin: 15px 15px;
     border-radius: 10px;
     height: 150px;
     overflow: hidden;

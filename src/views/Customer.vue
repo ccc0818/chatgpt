@@ -12,6 +12,8 @@ const { commisionStore } = useStore();
 const { commision } = storeToRefs(commisionStore);
 const customers = [...commision.value.commisionRecords];
 
+console.log(customers);
+
 // computed
 const customerList = computed(() => {
   let tmp = null;
@@ -27,7 +29,7 @@ const customerList = computed(() => {
 </script>
 
 <template>
-  <div class="contain">
+  <div class="customer-container">
     <Header title="我的客户" @onBack="router.back()"></Header>
     <main>
       <!-- 搜索 -->
@@ -63,19 +65,10 @@ const customerList = computed(() => {
 <style scoped lang="scss">
 @import '../assets/icon-fonts/iconfont.css';
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.contain {
-  width: 100%;
+.customer-container {
   height: 100vh;
   background-color: #f5f5f5;
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  padding-top: 50px;
 
   main {
     width: 100%;

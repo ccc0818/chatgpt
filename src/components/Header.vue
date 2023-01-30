@@ -1,5 +1,4 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
 // props
 defineProps({
   title: String,
@@ -23,13 +22,15 @@ const emits = defineEmits(['onBack', 'onMenu']);
 @import '../assets/icon-fonts/iconfont.css';
 
 .header {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 50px;
-  background-color: #fff;
-  color: #222;
-  box-sizing: border-box;
-  border-bottom: 1px solid #ddd;
+  background-color: $tabbar-bg;
+  color: $theme;
+  backdrop-filter: blur(8px);
+  top: 0;
+  left: 0;
+  z-index: 99;
 
   .back {
     position: absolute;
