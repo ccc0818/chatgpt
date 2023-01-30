@@ -1,8 +1,7 @@
 <script setup>
 import { ref, nextTick, onUpdated } from 'vue';
 import Bubble from '../components/Bubble.vue';
-import { gptSendMessage } from '../api/chatgpt';
-import { reqFreeQueryTimes } from '../api/service';
+import { gptSendMessage, reqFreeQueryTimes } from '@/api';
 import { showConfirmDialog } from 'vant';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';

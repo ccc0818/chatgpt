@@ -2,7 +2,7 @@
 import { ref, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { Uploader, Popup, showNotify, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
-import { reqWithdrawRecords, upload } from '../api/service';
+import { reqWithdrawRecords, upload } from '@/api';
 import useStore from '../store';
 import { storeToRefs } from 'pinia';
 

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import useStore from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { reqPriceRate, reqPay, reqUserInfo } from '../api/service';
+import { reqPriceRate, reqPay } from '@/api';
 
 const router = useRouter();
 const { userStore } = useStore();

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { reqCommisionRecord } from "@/api/service";
+import { reqCommisionRecord } from "@/api";
 
 const useCommisionStore = defineStore("commisionStore", () => {
   const commision = ref({

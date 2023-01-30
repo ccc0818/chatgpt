@@ -3,11 +3,10 @@ import App from "./layouts/App.vue";
 import router from "@/router";
 import axios from "axios";
 import request from "./plugins/axios";
-import { wxLogin } from "./api/service";
+import { wxLogin } from "@/api";
 import { vLongPress } from "@/directives";
 import { createPinia } from "pinia";
 const pinia = createPinia();
-
 
 //引入全局样式
 import "@/styles/default.scss";

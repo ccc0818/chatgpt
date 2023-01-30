@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { showFailToast, showSuccessToast, Dialog, Field, CellGroup, showImagePreview } from 'vant';
 import { useRouter } from 'vue-router';
-import { reqActiveSecret } from '../api/service';
+import { reqActiveSecret } from '@/api';
 import useStore from '../store';
 import { storeToRefs } from 'pinia';
 

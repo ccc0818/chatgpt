@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useStore from '../store';
-import { reqPay, reqPriceRate } from '../api/service';
+import { reqPay, reqPriceRate } from '@/api';
 import { storeToRefs } from 'pinia';
 import { showFailToast } from 'vant';
 
