@@ -22,7 +22,6 @@ const withdrawRecords = ref([]);
 const showDrawRecords = ref(false);
 const loading = ref(false);
 
-
 // methods
 // 请求提现记录
 const updateWithdrawRecords = () => {
@@ -62,14 +61,15 @@ const onAckQr = () => {
 }
 
 const onShowWithdraw = () => {
-  updateWithdrawRecords();
-  showDrawRecords.value = true;
+  if (showDrawRecords.value === false)
+    updateWithdrawRecords();
+  showDrawRecords.value = !showDrawRecords.value;
 }
 </script>
 
 <template>
   <div class="withdraw-container">
-    <Header title="提现" @onBack="router.back()" @onMenu="onShowWithdraw">
+    <Header :title="showDrawRecords ? '提现记录' : '提现'" @onBack="router.back()" @onMenu="onShowWithdraw">
       <template #menu>
         <span class="iconfont icon-zhangdan menu"></span>
       </template>
@@ -107,7 +107,6 @@ const onShowWithdraw = () => {
     </Popup>
 
     <Overlay :show="showDrawRecords" :style="{ backgroundColor: '#eee' }">
-      <Header title="提现记录" @onBack="showDrawRecords = false"></Header>
       <PullRefresh class="pull-box" v-model="loading" @refresh="updateWithdrawRecords">
         <div class="withdraw-item" v-for="i of withdrawRecords" :key="i.id">
           <div>
