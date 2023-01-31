@@ -66,7 +66,7 @@ const customerList = computed(() => {
 @import '../assets/icon-fonts/iconfont.css';
 
 .customer-container {
-  height: 100vh;
+  height: 100%;
   background-color: #f5f5f5;
   padding-top: 50px;
 

@@ -132,8 +132,7 @@ const onShowWithdraw = () => {
 @import '../assets/icon-fonts/iconfont.css';
 
 .withdraw-container {
-  width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: #eee;
   display: flex;
   flex-direction: column;

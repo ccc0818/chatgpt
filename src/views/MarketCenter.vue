@@ -65,7 +65,7 @@ const downloadQr = () => {
 @import '../assets/icon-fonts/iconfont.css';
 
 .marketcenter-container {
-  height: 100vh;
+  height: 100%;
   background-color: #eee;
   overflow-y: scroll;
   padding-top: 50px;

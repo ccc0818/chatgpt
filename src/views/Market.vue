@@ -133,8 +133,7 @@ const onPayProxy = () => {
 @import '../assets/icon-fonts/iconfont.css';
 
 .market-container {
-  width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: #fff;
   padding-top: 50px;
   overflow-y: scroll;
