@@ -129,9 +129,9 @@ const sendHandle = async (data) => {
   position: relative;
 
   .chat-list {
-    height: 100vh;
+    height: 100%;
     padding-top: 20px;
-    padding-bottom: 100px ;
+    padding-bottom: 50px;
     background: #eee;
     overflow-y: scroll;
     scroll-behavior: smooth;
