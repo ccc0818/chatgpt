@@ -85,7 +85,7 @@ const sendHandle = async (data) => {
       showConfirmDialog({
         message: '免费体验次数用完了, 开通会员享无限畅聊。',
         confirmButtonText: '去开通',
-        confirmButtonColor: '#cca4e3',
+        confirmButtonColor: '#9370d8',
         cancelButtonText: '再想想',
         // closeOnClickOverlay: false,
         overlay: false,
