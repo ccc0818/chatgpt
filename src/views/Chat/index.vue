@@ -6,7 +6,9 @@ import { gptSendMessage, reqFreeQueryTimes } from '@/api';
 import { showConfirmDialog } from 'vant';
 import { storeToRefs } from 'pinia';
 import useStore from '@/store';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { userStore, robotStore } = useStore();
 const { user } = storeToRefs(userStore);
 const { robots } = storeToRefs(robotStore);
