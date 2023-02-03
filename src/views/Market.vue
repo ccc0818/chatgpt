@@ -53,10 +53,10 @@ const onPayProxy = () => {
       <!-- 展示信息 -->
       <div class="title-h">合伙人权益</div>
       <div class="power-card">
-        <div class="item">
+        <!-- <div class="item">
           <img class="img" src="/assets/images/market/icon-1.png">
           <span class="text">平台扶持</span>
-        </div>
+        </div> -->
         <div class="item">
           <img class="img" src="/assets/images/market/icon-3.png">
           <span class="text">免提现手续费</span>
@@ -93,13 +93,12 @@ const onPayProxy = () => {
       </div>
       <div class="title-join-rule">合伙人服务条款：</div>
       <p class="item-p">1、服务费不支持退款，请确保能解决您的实际问题</p>
-      <p class="item-p">2、享受平台扶持，每10单奖励45/55/80</p>
-      <p class="item-p">3、V1合伙人分佣比例40%，V2：48%，V3：60%</p>
-      <p class="item-p">4、精美的宣传海报和物料助力成功。</p>
-      <p class="item-p">5、上下级终身绑定，一劳永逸享受高额分佣！</p>
-      <p class="item-p">6、下级成为合伙人服务费也享受分佣</p>
-      <p class="item-p">7、您只管推广分佣，售后及技术支持交给我们！</p>
-      <p class="item-p">8、推广方式以二维码或推广链接推广。</p>
+      <p class="item-p">2、V1合伙人分佣比例40%，V2：48%，V3：60%</p>
+      <p class="item-p">3、精美的宣传海报和物料助力成功。</p>
+      <p class="item-p">4、上下级终身绑定，一劳永逸享受高额分佣！</p>
+      <p class="item-p">5、下级成为合伙人服务费也享受分佣</p>
+      <p class="item-p">6、您只管推广分佣，售后及技术支持交给我们！</p>
+      <p class="item-p">7、推广方式以二维码或推广链接推广。</p>
       <div class="title-join-rule">合伙人红线警告：</div>
       <p class="item-p warn">（1）必须以真实产品情况进行推广</p>
       <p class="item-p warn">（2）不能过分夸大宣传产品特性</p>
