@@ -22,7 +22,7 @@
     border-radius: 10px;
     border: 3px solid $theme;
     box-shadow: 50px 50px 100px lighten($theme, 20),
-                -50px -50px 100px darken($color: $theme, $amount: 20);
+      -50px -50px 100px darken($color: $theme, $amount: 20);
   }
 }
 </style>

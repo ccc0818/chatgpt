@@ -109,7 +109,6 @@ const onPayProxy = () => {
       <p class="item-p center">那么，现在加入我们吧，让我们开始！</p>
       <p class="item-p center">我们將随时为您的成功做好谁备！</p>
       <footer>
-        <p>最终解释权归亿柏科技所有</p>
         <p>成都亿柏科技客户服务热线：400-6688-546</p>
       </footer>
     </main>
