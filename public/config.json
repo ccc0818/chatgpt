@@ -1,3 +1,4 @@
 {
-  "serverUrl": "https://xx.cdyb5.com"
+  "serverUrl": "https://xx.cdyb5.com",
+  "model": "text-curie-001" 
 }

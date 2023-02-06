@@ -2,12 +2,14 @@ import { showNotify } from "vant";
 import { reqApiKeyArrear } from "./service";
 import useStore from "@/store";
 import { storeToRefs } from "pinia";
+import axios from "axios";
 
 let reader;
+const model = localStorage.getItem("model");
 
-const gptJoinPrompt = (chatRecords) => {
+const gptJoinPrompt = chatRecords => {
   let queryStr = "";
-  chatRecords.forEach((i) => {
+  chatRecords.forEach(i => {
     if (i.id === 0) {
       queryStr += i.message + "\n";
       return;
@@ -21,6 +23,11 @@ const gptJoinPrompt = (chatRecords) => {
   return queryStr;
 };
 
+/**
+ * 发送聊天文本信息给gpt
+ * @param {*} chatRecords
+ * @param {*} contentUpdateCb
+ */
 export const gptSendMessage = (chatRecords, contentUpdateCb) => {
   const { userStore } = useStore();
   const { user } = storeToRefs(userStore);
@@ -41,7 +48,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
         Authorization: `Bearer ${user.value.chat_key}`,
       },
       body: JSON.stringify({
-        model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
+        model: model, //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
         prompt: gptJoinPrompt(chatRecords), // 请求信息
         max_tokens: 2048, // 最大数据片
         temperature: 0.9, // 分析力度
@@ -55,7 +62,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
 
     // 请求失败
     if (res.ok === false) {
-      res.json().then((res) => {
+      res.json().then(res => {
         if (res.error.code === "invalid_api_key")
           showNotify({ type: "danger", message: "无效的api_key!" });
         else if (res.error.code === null) {
@@ -65,7 +72,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
               return;
             }
             reqApiKeyArrear(user.value.id)
-              .then((res) => {
+              .then(res => {
                 if (res.status === 200) {
                   console.log(res);
                   setUser({ chat_key: res.data });
@@ -102,8 +109,8 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
 
         const arr = str.split("\n\n");
         const texts = arr
-          .filter((str) => str !== "" && str !== "data: [DONE]")
-          .map((str) => JSON.parse(str.replace("data: ", "")).choices[0].text);
+          .filter(str => str !== "" && str !== "data: [DONE]")
+          .map(str => JSON.parse(str.replace("data: ", "")).choices[0].text);
 
         content += texts.join("");
 
@@ -112,10 +119,24 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
 
         return reader.read().then(readStream); // 继续读取
       })
-      .catch((err) => {
+      .catch(err => {
         showNotify({ type: "danger", message: "读取数据流失败！请重试" });
         return;
       });
   }
   send();
+};
+
+export const gptReqImage = prompt => {
+  return axios.post(
+    "https://api.openai.com/v1/images/generations",
+    { prompt, response_format: "url" },
+    {
+      headers: {
+        "content-type": "application/json",
+        Authorization:
+          "Bearer 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",
+      },
+    }
+  );
 };
