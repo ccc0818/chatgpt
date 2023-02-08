@@ -11,9 +11,9 @@ const { userStore } = useStore();
 const { user } = storeToRefs(userStore);
 const { refreshUserInfo } = userStore;
 const vipTypeList = ref([
-  { id: 0, title: '月度会员', price: 49, oldPrice: 69, save: '' },
-  { id: 1, title: '季度会员', price: 109, oldPrice: 207, save: '', hot: true },
-  { id: 2, title: '年度会员', price: 298, oldPrice: 828, save: '' },
+  { id: 0, title: '月度会员', price: 49, oldPrice: 299, save: '' },
+  { id: 1, title: '季度会员', price: 109, oldPrice: 897, save: '', hot: true },
+  // { id: 2, title: '年度会员', price: 298, oldPrice: 828, save: '' },
 ])
 const selectedIndex = ref(0);
 
@@ -102,7 +102,7 @@ const payVip = () => {
           <span class="title">{{ item.title }}</span>
           <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
           <span class="old-price">¥{{ item.oldPrice }}</span>
-          <span class="save">{{ item.save }}</span>
+          <!-- <span class="save">{{ item.save }}</span> -->
         </li>
       </ul>
     </div>
@@ -175,7 +175,6 @@ const payVip = () => {
 
   .vip-power {
     padding: 10px 15px 15px 15px;
-    margin-top: 30px;
     overflow: hidden;
     border-bottom: 1px solid #e9e9e99c;
 
@@ -232,6 +231,7 @@ const payVip = () => {
     scroll-behavior: smooth;
     padding: 30px 0;
     // margin: 0 10px;
+    padding-bottom: 5px;
 
     &::-webkit-scrollbar {
       display: none;
@@ -319,7 +319,8 @@ const payVip = () => {
     font-size: 12px;
     color: #838383;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+    transform: scale(0.8);
   }
 
   .btn {
