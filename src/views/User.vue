@@ -15,12 +15,16 @@ const inputSecret = ref('');
 const errMsg = ref('');
 const disableConfirm = ref(true);
 const menuList = ref([
-  { icon: '/assets/images/user/user-item_diamond.png', title: '开通会员畅享无限对话' },
-  { icon: '/assets/images/user/user-item_walt.png', title: '加入代理赚钱' },
-  { icon: '/assets/images/user/user-item_lock.png', title: '卡密兑换' },
-  // { icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
-  { icon: '/assets/images/user/user-item_add.png', title: '关注公众号', uniBase64: "MzkzOTM4MjQyNQ==" }
+  { id: 0, icon: '/assets/images/user/user-item_diamond.png', title: '开通会员畅享无限对话' },
+  { id: 1, icon: '/assets/images/user/user-item_walt.png', title: '加入代理赚钱' },
+  { id: 2, icon: '/assets/images/user/user-item_lock.png', title: '卡密兑换' },
+  // {id: 3, icon: '/assets/images/user/user-item_add.png', title: '我也想搭建同款AI平台' },
+  { id: 4, icon: '/assets/images/user/user-item_add.png', title: '关注公众号', uniBase64: "MzkzOTM4MjQyNQ==" }
 ]);
+
+if (!user.value.partner) {
+  menuList.value.splice(1, 1);
+}
 
 // methods
 const onFormatter = (val) => {
@@ -37,8 +41,8 @@ const onFormatter = (val) => {
   return val
 }
 
-const onClickItem = async (index) => {
-  switch (index) {
+const onClickItem = async (id) => {
+  switch (id) {
     case 0: //开通会员
       router.push({ name: 'vip' });
       break;
@@ -51,7 +55,7 @@ const onClickItem = async (index) => {
     // case 3:
     //   window.location.href = 'https://work.weixin.qq.com/kfid/kfc03f8a1759c818c57';
     //   break;
-    case 3:
+    case 4:
       showImagePreview({
         images: [publicQrImage],
         showIndex: false,
@@ -96,7 +100,7 @@ const onEmitSecret = () => {
         </div>
       </div>
       <ul class="menu">
-        <li class="menu-item" v-for="(item, index) of menuList" :key="index" @click="onClickItem(index)">
+        <li class="menu-item" v-for="(item, index) of menuList" :key="index" @click="onClickItem(item.id)">
           <div class="left">
             <div class="icon">
               <img class="img" :src="item.icon">

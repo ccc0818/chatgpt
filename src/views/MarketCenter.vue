@@ -1,24 +1,27 @@
 <script setup>
 import { ref } from 'vue';
-import VueQr from 'vue-qr/src/packages/vue-qr.vue'
+// import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import useStore from '../store';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import Header from '@/components/Header';
+import promoteQrcodeImg from '@/assets/images/promote-qrcode.jpg'; 
 
 const router = useRouter();
 const { commisionStore, userStore } = useStore();
 const { user } = storeToRefs(userStore);
 const { commision } = storeToRefs(commisionStore);
 commisionStore.getCommision(user.value);
-const qrNode = ref(null);
-const qrcodeUrl = location.origin + `/?parent_user_id=${user.value.id}`;
+// const qrNode = ref(null);
+// const qrcodeUrl = location.origin + `/?parent_user_id=${user.value.id}`;
 
 // methods
 const downloadQr = () => {
   const a = document.createElement('a');
-  a.href = qrNode.value.imgUrl;
-  a.download = 'qrcode.png';
+  // a.href = qrNode.value.imgUrl;
+  a.href = promoteQrcodeImg;
+  console.log(a.href)
+  a.download = 'qrcode';
   a.click();
 }
 </script>
@@ -33,7 +36,7 @@ const downloadQr = () => {
           <span>可提现佣金</span>
           <span>{{ user.yongjin }}</span>
         </div>
-        <span class="btn" @click="router.push({ name: 'withdraw' })">提现</span>
+        <!-- <span class="btn" @click="router.push({ name: 'withdraw' })">提现</span> -->
       </div>
       <div class="card">
         <div class="icon-r"></div>
@@ -49,9 +52,10 @@ const downloadQr = () => {
         <p class='title'>长按保存推广二维码</p>
         <div class="wrapper">
           <div class="inner">
-            <VueQr ref="qrNode" :text="qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000" colorLight="#ffffff"
+            <!-- <VueQr  ref="qrNode" :text="qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000" colorLight="#ffffff"
               logoSrc="/assets/images/openai.png" :logoMargin="0" logoBackgroundColor="#ffffff">
-            </VueQr>
+            </VueQr> -->
+            <img src="@/assets/images/promote-qrcode.jpg" width="256" height="256">
           </div>
         </div>
       </div>
