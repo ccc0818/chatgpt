@@ -49,7 +49,7 @@ const downloadQr = () => {
 
       <!-- 二维码 -->
       <div class="card code">
-        <p class='title'>长按保存推广二维码</p>
+        <p class='title'>请联系商务经理或拨打服务热线:<a href="tel:4006688546">4006688546</a></p>
         <div class="wrapper">
           <div class="inner">
             <!-- <VueQr  ref="qrNode" :text="qrcodeUrl" :correctLevel="3" :size="256" colorDark="#000000" colorLight="#ffffff"
