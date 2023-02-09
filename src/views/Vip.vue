@@ -20,7 +20,7 @@ const selectedIndex = ref(0);
 reqPriceRate().then(res => {
   vipTypeList.value[0].price = res.data.vip_one;
   vipTypeList.value[1].price = res.data.vip_two;
-  vipTypeList.value[2].price = res.data.vip_three;
+  // vipTypeList.value[2].price = res.data.vip_three;
   vipTypeList.value.forEach(i => i.save = `立省${i.oldPrice - i.price}元`)
 }).catch(() => {
   console.log('获取会员价格失败!');
@@ -102,7 +102,7 @@ const payVip = () => {
           <span class="title">{{ item.title }}</span>
           <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
           <span class="old-price">¥{{ item.oldPrice }}</span>
-          <!-- <span class="save">{{ item.save }}</span> -->
+          <span class="save">{{ item.save }}</span>
         </li>
       </ul>
     </div>
