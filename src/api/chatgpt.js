@@ -127,16 +127,16 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
   send();
 };
 
-export const gptReqImage = prompt => {
-  return axios.post(
-    "https://api.openai.com/v1/images/generations",
-    { prompt, response_format: "url" },
-    {
-      headers: {
-        "content-type": "application/json",
-        Authorization:
-          "Bearer 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",
-      },
-    }
-  );
-};
+// export const gptReqImage = prompt => {
+//   return axios.post(
+//     "https://api.openai.com/v1/images/generations",
+//     { prompt, response_format: "url" },
+//     {
+//       headers: {
+//         "content-type": "application/json",
+//         Authorization:
+//           "Bearer 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",
+//       },
+//     }
+//   );
+// };

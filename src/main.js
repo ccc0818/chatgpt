@@ -3,12 +3,10 @@ import App from "./App.vue";
 import router from "@/router";
 import axios from "axios";
 import request from "./plugins/axios";
-import { wxLogin, gptReqImage } from "@/api";
+import { wxLogin } from "@/api";
 import { vLongPress } from "@/directives";
 import { createPinia } from "pinia";
 const pinia = createPinia();
-
-window.gptReqImage = gptReqImage;
 
 //引入全局样式
 import "@/styles/default.scss";
