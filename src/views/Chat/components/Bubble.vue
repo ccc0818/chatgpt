@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { showToast } from 'vant'
 const copyBtn = ref();
 
 const props = defineProps({
@@ -18,6 +19,10 @@ const props = defineProps({
 const copyHandle = () => {
   navigator.clipboard.writeText(props.message);
   // hidecopyHandle();
+  showToast({
+    message: "已复制",
+    duration: 500
+  });
 }
 </script>
 
@@ -122,7 +127,7 @@ const copyHandle = () => {
 .blob {
   font-size: 14px;
   background-color: #d7d8db;
-  color: #161d2f;
+  color: #000;
   max-width: 70%;
   padding: 15px;
   border-radius: 3px 12px 12px 12px;
@@ -136,6 +141,6 @@ const copyHandle = () => {
 .blob-user {
   border-radius: 12px 3px 12px 12px;
   color: #f1f2f6;
-  background-color: #161d2f;
+  background-color: $theme;
 }
 </style>
