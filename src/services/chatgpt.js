@@ -23,25 +23,33 @@ const gptJoinPrompt = chatRecords => {
  * @param {*} chatRecords
  * @param {*} contentUpdateCb
  */
-export const gptSendMessage = (chatRecords, contentUpdateCb) => {
-  const secretKey = localStorage.getItem('secretKey');
+export const gptSendMessage = async (chatRecords, callBack) => {
+  const secretKey = localStorage.getItem("secretKey");
 
-  let retryCount = 0;
-  async function send() {
-    // 如果上一次的reader stream 还在 那么就cancel掉
-    if (reader) await reader.cancel();
+  if (!secretKey) {
+    showMessage({
+      type: "error",
+      message: "你目前没有密钥, 请先去保存你的密钥!",
+      duration: 3000,
+    });
+    return;
+  }
 
-    // 生成prompt
-    let content = "";
+  // 如果上一次的reader stream 还在 那么就cancel掉
+  if (reader) {
+    await reader.cancel();
+  }
 
-    const res = await fetch("https://api.openai.com/v1/completions", {
+  let res;
+  try {
+    res = await fetch("https://api.openai.com/v1/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${secretKey}`,
       },
       body: JSON.stringify({
-        model: "text-davinci-003-playground", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
+        model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
         prompt: gptJoinPrompt(chatRecords), // 请求信息
         max_tokens: 2048, // 最大数据片
         temperature: 0.9, // 分析力度
@@ -52,70 +60,43 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
         stop: [" Human:", " AI:"],
       }),
     });
+  } catch { }
 
-    // 请求失败
-    if (res.ok === false) {
-      res.json().then(res => {
-        if (res.error.code === "invalid_api_key")
-          showMessage({ type: "error", message: "无效的api_key!" });
-        else if (res.error.code === null) {
-          if (res.error.type === "insufficient_quota") {
-            if (retryCount > 3) {
-              showMessage({ type: "warning", message: "api_key过期!" });
-              return;
-            }
-          }
-        }
-      });
+  // 请求失败
+  if (res.ok === false) {
+    const data = await res.json();
+    if (data.error.code === "invalid_api_key") {
+      showMessage({ type: "error", message: "无效的api_key!" });
+    } else if (data.error.code === null) {
+      if (res.error.type === "insufficient_quota") {
+        showMessage({ type: "warning", message: "api_key过期!" });
+      }
+    }
+    return;
+  }
+
+  //读取数据流
+  let response = "";
+  reader = res.body.getReader();
+  reader.read().then(function parseRawData({ done, value }) {
+    //读取数据流
+    if (done) {
+      reader = null;
       return;
     }
 
-    //读取数据流
-    reader = res.body.getReader();
-    reader
-      .read()
-      .then(async function readStream({ done, value }) {
-        //读取数据流
-        if (done) {
-          await reader.cancel();
-          reader = undefined;
-          return;
-        }
+    let rawData = "";
+    rawData += String.fromCharCode(...value);
 
-        let str = "";
-        for (let i = 0; i < value.length; i++)
-          str += String.fromCharCode(value[i]);
+    response += rawData
+      .split("\n\n")
+      .filter(v => v !== "" && v !== "data: [DONE]")
+      .map(v => JSON.parse(v.replace("data: ", "")).choices[0].text)
+      .join("");
 
-        const arr = str.split("\n\n");
-        const texts = arr
-          .filter(str => str !== "" && str !== "data: [DONE]")
-          .map(str => JSON.parse(str.replace("data: ", "")).choices[0].text);
+    // 执行回掉
+    callBack(response);
 
-        content += texts.join("");
-
-        // 执行回掉
-        contentUpdateCb && contentUpdateCb(content);
-
-        return reader.read().then(readStream); // 继续读取
-      })
-      .catch(err => {
-        showMessage({ type: "error", message: "读取数据流失败！请重试" });
-        return;
-      });
-  }
-  send();
+    return reader.read().then(parseRawData); // 继续读取
+  }).catch(e => { console.log(e); });
 };
-
-// export const gptReqImage = prompt => {
-//   return axios.post(
-//     "https://api.openai.com/v1/images/generations",
-//     { prompt, response_format: "url" },
-//     {
-//       headers: {
-//         "content-type": "application/json",
-//         Authorization:
-//           "Bearer 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",
-//       },
-//     }
-//   );
-// };
