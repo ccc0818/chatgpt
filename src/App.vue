@@ -18,6 +18,8 @@ html {
   height: 100%;
 }
 
+
+
 #app {
   height: 100%;
   -webkit-tap-highlight-color: transparent;
@@ -26,7 +28,7 @@ html {
 
 .app-container {
   overflow: hidden;
-  background-color: #fff;
+  // background-color: #fff;
   height: 100%;
   position: relative;
 }

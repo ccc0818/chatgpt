@@ -77,7 +77,6 @@ const sendHandle = async (data) => {
     height: 100%;
     padding-top: 20px;
     padding-bottom: 50px;
-    background: #fff;
     overflow-y: scroll;
     scroll-behavior: smooth;
   }

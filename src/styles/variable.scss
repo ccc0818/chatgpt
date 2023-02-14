@@ -1,3 +1,23 @@
 $theme: #9370d8;
-$background: #232750;
-$tabbar-bg: #eeeeee77;
+$background-dark: #2c2c2c;
+$background-light: #fff;
+
+html {
+  &[data-theme="dark"] {
+    background-color: $background-dark;
+    color: #fff;
+
+    input, textarea {
+      background-color: lighten($background-dark, 20)
+    }
+  }
+
+  &[data-theme="light"] {
+    background-color: $background-light;
+    color: #000;
+
+    input, textarea {
+      background-color: darken($background-light, 20)
+    }
+  }
+}

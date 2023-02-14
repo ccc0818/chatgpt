@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "@/router";
+import "@/utils/theme";
 
 // 打印版本号
 console.log("chatgpt version: v2.0.0");

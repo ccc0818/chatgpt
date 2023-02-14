@@ -30,19 +30,19 @@ function sendHandle() {
   justify-content: space-between;
   align-items: center;
   padding: 0 4px;
-  background-color: #fff;
+  // background-color: #fff;
   position: relative;
 
-  &::before {
-    content: '';
-    width: 100%;
-    height: 0;
-    border-top: 1px solid #eee;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: scaleY(0.5);
-  }
+  // &::before {
+  //   content: '';
+  //   width: 100%;
+  //   height: 0;
+  //   border-top: 1px solid darken($background-dark, $amount: 10);
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   transform: scaleY(0.5);
+  // }
 
   .input[type=text] {
     flex: 1;
@@ -51,8 +51,8 @@ function sendHandle() {
     border-radius: 8px;
     height: 80%;
     text-align: center;
-    color: #828284;
-    background-color: #eee;
+    color: inherit;
+    // background-color: inherit;
     font-size: 16px;
     margin: 0 10px 0 0;
 

@@ -90,6 +90,7 @@ function loginHandle() {
         position: relative;
         transform-origin: left;
         animation: showInput 1s;
+        color: inherit;
       }
 
       button {
@@ -102,6 +103,7 @@ function loginHandle() {
         border-radius: 3px;
         float: right;
         margin: 20px 0;
+        cursor: pointer;
       }
     }
   }
