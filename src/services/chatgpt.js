@@ -40,24 +40,27 @@ export const gptSendMessage = async (chatRecords, callBack) => {
     await reader.cancel();
   }
 
-  const res = await fetch("https://api.openai.com/v1/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${secretKey}`,
-    },
-    body: JSON.stringify({
-      model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
-      prompt: gptJoinPrompt(chatRecords), // 请求信息
-      max_tokens: 2048, // 最大数据片
-      temperature: 0.9, // 分析力度
-      top_p: 1,
-      presence_penalty: 0.6,
-      frequency_penalty: 0,
-      stream: true, //流式传输
-      stop: [" Human:", " AI:"],
-    }),
-  });
+  let res;
+  try {
+    res = await fetch("https://api.openai.com/v1/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${secretKey}`,
+      },
+      body: JSON.stringify({
+        model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
+        prompt: gptJoinPrompt(chatRecords), // 请求信息
+        max_tokens: 2048, // 最大数据片
+        temperature: 0.9, // 分析力度
+        top_p: 1,
+        presence_penalty: 0.6,
+        frequency_penalty: 0,
+        stream: true, //流式传输
+        stop: [" Human:", " AI:"],
+      }),
+    });
+  } catch {}
 
   // 请求失败
   if (res.ok === false) {
@@ -75,25 +78,30 @@ export const gptSendMessage = async (chatRecords, callBack) => {
   //读取数据流
   let response = "";
   reader = res.body.getReader();
-  reader.read().then(async function parseRawData({ done, value }) {
-    //读取数据流
-    if (done) {
-      reader = null;
-      return;
-    }
+  reader
+    .read()
+    .then(function parseRawData({ done, value }) {
+      //读取数据流
+      if (done) {
+        reader = null;
+        return;
+      }
 
-    let rawData = "";
-    rawData += String.fromCharCode(...value);
+      let rawData = "";
+      rawData += String.fromCharCode(...value);
 
-    response += rawData
-      .split("\n\n")
-      .filter(v => v !== "" && v !== "data: [DONE]")
-      .map(v => JSON.parse(v.replace("data: ", "")).choices[0].text)
-      .join("");
+      response += rawData
+        .split("\n\n")
+        .filter(v => v !== "" && v !== "data: [DONE]")
+        .map(v => JSON.parse(v.replace("data: ", "")).choices[0].text)
+        .join("");
 
-    // 执行回掉
-    callBack(response);
+      // 执行回掉
+      callBack(response);
 
-    return reader.read().then(parseRawData); // 继续读取
-  });
+      return reader.read().then(parseRawData); // 继续读取
+    })
+    .catch(e => {
+      console.log(e);
+    });
 };
