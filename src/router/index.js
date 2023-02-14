@@ -2,7 +2,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import routes from './routes';
 import { checkSecretKey } from "@/services";
-import { showFailToast } from "vant";
+import { showMessage} from "@/utils"
 
 const router = createRouter({
   routes,
@@ -10,11 +10,13 @@ const router = createRouter({
 });
 
 // 前置守卫
-router.beforeEach((to, from, next) => { 
+router.beforeEach(async (to, from, next) => { 
   if (to.meta.needLogin) { 
-    if (checkSecretKey(to.query.key) !== 1) {
+    const res = await checkSecretKey(to.query.key);
+    console.log(res);
+    if (res !== 1) {
       if (from.path === '/home') { 
-        showFailToast("无效的密钥,请检查!");
+        showMessage({ type: "error", message: "无效的密钥,请检查!" });
         return
       }
       next({ name: "home" })

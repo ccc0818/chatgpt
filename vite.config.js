@@ -16,7 +16,6 @@ export default defineConfig({
         externalGlobals({
           vue: "Vue",
           "vue-router": "VueRouter",
-          vant: "vant",
         }),
       ],
       terserOptions: {
@@ -48,13 +47,6 @@ export default defineConfig({
       prodUrl: "https://unpkg.com/{name}@{version}/{path}",
       modules: [
         autoComplete("vue"),
-        {
-          name: "vant",
-          var: "vant",
-          version: "4.0.7",
-          path: "lib/vant.min.js",
-          css: "lib/index.css",
-        },
         {
           name: "vue-router",
           var: "VueRouter",

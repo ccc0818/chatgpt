@@ -1,9 +1,6 @@
-import { showNotify } from "vant";
+import {showMessage } from "@/utils"
 
 let reader;
-const config = JSON.parse(localStorage.getItem("config"));
-// const secretKey = localStorage.getItem("secretKey");
-const secretKey = "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"; 
 
 const gptJoinPrompt = chatRecords => {
   let queryStr = "";
@@ -27,6 +24,8 @@ const gptJoinPrompt = chatRecords => {
  * @param {*} contentUpdateCb
  */
 export const gptSendMessage = (chatRecords, contentUpdateCb) => {
+  const secretKey = localStorage.getItem('secretKey');
+
   let retryCount = 0;
   async function send() {
     // 如果上一次的reader stream 还在 那么就cancel掉
@@ -42,7 +41,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
         Authorization: `Bearer ${secretKey}`,
       },
       body: JSON.stringify({
-        model: config.model, //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
+        model: "text-davinci-003-playground", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
         prompt: gptJoinPrompt(chatRecords), // 请求信息
         max_tokens: 2048, // 最大数据片
         temperature: 0.9, // 分析力度
@@ -58,11 +57,11 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
     if (res.ok === false) {
       res.json().then(res => {
         if (res.error.code === "invalid_api_key")
-          showNotify({ type: "danger", message: "无效的api_key!" });
+          showMessage({ type: "error", message: "无效的api_key!" });
         else if (res.error.code === null) {
           if (res.error.type === "insufficient_quota") {
             if (retryCount > 3) {
-              showNotify({ type: "warning", message: "api_key过期!" });
+              showMessage({ type: "warning", message: "api_key过期!" });
               return;
             }
           }
@@ -100,7 +99,7 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
         return reader.read().then(readStream); // 继续读取
       })
       .catch(err => {
-        showNotify({ type: "danger", message: "读取数据流失败！请重试" });
+        showMessage({ type: "error", message: "读取数据流失败！请重试" });
         return;
       });
   }

@@ -1,4 +1,4 @@
-export function checkSecretKey(key) {
+export async function checkSecretKey(key) {
   if (key === undefined) {
     // 从缓存中获取密钥
     key = localStorage.getItem("secretKey");
@@ -7,12 +7,19 @@ export function checkSecretKey(key) {
     }
   }
 
-  // fetch().then()
-  if (key === "admin") {
+  const res = await fetch("http://x.qddfsxh.cn/login.php", {
+    method: "POST",
+    body: JSON.stringify({ secret: key }),
+    headers: {
+      "Content-Type": "application/json;charset=utf-8"
+    }
+  });
 
+  if ((await res.json()).code === 200) {
     // 校验成功保存密钥
     localStorage.setItem("secretKey", key);
     return 1;
   }
+
   return 0;
 }

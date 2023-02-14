@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { showToast } from 'vant'
+import { showMessage } from '@/utils'
 const copyBtn = ref();
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const props = defineProps({
 const copyHandle = () => {
   navigator.clipboard.writeText(props.message);
   // hidecopyHandle();
-  showToast({
+  showMessage({
     message: "已复制",
     duration: 500
   });
