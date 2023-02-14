@@ -15,7 +15,6 @@ export default defineConfig({
       plugins: [
         externalGlobals({
           vue: "Vue",
-          "vue-router": "VueRouter",
         }),
       ],
       terserOptions: {
@@ -47,12 +46,6 @@ export default defineConfig({
       prodUrl: "https://unpkg.com/{name}@{version}/{path}",
       modules: [
         autoComplete("vue"),
-        {
-          name: "vue-router",
-          var: "VueRouter",
-          version: "4.1.6",
-          path: "dist/vue-router.global.js",
-        },
       ],
     }),
     // visualizer({
@@ -66,7 +59,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 8080,
-    open: false,
+    open: true,
     http: true,
     ssr: false,
     cors: true,

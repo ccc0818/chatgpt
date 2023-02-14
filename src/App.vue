@@ -1,6 +1,10 @@
+<script setup>
+import Chat from '@/views/Chat';
+</script>
+
 <template>
   <div class="app-container">
-    <RouterView />
+    <Chat />
   </div>
 </template>
 

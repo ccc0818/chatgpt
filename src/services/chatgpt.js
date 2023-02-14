@@ -1,4 +1,4 @@
-import {showMessage } from "@/utils"
+import { showMessage } from "@/utils";
 
 let reader;
 
@@ -24,7 +24,16 @@ const gptJoinPrompt = chatRecords => {
  * @param {*} contentUpdateCb
  */
 export const gptSendMessage = (chatRecords, contentUpdateCb) => {
-  const secretKey = localStorage.getItem('secretKey');
+  const secretKey = localStorage.getItem("secret");
+
+  if (!secretKey) {
+    showMessage({
+      type: "error",
+      message: "你目前没有密钥, 请先去保存你的密钥!",
+      duration: 3000,
+    });
+    return;
+  }
 
   let retryCount = 0;
   async function send() {
