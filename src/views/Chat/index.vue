@@ -83,7 +83,7 @@ const sendHandle = async (data) => {
     height: 100%;
     padding-top: 20px;
     padding-bottom: 50px;
-    background: #fff;
+    // background: #fff;
     overflow-y: scroll;
     scroll-behavior: smooth;
   }
@@ -91,6 +91,7 @@ const sendHandle = async (data) => {
   .input {
     position: fixed;
     bottom: 0;
+    color: inherit;
   }
 
   @keyframes breath {

@@ -30,7 +30,7 @@ html {
 
 .app-container {
   overflow: hidden;
-  background-color: #fff;
+  // background-color: #fff;
   height: 100%;
   position: relative;
 }

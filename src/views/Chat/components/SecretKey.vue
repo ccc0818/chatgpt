@@ -56,7 +56,11 @@ function saveHandle() {
       padding: 8px;
       font-size: 12px;
       font-weight: 200;
-      color: #000;
+      color: inherit;
+
+      &::placeholder {
+        color: inherit;
+      }
 
       &:focus {
         outline: none;
