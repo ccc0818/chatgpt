@@ -73,7 +73,7 @@ const copyHandle = () => {
       text-align: center;
       line-height: 30px;
       user-select: none;
-      background-color: lighten($theme, 25%);
+      background-color: $theme;
       border-radius: 50%;
       margin-left: 10px;
       flex: 0 0 auto;
