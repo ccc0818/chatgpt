@@ -13,7 +13,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => { 
   if (to.meta.needLogin) { 
     const res = await checkSecretKey(to.query.key);
-    console.log(res);
+    // console.log(res);
     if (res !== 1) {
       if (from.path === '/home') { 
         showMessage({ type: "error", message: "无效的密钥,请检查!" });
