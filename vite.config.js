@@ -15,12 +15,8 @@ export default defineConfig({
       plugins: [
         externalGlobals({
           vue: "Vue",
-          "vue-demi": "VueDemi",
           "vue-router": "VueRouter",
-          axios: "axios",
-          pinia: "Pinia",
           vant: "vant",
-          "weixin-js-sdk": "wx",
         }),
       ],
       terserOptions: {
@@ -51,9 +47,7 @@ export default defineConfig({
     importToCDN({
       prodUrl: "https://unpkg.com/{name}@{version}/{path}",
       modules: [
-        autoComplete("axios"),
         autoComplete("vue"),
-        autoComplete("@vueuse/shared"),
         {
           name: "vant",
           var: "vant",
@@ -66,17 +60,6 @@ export default defineConfig({
           var: "VueRouter",
           version: "4.1.6",
           path: "dist/vue-router.global.js",
-        },
-        {
-          name: "pinia",
-          var: "Pinia",
-          version: "2.0.28",
-          path: "dist/pinia.iife.js",
-        },
-        {
-          name: "weixin-js-sdk",
-          var: "wx",
-          path: "https://res2.wx.qq.com/open/js/jweixin-1.6.0.js",
         },
       ],
     }),

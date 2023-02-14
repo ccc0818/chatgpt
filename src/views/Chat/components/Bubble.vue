@@ -15,15 +15,6 @@ const props = defineProps({
   message: String
 });
 
-// methods
-// const showcopyHandle = () => {
-//   copyBtn.value.style.transform = 'scale(1)';
-// }
-
-// const hidecopyHandle = () => {
-//   copyBtn.value.style.transform = 'scale(0)';
-// }
-
 const copyHandle = () => {
   navigator.clipboard.writeText(props.message);
   // hidecopyHandle();
@@ -68,6 +59,7 @@ const copyHandle = () => {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    flex: auto;
 
     .copy-btn {
       display: block;
@@ -86,7 +78,6 @@ const copyHandle = () => {
     }
 
     .blob-ai {
-      flex-grow: 1;
       max-width: 80%;
     }
   }
@@ -111,7 +102,7 @@ const copyHandle = () => {
   border-radius: 50%;
   overflow: hidden;
   margin-right: 10px;
-  border: 2px solid $theme;
+  border: 2px solid #fff;
   background-color: #fff;
   flex-shrink: 0;
 }

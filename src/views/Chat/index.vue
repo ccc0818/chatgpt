@@ -2,28 +2,14 @@
 import { ref, nextTick, onUpdated, onActivated } from 'vue';
 import Bubble from './components/Bubble.vue';
 import Input from './components/Input.vue';
-import { gptSendMessage, reqFreeQueryTimes } from '@/api';
-import { showConfirmDialog } from 'vant';
-import { storeToRefs } from 'pinia';
-import useStore from '@/store';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-const { userStore, robotStore } = useStore();
-const { user } = storeToRefs(userStore);
-const { robots } = storeToRefs(robotStore);
+import { gptSendMessage } from '@/services';
+import RobotAvatarImg from '@/assets/images/chat/robot-avatar.png';
 
 const chatDom = ref();
-const msgList = ref([]);
+const msgList = ref([
+  { id: 0, isUser: false, message: "你好，我是您的聊天助手。"}
+]);
 let id = 0;
-
-// 初始化机器人 created 周期
-robots.value.currentRobot = robots.value.robots[0];
-msgList.value.push({
-  id: id++,
-  isUser: false,
-  message: robots.value.robots[0].salutation
-});
 
 /**
  * 滚动到底部
@@ -43,23 +29,6 @@ function scrollToBottom(isSmooth = true) {
 
 onActivated(() => {
   scrollToBottom(false);
-
-  // 判断是否需要切换机器人
-  if (robots.value.changed) {
-    id = 0;
-    msgList.value = [{
-      id: id++,
-      isUser: false,
-      message: robots.value.currentRobot.salutation
-    }];
-
-    let tmp = [
-      ...msgList.value,
-      { id, isUser: true, message: robots.value.currentRobot.type }
-    ]
-    gptSendMessage(tmp);
-    robots.value.changed = false;
-  }
 });
 
 onUpdated(() => {
@@ -71,32 +40,6 @@ const sendHandle = async (data) => {
   // 不允许输入为空
   if (!data.length) {
     return;
-  }
-
-  //vip 检查
-  if (user.value.state === 0) {
-    let freeCount = 0;
-    //检查user 能否发信息
-    const res = await reqFreeQueryTimes(user.value.id);
-    freeCount = res.data;
-
-    if (freeCount <= 0) {
-      // 弹出开会员对话框
-      showConfirmDialog({
-        message: '免费体验次数用完了, 开通会员享无限畅聊。',
-        confirmButtonText: '去开通',
-        confirmButtonColor: '#9370d8',
-        cancelButtonText: '再想想',
-        // closeOnClickOverlay: false,
-        overlay: false,
-        // theme: 'round-button'
-        className: 'popup',
-      }).then(() => {
-        // on confirm
-        router.push({ name: 'vip' });
-      });
-      return;
-    }
   }
 
   // 保存用户输入的信息
@@ -117,26 +60,31 @@ const sendHandle = async (data) => {
   <div class="chat-container">
     <!-- main -->
     <div class="chat-list" ref="chatDom">
-      <Bubble v-for="item of msgList" :key="item.id" :isUser="item.isUser"
-        :avatar="item.isUser ? user.avatar : robots.currentRobot.avatar" :message="item.message">
+      <Bubble v-for="item of msgList" :key="item.id" :isUser="item.isUser" :avatar="item.isUser ? undefined : RobotAvatarImg" :message="item.message">
       </Bubble>
     </div>
     <!-- 输入框 -->
-    <Input @send="sendHandle" />
+    <Input class="input" @send="sendHandle" />
   </div>
 </template>
 
 <style scoped lang="scss">
 .chat-container {
   position: relative;
+  height: 100%;
 
   .chat-list {
     height: 100%;
     padding-top: 20px;
     padding-bottom: 50px;
-    background: #eee;
+    background: #fff;
     overflow-y: scroll;
     scroll-behavior: smooth;
+  }
+
+  .input {
+    position: fixed;
+    bottom: 0;
   }
 }
 </style>
