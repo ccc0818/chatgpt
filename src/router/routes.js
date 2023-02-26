@@ -19,6 +19,11 @@ export default [
             component: () => import("@/views/Robot"),
           },
           {
+            name: "image",
+            path: "image",
+            component: () => import("@/views/Image"),
+          },
+          {
             name: "user",
             path: "user",
             component: () => import("@/views/User"),
@@ -41,11 +46,11 @@ export default [
         path: "market_center/customer",
         component: () => import("@/views/Customer"),
       },
-      // {
-      //   name: "withdraw",
-      //   path: "market_center/withdraw",
-      //   component: () => import("@/views/WithDraw"),
-      // },
+      {
+        name: "withdraw",
+        path: "market_center/withdraw",
+        component: () => import("@/views/WithDraw"),
+      },
     ],
   },
   { path: "/:pathMatch(.*)*", redirect: "/" }, //其它没有的路由都跳转到主页

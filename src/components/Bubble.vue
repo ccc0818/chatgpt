@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue';
+import { showMessage } from '@/utils'
+import RobotImg from '@/assets/images/chat/robot-avatar.png'
+
 const copyBtn = ref();
+const imgElRef = ref(null);
 
 const props = defineProps({
   isUser: {
@@ -9,10 +13,12 @@ const props = defineProps({
     default: false,
   },
   avatar: {
-    type: String,
-    default: undefined
+    default: RobotImg
   },
-  message: String
+  type: { // text image
+    default: 'text',
+  },
+  content: String,
 });
 
 // methods
@@ -24,9 +30,26 @@ const props = defineProps({
 //   copyBtn.value.style.transform = 'scale(0)';
 // }
 
+function copyImg() { 
+  window.getSelection().removeAllRanges();
+  let range = document.createRange()
+  range.selectNode(imgElRef.value);
+  window.getSelection().addRange(range);
+  document.execCommand("Copy");
+  window.getSelection().removeAllRanges();
+}
+
 const copyHandle = () => {
-  navigator.clipboard.writeText(props.message);
-  // hidecopyHandle();
+  if (props.type === 'text') {
+    navigator.clipboard.writeText(props.content);
+  } else if (props.type === 'image'){ 
+    copyImg();
+  }
+
+  showMessage({
+    type: 'success',
+    message: '已复制到剪切板'
+  })
 }
 </script>
 
@@ -36,17 +59,22 @@ const copyHandle = () => {
       <img class="img" :src="avatar">
     </div>
     <div class="msg-box">
-      <div class="blob blob-ai">
-        {{ message }}
+      <div class="blob blob-ai" style="color: #2c2c2c;">
+        <template v-if="type === 'text'" >
+          {{ content }}
+        </template>
+        <template v-else-if="type === 'image'">
+          <img ref="imgElRef" class="img-msg" :src="content" alt="图片加载失败">
+        </template>
       </div>
       <span ref="copyBtn" class="iconfont icon-fuzhi copy-btn" @click.stop="copyHandle"></span>
     </div>
   </div>
   <div v-else class="wrapper wrapper-user">
     <div class="blob blob-user">
-      {{ message }}
+      {{ content }}
     </div>
-    <div v-if="avatar !== undefined" class="avatar avatar-user">
+    <div v-if="avatar" class="avatar avatar-user">
       <img class="img" :src="avatar">
     </div>
   </div>
@@ -76,7 +104,7 @@ const copyHandle = () => {
       text-align: center;
       line-height: 30px;
       user-select: none;
-      background-color: lighten($theme, 25%);
+      background-color: $theme;
       border-radius: 50%;
       margin-left: 10px;
       flex: 0 0 auto;
@@ -111,7 +139,7 @@ const copyHandle = () => {
   border-radius: 50%;
   overflow: hidden;
   margin-right: 10px;
-  border: 2px solid $theme;
+  border: 1px solid #fff;
   background-color: #fff;
   flex-shrink: 0;
 }
@@ -131,7 +159,6 @@ const copyHandle = () => {
 .blob {
   font-size: 14px;
   background-color: #d7d8db;
-  color: #161d2f;
   max-width: 70%;
   padding: 15px;
   border-radius: 3px 12px 12px 12px;
@@ -140,11 +167,15 @@ const copyHandle = () => {
   white-space: pre-wrap;
   transition: width height .3s linear;
   // user-select: none;
+
+  .img-msg {
+    width: 100%;
+  }
 }
 
 .blob-user {
   border-radius: 12px 3px 12px 12px;
-  color: #f1f2f6;
-  background-color: #161d2f;
+  // color: #f1f2f6;
+  background-color: lighten($theme, 10) ;
 }
 </style>

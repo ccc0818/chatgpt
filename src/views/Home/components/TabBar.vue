@@ -28,9 +28,8 @@ defineProps({
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: $tabbar-bg;
-  backdrop-filter: blur(8px);
-  color: #2c2c2c;
+  // background-color: $tabbar-bg;
+  backdrop-filter: blur(20px);
   z-index: 99;
 
   .link {
@@ -59,6 +58,6 @@ defineProps({
 }
 
 .active {
-  color: $theme;
+  color: lighten($theme, 15);
 }
 </style>

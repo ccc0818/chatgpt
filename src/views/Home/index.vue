@@ -6,6 +6,9 @@ import robotImage from '@/assets/images/tabbar/robot.png';
 import robotImageActive from '@/assets/images/tabbar/robot-active.png';
 import personImage from '@/assets/images/tabbar/person.png';
 import personImageActive from '@/assets/images/tabbar/person-active.png';
+import imgImage from '@/assets/images/tabbar/image.png';
+import imgImageActive from '@/assets/images/tabbar/image-active.png';
+
 
 const items = [
   { 
@@ -19,6 +22,12 @@ const items = [
     to: { name: 'robot' },
     selectedImage: robotImageActive,
     image: robotImage 
+  },
+  {
+    title: '画图',
+    to: { name: 'image' },
+    selectedImage: imgImageActive,
+    image: imgImage
   },
   { 
     title: '个人中心', 

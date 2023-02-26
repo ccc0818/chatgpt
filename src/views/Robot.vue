@@ -89,7 +89,7 @@ const onShowContext = (x, y, idx) => {
     </div>
 
     <Overlay :show="showOverlay" @click.stop="showOverlay = false"
-      :custom-style="{ backdropFilter: 'blur(16px)', backgroundColor: '#999' }">
+      :custom-style="{ backdropFilter: 'blur(20px)' }">
       <CellGroup inset @click.stop="" class="cell-group">
         <Form @submit="onAddRobot" show-error>
           <!-- 名称 -->
@@ -131,7 +131,7 @@ const onShowContext = (x, y, idx) => {
   grid-template-columns: repeat(auto-fill, 100px);
   grid-template-rows: repeat(auto-fit, 110px);
   gap: 10px;
-  background-color: #eee;
+  // background-color: #eee;
   position: relative;
 
   .cell {
@@ -221,7 +221,7 @@ const onShowContext = (x, y, idx) => {
 
   .context {
     width: 160px;
-    background-color: #eee;
+    // background-color: #eee;
     border-radius: 3px;
     position: fixed;
     left: 0;

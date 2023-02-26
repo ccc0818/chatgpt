@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { showFailToast, showSuccessToast, Dialog, Field, CellGroup, showImagePreview } from 'vant';
+import { Dialog, Field, CellGroup, showImagePreview } from 'vant';
+import { showMessage } from '@/utils'
 import { useRouter } from 'vue-router';
 import { reqActiveSecret } from '@/api';
 import useStore from '../store';
@@ -22,9 +23,9 @@ const menuList = ref([
   { id: 4, icon: '/assets/images/user/user-item_add.png', title: '关注公众号', uniBase64: "MzkzOTM4MjQyNQ==" }
 ]);
 
-if (!user.value.partner) {
-  menuList.value.splice(1, 1);
-}
+// if (!user.value.partner) {
+//   menuList.value.splice(1, 1);
+// }
 
 // methods
 const onFormatter = (val) => {
@@ -71,12 +72,14 @@ const onEmitSecret = () => {
   reqActiveSecret({ id: user.value.id, secret: inputSecret.value.trim() }).then(res => {
     // console.log(res)
     if (res.data === 200)
-      showSuccessToast({
+      showMessage({
+        type: 'success',
         message: '兑换成功',
         duration: 2000
       });
     else
-      showFailToast({
+      showMessage({
+        type: 'error',
         message: '兑换失败',
         duration: 2000
       })
@@ -123,7 +126,6 @@ const onEmitSecret = () => {
 
 <style scoped lang="scss">
 .user-container {
-  background-image: linear-gradient(to bottom, #fff, #eee);
   position: relative;
   overflow-y: scroll;
 
@@ -135,10 +137,25 @@ const onEmitSecret = () => {
     padding: 0 10px;
     padding-top: 50px;
 
+    @media (prefers-color-scheme: light) {
+      .user-info {
+        background-color: #fff;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .user-info {
+        background-color: lighten($background-dark, 20);
+      }
+
+      .menu-item {
+        background-color: lighten($background-dark, 20);
+      }
+    }
+
     .user-info {
       width: 100%;
       overflow: hidden;
-      background-color: #ffffffae;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -215,16 +232,17 @@ const onEmitSecret = () => {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #ffffffae;
+        // background-color: #ffffffae;
         width: 100%;
         padding: 10px 15px;
         border-radius: 15px;
         font-size: 18px;
         cursor: pointer;
-        color: $theme;
+        // color: $theme;
         font-size: 16px;
         overflow: hidden;
         transition: all 0.3s ease;
+        border: 1px solid $theme;
 
         img {
           pointer-events: none;
@@ -253,7 +271,7 @@ const onEmitSecret = () => {
             width: 70px;
             border-radius: 20px;
             margin-right: 10px;
-            background-color: #eeeeeebf;
+            // background-color: #eeeeeebf;
 
             .img {
               height: 70px;

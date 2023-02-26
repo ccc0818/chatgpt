@@ -1,7 +1,8 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import { Uploader, Popup, showNotify, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
+import { Uploader, Popup, Overlay, PullRefresh, NumberKeyboard, Field } from 'vant';
+import { showMessage } from '@/utils'
 import { reqWithdrawRecords, upload } from '@/api';
 import useStore from '../store';
 import { storeToRefs } from 'pinia';
@@ -30,12 +31,12 @@ const updateWithdrawRecords = () => {
     if (res.status === 200)
       withdrawRecords.value = res.data;
     else
-      showNotify({ type: 'danger', message: '获取提现记录失败!' })
+      showMessage({ type: 'error', message: '获取提现记录失败!' })
   }).finally(() => loading.value = false)
 }
 updateWithdrawRecords();
 
-const inputValidate = () => (inputPrice.value > 0 && inputPrice.value <= parseFloat(user.value.yongjin))
+const inputValidate = () => (parseFloat(inputPrice.value) > 0 && parseFloat(inputPrice.value) <= parseFloat(user.value.yongjin))
 
 const onFileUpload = (file) => {
   fileList.value[0] = { content: file.content }
@@ -51,10 +52,10 @@ const onAckQr = () => {
 
   upload(fd).then(res => {
     if (res.status !== 200 || parseInt(res.data.code) !== 200) {
-      showNotify({ type: 'danger', message: '提现失败!', duration: 5000 });
+      showMessage({ type: 'error', message: '提现失败!', duration: 2000 });
     } else {
       refreshUserInfo();
-      showNotify({ type: 'success', message: '提现完成! 将会在24小时内到账', duration: 2000 });
+      showMessage({ type: 'success', message: '提现完成! 将会在24小时内到账', duration: 2000 });
     }
     showPopup.value = false;
   })
@@ -80,8 +81,8 @@ const onShowWithdraw = () => {
         <p class="title">提现金额(元)</p>
         <div class="input-panel">
           <span>¥</span>
-          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额"
-            v-model.number="inputPrice" :readonly="showNumberBoard" @touchstart.stop="showNumberBoard = true" />
+          <Field class="input" type="number" :maxlength="inputMaxLength" placeholder="请输入提现金额" style="background-color: transparent; "
+            v-model="inputPrice" :readonly="showNumberBoard" @touchstart.stop="showNumberBoard = true" />
         </div>
         <div class="balance">
           <span>余额¥{{ user.yongjin }}，</span>
@@ -133,7 +134,7 @@ const onShowWithdraw = () => {
 
 .withdraw-container {
   height: 100%;
-  background-color: #eee;
+  // background-color: #eee;
   display: flex;
   flex-direction: column;
   padding-top: 50px;
@@ -149,12 +150,12 @@ const onShowWithdraw = () => {
 
     .withdraw {
       width: 100%;
-      background-color: #fff;
+      // background-color: #fff;
       padding: 10px 15px 0 15px;
 
       .title {
         font-size: 13px;
-        color: #222;
+        // color: #222;
       }
 
       .input-panel {
@@ -179,7 +180,7 @@ const onShowWithdraw = () => {
           :deep(.van-field__control) {
             &::placeholder {
               font-size: 18px;
-              color: #999;
+              // color: #999;
             }
           }
         }
@@ -187,7 +188,7 @@ const onShowWithdraw = () => {
 
       .balance {
         font-size: 14px;
-        color: #999;
+        // color: #999;
         width: 100%;
         height: 40px;
         line-height: 40px;

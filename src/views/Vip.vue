@@ -145,7 +145,7 @@ const payVip = () => {
         border-radius: 50%;
         margin-right: 10px;
         background-color: #fff;
-        border: 2px solid #fff;
+        border: 1px solid #fff;
       }
 
       .col {
@@ -180,7 +180,7 @@ const payVip = () => {
 
     .title {
       font-size: 18px;
-      color: black;
+      // color: black;
     }
 
     .panel {
@@ -287,6 +287,7 @@ const payVip = () => {
 
         .save {
           background-color: #ecdfcb;
+          color: #171717;
           padding: 3px 10px;
           font-size: 14px;
           border-radius: 15px;
@@ -295,6 +296,7 @@ const payVip = () => {
 
       .active {
         background-color: #f5eee3;
+        color: #171717;
       }
 
       .hot::after {

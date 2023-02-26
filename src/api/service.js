@@ -1,7 +1,6 @@
 import wx from "weixin-js-sdk";
-import request from "../plugins/axios";
-import { getQueryObj } from "../utils/utils";
-import { showToast } from "vant";
+import request from "@/plugins/axios";
+import { getQueryObj } from "@/utils/utils";
 import useStore from "@/store";
 
 // 请求signature appId 等签名信息
@@ -103,27 +102,12 @@ export const reqPay = ({ id, type, money }, success, error) => {
         success: (res) => {
           console.log(res);
           success && success(res);
-          showToast({
-            type: "success",
-            message: "支付成功",
-            duration: 2000,
-          });
         },
         fail: (err) => {
           console.log(err);
           error && error(err);
-          showToast({
-            type: "fail",
-            message: "支付失败",
-            duration: 2000,
-          });
         },
         cancel: () => {
-          showToast({
-            type: "fail",
-            message: "支付取消",
-            duration: 2000,
-          });
         },
       });
     }

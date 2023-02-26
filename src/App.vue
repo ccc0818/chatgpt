@@ -4,10 +4,68 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+* {
+  font-family: "苹方-简", "微软雅黑", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: inherit;
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    color: $color;
+    background-color: $background;
+  }
+
+  :root {
+    --van-field-input-text-color: #000 !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: $color-dark;
+    background-color: $background-dark;
+  }
+
+  :root {
+    --van-field-input-text-color: #fff !important;
+  }
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+#app {
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.popup {
+  box-shadow:
+    0px 0px 76.2px rgba(0, 0, 0, 0.079),
+    0px 0px 89.2px rgba(0, 0, 0, 0.09),
+    0px 0px 149px rgba(0, 0, 0, 0.14) !important;
+}
+
+
 .app-container {
   overflow: hidden;
-  background-color: #fff;
   height: 100%;
 }
 
@@ -21,8 +79,6 @@
     transform: translate(-50%, -50%);
     border-radius: 10px;
     border: 3px solid $theme;
-    box-shadow: 50px 50px 100px lighten($theme, 20),
-      -50px -50px 100px darken($color: $theme, $amount: 20);
   }
 }
 </style>

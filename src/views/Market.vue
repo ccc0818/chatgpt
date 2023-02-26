@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 import useStore from '../store';
 import { reqPay, reqPriceRate } from '@/api';
 import { storeToRefs } from 'pinia';
-import { imageProps, showFailToast } from 'vant';
+import { showMessage } from '@/utils'
 import Header from '@/components/Header';
 
 const router = useRouter();
@@ -28,7 +28,8 @@ reqPriceRate().then(res => {
   proxyList.value[2].price = res.data.distributed_three;
   proxyList.value[2].rate = res.data.v_three;
 }).catch(() => {
-  showFailToast({
+  showMessage({
+    type: 'error',
     message: '获取会员价格失败!',
     duration: 3000
   })
@@ -132,7 +133,7 @@ const onPayProxy = () => {
 
 .market-container {
   height: 100%;
-  background-color: #fff;
+  // background-color: #fff;
   padding-top: 50px;
   overflow-y: scroll;
 
@@ -159,6 +160,7 @@ const onPayProxy = () => {
         height: 100px;
         border-radius: 50%;
         -webkit-user-drag: none;
+        background-color: #fff;
         box-shadow:
           0px 24.5px 24.7px rgba(255, 120, 154, 0.057),
           0px 20.4px 32.6px rgba(250, 135, 164, 0.068),

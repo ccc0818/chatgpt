@@ -67,7 +67,7 @@ const customerList = computed(() => {
 
 .customer-container {
   height: 100%;
-  background-color: #f5f5f5;
+  // background-color: #f5f5f5;
   padding-top: 50px;
 
   main {
@@ -77,13 +77,25 @@ const customerList = computed(() => {
     display: flex;
     flex-direction: column;
 
+    @media (prefers-color-scheme: light) {
+      .search {
+        background-color: #fff;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .search {
+        background-color: lighten($background-dark, 20);
+      }
+    }
+
     .search {
       width: 90%;
       height: 40px;
       margin: 10px auto;
-      background-color: #fff;
+      // background-color: #fff;
       border-radius: 20px;
-      color: #BEBEBE;
+      // color: #BEBEBE;
       font-size: 20px;
       padding: 0 10px;
       display: flex;
@@ -101,8 +113,9 @@ const customerList = computed(() => {
         outline: none;
         border: none;
         padding-left: 10px;
-        color: #333;
+        // color: #333;
         font-size: 16px;
+        background-color: transparent;
 
         &::placeholder {
           font-size: 16px;
@@ -117,7 +130,7 @@ const customerList = computed(() => {
       display: flex;
       justify-content: space-around;
       align-items: center;
-      background-color: #fff;
+      // background-color: #fff;
       border-bottom: 1px solid #eee;
 
       span {
@@ -126,7 +139,7 @@ const customerList = computed(() => {
         height: 100%;
         text-align: center;
         line-height: 45px;
-        color: #5D5D5D;
+        // color: #5D5D5D;
 
         &.active {
           border-bottom: 3px solid #46C8F8;
@@ -136,7 +149,7 @@ const customerList = computed(() => {
 
     .customer-contain {
       flex: 1;
-      background-color: #fff;
+      // background-color: #fff;
       overflow-x: hidden;
       overflow-y: auto;
       scroll-behavior: smooth;
@@ -178,10 +191,10 @@ const customerList = computed(() => {
         .right {
           justify-content: space-evenly;
           font-size: 14px;
-          color: #999;
+          // color: #999;
 
           .name {
-            color: #000;
+            // color: #000;
             font-size: 16px;
           }
         }

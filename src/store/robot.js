@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import RobotImg from "@/assets/images/chat/robot-avatar.png";
 
 const useRobotStore = defineStore("robotStore", () => {
   let id = 1;
@@ -11,8 +12,9 @@ const useRobotStore = defineStore("robotStore", () => {
       {
         id: id++,
         name: "通用型", //机器人名字
-        avatar: "/assets/images/openai.png", //头像
-        salutation: "你好，我是人工智能ChatGPT，一个由OpenAI训练的大型语言模型。", //问候语
+        avatar: RobotImg, //头像
+        salutation:
+          "你好，我是人工智能ChatGPT，一个由OpenAI训练的大型语言模型。", //问候语
         type: "", //类型
       },
       {

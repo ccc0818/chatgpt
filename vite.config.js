@@ -1,8 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import AutoImport from "unplugin-auto-import/vite";
-import Components from "unplugin-vue-components/vite";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+// import AutoImport from "unplugin-auto-import/vite";
 import postcssPresetEnv from "postcss-preset-env";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -31,7 +29,7 @@ export default defineConfig({
         },
       },
       output: {
-        manualChunks: (filepath) => {
+        manualChunks: filepath => {
           if (filepath.includes("node_modules")) {
             return "vendor";
           }
@@ -41,12 +39,10 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    AutoImport({
-      resolvers: [ElementPlusResolver()],
-    }),
-    Components({
-      resolvers: [ElementPlusResolver()],
-    }),
+    // AutoImport({
+    //   imports: ["vue", "vue-router"],
+    //   include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/, /\.md$/],
+    // }),
     // viteCompression({ deleteOriginFile: true}),
     importToCDN({
       prodUrl: "https://unpkg.com/{name}@{version}/{path}",
@@ -97,7 +93,7 @@ export default defineConfig({
     cors: true,
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: [".js", ".vue", ".json"],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },

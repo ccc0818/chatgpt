@@ -1,8 +1,8 @@
-import { showNotify } from "vant";
 import { reqApiKeyArrear } from "./service";
 import useStore from "@/store";
 import { storeToRefs } from "pinia";
 import axios from "axios";
+import {showMessage } from '@/utils'
 
 let reader;
 const model = localStorage.getItem("model");
@@ -11,17 +11,18 @@ const gptJoinPrompt = chatRecords => {
   let queryStr = "";
   chatRecords.forEach(i => {
     if (i.id === 0) {
-      queryStr += i.message + "\n";
+      queryStr += i.content + "\n";
       return;
     }
-    if (i.isUser) queryStr += `\nHuman: ${i.message}`;
-    else queryStr += `\nAI: ${i.message}`;
+    if (i.isUser) queryStr += `\nHuman: ${i.content}`;
+    else queryStr += `\nAI: ${i.content}`;
   });
   queryStr += "\nAI:";
   // console.log(queryStr);
 
   return queryStr;
 };
+
 
 /**
  * 发送聊天文本信息给gpt
@@ -64,11 +65,11 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
     if (res.ok === false) {
       res.json().then(res => {
         if (res.error.code === "invalid_api_key")
-          showNotify({ type: "danger", message: "无效的api_key!" });
+          showMessage({ type: "error", message: "无效的api_key!" });
         else if (res.error.code === null) {
           if (res.error.type === "insufficient_quota") {
             if (retryCount > 3) {
-              showNotify({ type: "warning", message: "api_key过期!" });
+              showMessage({ type: "warning", message: "api_key过期!" });
               return;
             }
             reqApiKeyArrear(user.value.id)
@@ -79,11 +80,11 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
                   send();
                   retryCount++;
                 } else {
-                  showNotify({ type: "warning", message: "api_key过期!" });
+                  showMessage({ type: "warning", message: "api_key过期!" });
                 }
               })
               .catch(() =>
-                showNotify({ type: "warning", message: "api_key过期!" })
+                showMessage({ type: "warning", message: "api_key过期!" })
               );
           }
         }
@@ -120,23 +121,26 @@ export const gptSendMessage = (chatRecords, contentUpdateCb) => {
         return reader.read().then(readStream); // 继续读取
       })
       .catch(err => {
-        showNotify({ type: "danger", message: "读取数据流失败！请重试" });
+        showMessage({ type: "error", message: "读取数据流失败！请重试" });
         return;
       });
   }
   send();
 };
 
-// export const gptReqImage = prompt => {
-//   return axios.post(
-//     "https://api.openai.com/v1/images/generations",
-//     { prompt, response_format: "url" },
-//     {
-//       headers: {
-//         "content-type": "application/json",
-//         Authorization:
-//           "Bearer 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",
-//       },
-//     }
-//   );
-// };
+export const gptReqImage = prompt => {
+  const { userStore } = useStore();
+  const { user } = storeToRefs(userStore);
+
+  return axios.post(
+    "https://api.openai.com/v1/images/generations",
+    { prompt, response_format: "url" },
+    {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${user.value.chat_key}`
+          // "Bearer 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",
+      },
+    }
+  )
+};
