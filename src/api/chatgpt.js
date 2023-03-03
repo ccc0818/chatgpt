@@ -1,21 +1,19 @@
-import useStore from "@/store";
-import { storeToRefs } from "pinia";
 import axios from "axios";
 import { ref, computed } from "vue";
 import UTF8 from "utf-8";
 
-export const gptReqImage = prompt => {
-  const { userStore } = useStore();
-  const { user } = storeToRefs(userStore);
+const api = "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";
+
+export const gptReqImage = (prompt, key = '') => {
 
   return axios.post(
-    "https://api.openai.com/v1/images/generations",
+    "gpt/v1/images/generations",
     { prompt, response_format: "url" },
     {
       headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${user.value.chat_key}`,
-        // "Bearer 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",
+        // Authorization: `Bearer ${api}`,
       },
     }
   );
@@ -57,8 +55,6 @@ export function useChatGPT() {
     messageList.value.length = 0;
   }
 
-  const api = "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";
-
   function say(content, key = '') {
     if (!content) {
       return;
@@ -67,12 +63,11 @@ export function useChatGPT() {
     pushMessage("user", content);
 
     (async function request() {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      const res = await fetch("/gpt/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: `Bearer ${key}`,
-          // Authorization: `Bearer ${user.value.chat_key}`,
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo", //gpt-3.5-turbo

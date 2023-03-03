@@ -3,6 +3,11 @@ import { ref } from 'vue'
 import ChatView from '@/components/ChatView.vue'
 import { gptReqImage } from '@/api';
 import { showMessage } from '@/utils'
+import useStore from '@/store'
+import { storeToRefs } from 'pinia'
+
+const { userStore } = useStore()
+const { user } = storeToRefs(userStore)
 
 let id = 0;
 const chatList = ref([{ id: 0, isUser: false, type: 'text', content: '现在你可以对我描述你想要的图片。' }]);
@@ -41,11 +46,11 @@ const sendHandle = async (data) => {
   // }
 
   // 保存用户输入的信息
-  chatList.value.push({ id: id++, isUser: true, content: data })
+  chatList.value.push({ id: id++, role: "user", content: data })
 
   // 获取到收到的数据
   try {
-    const res = await gptReqImage(data);
+    const res = await gptReqImage(data, user.value.chat_key);
     if (res.status === 200 && res.data.data.length > 0) {
       const url = res.data.data[0].url;
       chatList.value.push({
