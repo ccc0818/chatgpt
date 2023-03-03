@@ -2,16 +2,14 @@
 import { ref, nextTick, onUpdated, onActivated } from 'vue';
 import Bubble from './components/Bubble.vue';
 import Input from './components/Input.vue';
-import { gptSendMessage } from '@/services';
+import { useChatGPT } from '@/services';
 import RobotAvatarImg from '@/assets/images/chat/robot-avatar.png';
 import SecretKey from './components/SecretKey.vue';
 
 const chatDom = ref();
 const showSecret = ref(false);
-const msgList = ref([
-  { id: 0, isUser: false, message: "你好，我是您的聊天助手。" }
-]);
-let id = 0;
+const { messages, say } = useChatGPT()
+
 
 /**
  * 滚动到底部
@@ -38,23 +36,16 @@ onUpdated(() => {
 });
 
 // 发送聊天消息
-const sendHandle = async (data) => {
+const sendHandle = (data) => {
   // 不允许输入为空
   if (!data.length) {
     return;
   }
 
-  // 保存用户输入的信息
-  msgList.value.push({ id: id++, isUser: true, message: data })
+  const key = localStorage.getItem('secret');
 
-  // 获取到收到的数据
-  let newIndex = null;
-  gptSendMessage(msgList.value, (content) => {
-    if (newIndex === null)
-      newIndex = msgList.value.push({ id: id++, isUser: false, message: content }) - 1;
-    else
-      msgList.value[newIndex].message = content;
-  });
+  // say(data, key)
+  say(data)
 }
 </script>
 
@@ -62,8 +53,8 @@ const sendHandle = async (data) => {
   <div class="chat-container">
     <!-- main -->
     <div class="chat-list" ref="chatDom">
-      <Bubble v-for="item of msgList" :key="item.id" :isUser="item.isUser"
-        :avatar="item.isUser ? undefined : RobotAvatarImg" :message="item.message">
+      <Bubble v-for="(v, i) in messages" :key="i" :isUser="v.role === 'user'"
+        :avatar="v.role === 'user' ? undefined : RobotAvatarImg" :message="v.content">
       </Bubble>
     </div>
     <!-- 输入框 -->
@@ -122,6 +113,7 @@ const sendHandle = async (data) => {
     z-index: 99;
     user-select: none;
     cursor: pointer;
+    backdrop-filter: blur(20px);
 
     &:hover {
       animation-play-state: paused;

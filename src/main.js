@@ -3,6 +3,6 @@ import App from "./App.vue";
 import "@/utils/theme";
 
 // 打印版本号
-console.log("chatgpt version: v3.0.1");
+console.log("chatgpt version: v3.1.1");
 
 createApp(App).mount("#app");

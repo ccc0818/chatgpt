@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "utf-8": "^2.0.0",
     "vue": "^3.2.45"
   },
   "devDependencies": {

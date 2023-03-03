@@ -1,107 +1,103 @@
-import { showMessage } from "@/utils";
+import { ref, computed } from "vue";
+import UTF8 from "utf-8";
 
-let reader;
+const api = "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";
+/**
+ * chatGPT model
+ */
+export function useChatGPT() {
+  const hello = ref(
+    "你好，我是人工智能ChatGPT，一个由OpenAI训练的大型语言模型。"
+  );
 
-const gptJoinPrompt = chatRecords => {
-  let queryStr = "";
-  chatRecords.forEach(i => {
-    if (i.id === 0) {
-      queryStr += i.message + "\n";
+  const systemMessage = ref({
+    role: "system",
+    content: "你是一个聊天助手",
+  });
+  const messageList = ref([]);
+
+  const messages = computed(() => {
+    return [{ role: "system", content: hello.value }, ...messageList.value];
+  });
+
+  function setSystem(content, helloStr) {
+    systemMessage.value.content = content;
+    hello.value = helloStr;
+    clearMessage();
+  }
+
+  function pushMessage(role, content) {
+    messageList.value.push({ role, content });
+  }
+
+  function updateMessage(content) {
+    messageList.value[messageList.value.length - 1].content = content;
+  }
+
+  function clearMessage() {
+    messageList.value.length = 0;
+  }
+
+  function say(content, key = '') {
+    if (!content) {
       return;
     }
-    if (i.isUser) queryStr += `\nHuman: ${i.message}`;
-    else queryStr += `\nAI: ${i.message}`;
-  });
-  queryStr += "\nAI:";
-  // console.log(queryStr);
 
-  return queryStr;
-};
+    pushMessage("user", content);
 
-/**
- * 发送聊天文本信息给gpt
- * @param {*} chatRecords
- * @param {*} contentUpdateCb
- */
-export const gptSendMessage = async (chatRecords, callBack) => {
-  const secretKey = localStorage.getItem("secret");
+    (async function request() {
+      const res = await fetch("/gpt/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo", //gpt-3.5-turbo
+          stream: true,
+          messages: [systemMessage.value, ...messageList.value],
+        }),
+      });
 
-  if (!secretKey) {
-    showMessage({
-      type: "error",
-      message: "你目前没有密钥, 请先去保存你的密钥!",
-      duration: 3000,
-    });
-    return;
+      // const response = await res.json();
+      // const { role, content } = response.choices[0].message;
+      // pushMessage(role, content);
+
+      let responseStr = "";
+      const reader = res.body.getReader();
+      reader.read().then(async function readStream({ done, value }) {
+        // 读取数据流
+        if (done) {
+          return;
+        }
+
+        // const tokens = uint8Array2Str(value)
+        const tokens = UTF8.getStringFromBytes(value)
+          .split("\n\n")
+          .filter(str => str !== "" && str !== "data: [DONE]")
+          .map(str => {
+            const res = JSON.parse(str.replace("data: ", ""));
+            // console.log(res);
+            if (res.choices[0].delta.role) {
+              pushMessage(res.choices[0].delta.role, "");
+            }
+
+            let content = "";
+            if (res.choices[0].delta.content) {
+              content = res.choices[0].delta.content;
+            }
+            return content;
+          });
+
+        responseStr += tokens.join("");
+
+        // 执行回掉
+        updateMessage(responseStr);
+
+        return reader.read().then(readStream); // 继续读取
+      });
+    })();
   }
 
-  // 如果上一次的reader stream 还在 那么就cancel掉
-  if (reader) {
-    await reader.cancel();
-  }
-
-  let res;
-  try {
-    res = await fetch("https://api.openai.com/v1/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${secretKey}`,
-      },
-      body: JSON.stringify({
-        model: "text-davinci-003", //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
-        prompt: gptJoinPrompt(chatRecords), // 请求信息
-        max_tokens: 2048, // 最大数据片
-        temperature: 0.9, // 分析力度
-        top_p: 1,
-        presence_penalty: 0.6,
-        frequency_penalty: 0,
-        stream: true, //流式传输
-        stop: [" Human:", " AI:"],
-      }),
-    });
-  } catch {}
-
-  // 请求失败
-  if (res.ok === false) {
-    const data = await res.json();
-    if (data.error.code === "invalid_api_key") {
-      showMessage({ type: "error", message: "无效的api_key!" });
-    } else if (data.error.code === null) {
-      if (res.error.type === "insufficient_quota") {
-        showMessage({ type: "warning", message: "api_key过期!" });
-      }
-    }
-    return;
-  }
-
-  //读取数据流
-  let response = "";
-  reader = res.body.getReader();
-  reader
-    .read()
-    .then(function parseRawData({ done, value }) {
-      //读取数据流
-      if (done) {
-        reader = null;
-        return;
-      }
-
-      let rawData = "";
-      rawData += String.fromCharCode(...value);
-
-      response += rawData
-        .split("\n\n")
-        .filter(v => v !== "" && v !== "data: [DONE]")
-        .map(v => JSON.parse(v.replace("data: ", "")).choices[0].text)
-        .join("");
-
-      // 执行回掉
-      callBack(response);
-
-      return reader.read().then(parseRawData); // 继续读取
-    })
-    .catch(e => {
-      console.log(e);
-    });
-};
+  return { messages, setSystem, pushMessage, clearMessage, say };
+}

@@ -32,6 +32,7 @@ function sendHandle() {
   padding: 0 4px;
   // background-color: #fff;
   position: relative;
+  backdrop-filter: blur(20px);
 
   // &::before {
   //   content: '';

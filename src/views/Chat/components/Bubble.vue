@@ -1,6 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onUpdated } from 'vue';
 import { showMessage } from '@/utils'
+import hljs from 'https://unpkg.com/@highlightjs/cdn-assets@11.7.0/es/highlight.min.js'
+
+marked.marked.setOptions({
+  // highlight: function (code) {
+  //   return hljs.highlightAuto(code).value;
+  // },
+  pedantic: false,
+  gfm: true,
+  tables: true,
+  breaks: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: false,
+  xhtml: false
+});
+
 const copyBtn = ref();
 
 const props = defineProps({
@@ -24,6 +40,17 @@ const copyHandle = () => {
     duration: 500
   });
 }
+
+const markMessage = computed(() => { 
+  // nextTick(() => { 
+  //   hljs.highlightAll()
+  // })
+  return marked.marked(props.message);// 将markdown内容解析
+})
+
+onUpdated(() => { 
+  hljs.highlightAll()
+})
 </script>
 
 <template>
@@ -32,8 +59,8 @@ const copyHandle = () => {
       <img class="img" :src="avatar">
     </div>
     <div class="msg-box">
-      <div class="blob blob-ai">
-        {{ message }}
+      <div class="blob blob-ai" v-html="markMessage">
+        <!-- {{ message }} -->
       </div>
       <span ref="copyBtn" class="iconfont icon-fuzhi copy-btn" @click.stop="copyHandle"></span>
     </div>
