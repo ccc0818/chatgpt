@@ -15,7 +15,7 @@ const useRobotStore = defineStore("robotStore", () => {
         avatar: RobotImg, //头像
         salutation:
           "你好，我是人工智能ChatGPT，一个由OpenAI训练的大型语言模型。", //问候语
-        type: "", //类型
+        type: "你是一个聊天助手", //类型
       },
       {
         id: id++,

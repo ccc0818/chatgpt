@@ -36,15 +36,14 @@ function scrollToBottom(isSmooth = true) {
     }
   })
 }
-
 </script>
 
 <template>
   <div class="chat-container">
     <!-- main -->
     <div class="chat-list" ref="chatElRef">
-      <Bubble v-for="v of chatList" :key="v.id" :isUser="v.isUser" :content="v.content" :type="v.type"
-        :avatar="v.isUser ? user?.avatar : robotAvatar" />
+      <Bubble v-for="(v, i) of chatList" :key="i" :isUser="v.role === 'user'" :content="v.content" :type="v.type"
+      :avatar="v.role === 'user' ? user?.avatar : robotAvatar" />
     </div>
     <!-- 输入框 -->
     <Input @send="(e) => emits('onSend', e)" :placeholder="placeholder" />

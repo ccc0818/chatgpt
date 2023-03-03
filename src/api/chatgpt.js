@@ -1,132 +1,8 @@
-import { reqApiKeyArrear } from "./service";
 import useStore from "@/store";
 import { storeToRefs } from "pinia";
 import axios from "axios";
-import {showMessage } from '@/utils'
-
-let reader;
-const model = localStorage.getItem("model");
-
-const gptJoinPrompt = chatRecords => {
-  let queryStr = "";
-  chatRecords.forEach(i => {
-    if (i.id === 0) {
-      queryStr += i.content + "\n";
-      return;
-    }
-    if (i.isUser) queryStr += `\nHuman: ${i.content}`;
-    else queryStr += `\nAI: ${i.content}`;
-  });
-  queryStr += "\nAI:";
-  // console.log(queryStr);
-
-  return queryStr;
-};
-
-
-/**
- * 发送聊天文本信息给gpt
- * @param {*} chatRecords
- * @param {*} contentUpdateCb
- */
-export const gptSendMessage = (chatRecords, contentUpdateCb) => {
-  const { userStore } = useStore();
-  const { user } = storeToRefs(userStore);
-  const { setUser } = userStore;
-
-  let retryCount = 0;
-  async function send() {
-    // 如果上一次的reader stream 还在 那么就cancel掉
-    if (reader) await reader.cancel();
-
-    // 生成prompt
-    let content = "";
-
-    const res = await fetch("https://api.openai.com/v1/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.value.chat_key}`,
-      },
-      body: JSON.stringify({
-        model: model, //text-davinci-003 , text-curie-001, text-babbage-001, text-ada-001
-        prompt: gptJoinPrompt(chatRecords), // 请求信息
-        max_tokens: 2048, // 最大数据片
-        temperature: 0.9, // 分析力度
-        top_p: 1,
-        presence_penalty: 0.6,
-        frequency_penalty: 0,
-        stream: true, //流式传输
-        stop: [" Human:", " AI:"],
-      }),
-    });
-
-    // 请求失败
-    if (res.ok === false) {
-      res.json().then(res => {
-        if (res.error.code === "invalid_api_key")
-          showMessage({ type: "error", message: "无效的api_key!" });
-        else if (res.error.code === null) {
-          if (res.error.type === "insufficient_quota") {
-            if (retryCount > 3) {
-              showMessage({ type: "warning", message: "api_key过期!" });
-              return;
-            }
-            reqApiKeyArrear(user.value.id)
-              .then(res => {
-                if (res.status === 200) {
-                  console.log(res);
-                  setUser({ chat_key: res.data });
-                  send();
-                  retryCount++;
-                } else {
-                  showMessage({ type: "warning", message: "api_key过期!" });
-                }
-              })
-              .catch(() =>
-                showMessage({ type: "warning", message: "api_key过期!" })
-              );
-          }
-        }
-      });
-      return;
-    }
-
-    //读取数据流
-    reader = res.body.getReader();
-    reader
-      .read()
-      .then(async function readStream({ done, value }) {
-        //读取数据流
-        if (done) {
-          await reader.cancel();
-          reader = undefined;
-          return;
-        }
-
-        let str = "";
-        for (let i = 0; i < value.length; i++)
-          str += String.fromCharCode(value[i]);
-
-        const arr = str.split("\n\n");
-        const texts = arr
-          .filter(str => str !== "" && str !== "data: [DONE]")
-          .map(str => JSON.parse(str.replace("data: ", "")).choices[0].text);
-
-        content += texts.join("");
-
-        // 执行回掉
-        contentUpdateCb && contentUpdateCb(content);
-
-        return reader.read().then(readStream); // 继续读取
-      })
-      .catch(err => {
-        showMessage({ type: "error", message: "读取数据流失败！请重试" });
-        return;
-      });
-  }
-  send();
-};
+import { ref, computed } from "vue";
+import UTF8 from "utf-8";
 
 export const gptReqImage = prompt => {
   const { userStore } = useStore();
@@ -138,9 +14,112 @@ export const gptReqImage = prompt => {
     {
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${user.value.chat_key}`
-          // "Bearer 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",
+        Authorization: `Bearer ${user.value.chat_key}`,
+        // "Bearer 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",
       },
     }
-  )
+  );
 };
+
+/**
+ * chatGPT model
+ */
+export function useChatGPT() {
+  const hello = ref(
+    "你好，我是人工智能ChatGPT，一个由OpenAI训练的大型语言模型。"
+  );
+
+  const systemMessage = ref({
+    role: "system",
+    content: "你是一个聊天助手",
+  });
+  const messageList = ref([]);
+
+  const messages = computed(() => {
+    return [{ role: "system", content: hello.value }, ...messageList.value];
+  });
+
+  function setSystem(content, helloStr) {
+    systemMessage.value.content = content;
+    hello.value = helloStr;
+    clearMessage();
+  }
+
+  function pushMessage(role, content) {
+    messageList.value.push({ role, content });
+  }
+
+  function updateMessage(content) {
+    messageList.value[messageList.value.length - 1].content = content;
+  }
+
+  function clearMessage() {
+    messageList.value.length = 0;
+  }
+
+  const api = "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";
+
+  function say(content, key = '') {
+    if (!content) {
+      return;
+    }
+
+    pushMessage("user", content);
+
+    (async function request() {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: `Bearer ${key}`,
+          // Authorization: `Bearer ${user.value.chat_key}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo", //gpt-3.5-turbo
+          stream: true,
+          messages: [systemMessage.value, ...messageList.value],
+        }),
+      });
+
+      // const response = await res.json();
+      // const { role, content } = response.choices[0].message;
+      // pushMessage(role, content);
+
+      let responseStr = "";
+      const reader = res.body.getReader();
+      reader.read().then(async function readStream({ done, value }) {
+        // 读取数据流
+        if (done) {
+          return;
+        }
+
+        // const tokens = uint8Array2Str(value)
+        const tokens = UTF8.getStringFromBytes(value)
+          .split("\n\n")
+          .filter(str => str !== "" && str !== "data: [DONE]")
+          .map(str => {
+            const res = JSON.parse(str.replace("data: ", ""));
+            // console.log(res);
+            if (res.choices[0].delta.role) {
+              pushMessage(res.choices[0].delta.role, "");
+            }
+
+            let content = "";
+            if (res.choices[0].delta.content) {
+              content = res.choices[0].delta.content;
+            }
+            return content;
+          });
+
+        responseStr += tokens.join("");
+
+        // 执行回掉
+        updateMessage(responseStr);
+
+        return reader.read().then(readStream); // 继续读取
+      });
+    })();
+  }
+
+  return { messages, setSystem, pushMessage, clearMessage, say };
+}
