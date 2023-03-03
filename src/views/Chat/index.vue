@@ -44,8 +44,7 @@ const sendHandle = (data) => {
 
   const key = localStorage.getItem('secret');
 
-  // say(data, key)
-  say(data)
+  say(data, key)
 }
 </script>
 
