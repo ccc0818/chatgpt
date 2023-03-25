@@ -12,7 +12,7 @@ const pinia = createPinia();
 import "vant/lib/index.css";
 
 // 打印版本号
-console.log("chatgpt version: v2.1.0");
+console.log("chatgpt version: v2.1.1");
 
 //加载配置文件
 axios.get("/config.json").then(async (res) => {

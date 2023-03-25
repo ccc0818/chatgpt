@@ -19,31 +19,31 @@ const sendHandle = async (data) => {
     return;
   }
 
-  //vip 检查
-  // if (user.value.state === 0) {
-  //   let freeCount = 0;
-  //   //检查user 能否发信息
-  //   const res = await reqFreeQueryTimes(user.value.id);
-  //   freeCount = res.data;
+  // vip 检查
+  if (user.value.state === 0) {
+    let freeCount = 0;
+    //检查user 能否发信息
+    const res = await reqFreeQueryTimes(user.value.id);
+    freeCount = res.data;
 
-  //   if (freeCount <= 0) {
-  //     // 弹出开会员对话框
-  //     showConfirmDialog({
-  //       message: '免费体验次数用完了, 开通会员享无限畅聊。',
-  //       confirmButtonText: '去开通',
-  //       confirmButtonColor: '#9370d8',
-  //       cancelButtonText: '再想想',
-  //       // closeOnClickOverlay: false,
-  //       overlay: false,
-  //       // theme: 'round-button'
-  //       className: 'popup',
-  //     }).then(() => {
-  //       // on confirm
-  //       router.push({ name: 'vip' });
-  //     });
-  //     return;
-  //   }
-  // }
+    if (freeCount <= 0) {
+      // 弹出开会员对话框
+      showConfirmDialog({
+        message: '免费体验次数用完了, 开通会员享无限畅聊。',
+        confirmButtonText: '去开通',
+        confirmButtonColor: '#9370d8',
+        cancelButtonText: '再想想',
+        // closeOnClickOverlay: false,
+        overlay: false,
+        // theme: 'round-button'
+        className: 'popup',
+      }).then(() => {
+        // on confirm
+        router.push({ name: 'vip' });
+      });
+      return;
+    }
+  }
 
   // 保存用户输入的信息
   chatList.value.push({ id: id++, role: "user", content: data })
