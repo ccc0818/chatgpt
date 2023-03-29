@@ -11,8 +11,8 @@ const { userStore } = useStore();
 const { user } = storeToRefs(userStore);
 const { refreshUserInfo } = userStore;
 const vipTypeList = ref([
-  { id: 0, title: '月度会员', price: 49, oldPrice: 299, save: '' },
-  { id: 1, title: '季度会员', price: 109, oldPrice: 897, save: '', hot: true },
+  { id: 0, title: '7天会员', price: 49, oldPrice: 299, save: '' },
+  { id: 1, title: '15天会员', price: 109, oldPrice: 897, save: '', hot: true },
   // { id: 2, title: '年度会员', price: 298, oldPrice: 828, save: '' },
 ])
 const selectedIndex = ref(0);
@@ -101,8 +101,8 @@ const payVip = () => {
           @click="selectedIndex = index">
           <span class="title">{{ item.title }}</span>
           <span class="price">¥ <span class="price-n">{{ item.price }}</span></span>
-          <span class="old-price">¥{{ item.oldPrice }}</span>
-          <span class="save">{{ item.save }}</span>
+          <!-- <span class="old-price">¥{{ item.oldPrice }}</span> -->
+          <!-- <span class="save">{{ item.save }}</span> -->
         </li>
       </ul>
     </div>
