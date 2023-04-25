@@ -59,9 +59,7 @@ onUpdated(() => {
       <img class="img" :src="avatar">
     </div>
     <div class="msg-box">
-      <div class="blob blob-ai" v-html="markMessage">
-        <!-- {{ message }} -->
-      </div>
+      <div class="blob blob-ai" v-html="markMessage"></div>
       <span ref="copyBtn" class="iconfont icon-fuzhi copy-btn" @click.stop="copyHandle"></span>
     </div>
   </div>
